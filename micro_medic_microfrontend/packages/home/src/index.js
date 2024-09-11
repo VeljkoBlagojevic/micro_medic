@@ -27,7 +27,13 @@ registerApplication(
 registerApplication(
   'calendar',
   () => import('calendar/Calendar'),
-  location => location.pathname.startsWith('/calendar')
+  location => location.pathname.startsWith('/')
+);
+
+registerApplication(
+  'login',
+  () => import('login/Login'),
+  location => location.pathname.startsWith('/')
 );
 
 start();

@@ -30,7 +30,9 @@ module.exports = {
       remotes: {
         nav: 'nav',
         icd10: 'icd10',
-        examination: 'examination'
+        examination: 'examination',
+        calendar: 'calendar',
+        login: 'login'
       },
       shared: []
     }),

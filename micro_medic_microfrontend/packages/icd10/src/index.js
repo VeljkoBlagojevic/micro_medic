@@ -25,7 +25,7 @@ jsComponent.mount = function(opts, props) {
         .then(response => {
           const array = response.data; // Assume data is an array of diseases
           const html = array.slice(0,5).map((disease, index) => 
-            `<div>${disease.code} - ${disease.description}</div>`
+            `<div>${disease.code} - ${disease.desc}</div>`
           ).join('');
           el.innerHTML = html;
         })
