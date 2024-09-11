@@ -7,10 +7,10 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class DoctorRegisterRequest extends RegisterRequest {
-    private Long specijalizacijaId;
+    private Long specializationId;
 
-    public DoctorRegisterRequest(String firstname, String lastname, String email, String username, String password, Long specijalizacijaId) {
+    public DoctorRegisterRequest(String firstname, String lastname, String email, String username, String password, Long specializationId) {
         super(firstname, lastname, email, username, password);
-        this.specijalizacijaId = specijalizacijaId;
+        this.specializationId = specializationId;
     }
 }

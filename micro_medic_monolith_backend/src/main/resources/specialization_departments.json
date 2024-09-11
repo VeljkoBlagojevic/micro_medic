@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Cardiology"
+  },
+  {
+    "id": 2,
+    "name": "Dermatology"
+  },
+  {
+    "id": 3,
+    "name": "Emergency Medicine"
+  },
+  {
+    "id": 4,
+    "name": "Endocrinology"
+  },
+  {
+    "id": 5,
+    "name": "Gastroenterology"
+  },
+  {
+    "id": 6,
+    "name": "General Surgery"
+  },
+  {
+    "id": 7,
+    "name": "Internal Medicine"
+  },
+  {
+    "id": 8,
+    "name": "Neurology"
+  },
+  {
+    "id": 9,
+    "name": "Obstetrics and Gynecology"
+  },
+  {
+    "id": 10,
+    "name": "Oncology"
+  },
+  {
+    "id": 11,
+    "name": "Ophthalmology"
+  },
+  {
+    "id": 12,
+    "name": "Orthopedics"
+  },
+  {
+    "id": 13,
+    "name": "Pediatrics"
+  },
+  {
+    "id": 14,
+    "name": "Psychiatry"
+  },
+  {
+    "id": 15,
+    "name": "Pulmonology"
+  },
+  {
+    "id": 16,
+    "name": "Radiology"
+  },
+  {
+    "id": 17,
+    "name": "Rheumatology"
+  },
+  {
+    "id": 18,
+    "name": "Urology"
+  },
+  {
+    "id": 19,
+    "name": "Neurosurgery"
+  },
+  {
+    "id": 20,
+    "name": "Anesthesiology"
+  },
+  {
+    "id": 21,
+    "name": "Family Medicine"
+  },
+  {
+    "id": 22,
+    "name": "Physical Medicine and Rehabilitation"
+  },
+  {
+    "id": 23,
+    "name": "Infectious Diseases"
+  },
+  {
+    "id": 24,
+    "name": "Plastic Surgery"
+  },
+  {
+    "id": 25,
+    "name": "Pathology"
+  },
+  {
+    "id": 26,
+    "name": "Occupational Medicine"
+  },
+  {
+    "id": 27,
+    "name": "Sports Medicine"
+  },
+  {
+    "id": 28,
+    "name": "Geriatrics"
+  },
+  {
+    "id": 29,
+    "name": "Addiction Medicine"
+  },
+  {
+    "id": 30,
+    "name": "Emergency Surgery"
+  }
+]

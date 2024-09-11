@@ -38,16 +38,16 @@ public class AuthenticationService {
 //    }
 
     public AuthenticationResponse registerDoctor(DoctorRegisterRequest request) {
-        var specijalizacija = specializationDepartmentRepository
-                .findById(request.getSpecijalizacijaId())
-                .orElseThrow(() -> new EntityNotFoundException("Specijalizacija not found"));
+        var specialization = specializationDepartmentRepository
+                .findById(request.getSpecializationId())
+                .orElseThrow(() -> new EntityNotFoundException("Specialization not found"));
         Doctor doctor = new Doctor(
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
                 request.getUsername(),
                 passwordEncoder.encode(request.getPassword()),
-                specijalizacija);
+                specialization);
 
         userRepository.save(doctor);
         String jwtToken = jwtService.generateToken(doctor);

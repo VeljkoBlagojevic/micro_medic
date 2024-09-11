@@ -2,6 +2,8 @@ package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,16 +25,23 @@ public abstract class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "First name can't be blank")
     private String firstname;
+
+    @NotBlank(message = "Last name can't be blank")
     private String lastname;
 
     @NaturalId
+    @NotBlank(message = "Email can't be blank")
+    @Email(message = "Email should be valid")
     private String email;
 
     @NaturalId
+    @NotBlank(message = "Username can't be blank")
     private String username;
 
     @JsonIgnore
+    @NotBlank(message = "Password can't be blank")
     private String password;
 
     protected User(Long id, String firstname, String lastname, String email, String username, String password) {

@@ -1,14 +1,13 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

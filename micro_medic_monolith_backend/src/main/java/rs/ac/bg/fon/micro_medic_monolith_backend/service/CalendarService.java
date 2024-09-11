@@ -3,7 +3,7 @@ package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rs.ac.bg.fon.micro_medic_monolith_backend.controller.calendar.ZakazivanjeRequest;
+import rs.ac.bg.fon.micro_medic_monolith_backend.controller.calendar.AppointmentRequest;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Doctor;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Patient;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.User;
@@ -14,12 +14,13 @@ import rs.ac.bg.fon.micro_medic_monolith_backend.repository.ScheduledAppointment
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class CalendarService {
 
-    public static final int TERMIN_MAX_DURATION_HOURS = 2;
+    public static final int APPOINTMENT_MAX_DURATION_HOURS = 2;
     private final ScheduledAppointmentRepository scheduledAppointmentRepository;
     private final UserService userService;
     private final PatientRepository patientRepository;
@@ -39,33 +40,53 @@ public class CalendarService {
         return Collections.emptyList();
     }
 
-    public ScheduledAppointment zakaziTermin(ZakazivanjeRequest termin) {
-        Preconditions.checkNotNull(termin, "Termin ne sme biti prazan");
-        Preconditions.checkNotNull(termin.start(), "Zakazani termin mora imati start");
-        Preconditions.checkNotNull(termin.end(), "Zakazani termin mora imati end");
-        Preconditions.checkArgument(termin.start().isBefore(termin.end()), "start mora biti pre enda termina");
-        Preconditions.checkArgument(termin.start().isAfter(LocalDateTime.now()));
-        Preconditions.checkArgument(termin.start().plusHours(TERMIN_MAX_DURATION_HOURS).isAfter(termin.end()), "Termin ne sme trajati duze od 2h");
+    public ScheduledAppointment createAppointment(AppointmentRequest appointment) {
+        if (appointment == null) {
+            throw new IllegalArgumentException("Appointment cannot be null");
+        }
+
+        if (appointment.start().isAfter(appointment.end())) {
+            throw new IllegalArgumentException("Start time must be before the end time");
+        }
+
+        if (appointment.start().plusHours(APPOINTMENT_MAX_DURATION_HOURS).isBefore(appointment.end())) {
+            throw new IllegalArgumentException("Appointment cannot last longer than " + APPOINTMENT_MAX_DURATION_HOURS + " hours");
+        }
+//        Preconditions.checkArgument(appointment.start().isBefore(appointment.end()), "Start time must be before the end time");
+//        Preconditions.checkArgument(appointment.start().plusHours(APPOINTMENT_MAX_DURATION_HOURS).isAfter(appointment.end()), "Termin ne sme trajati duze od 2h");
 
         User currentUser = userService.getCurrentUser();
         if (!(currentUser instanceof Doctor doctor)) {
             throw new UnsupportedOperationException("Not a Doctor");
         }
-        var terminiDoktora =  scheduledAppointmentRepository.findByDoctorId(currentUser.getId());
+        var doctorsAppointments =  scheduledAppointmentRepository.findByDoctorId(currentUser.getId());
 
-        if(terminiDoktora.stream().anyMatch(t -> t.getStart().isBefore(termin.end()) && t.getEnd().isAfter(termin.start()))) {
-            throw new IllegalArgumentException("Termin se preklapa");
+        if(doctorsAppointments.stream().anyMatch(t -> t.getStart().isBefore(appointment.end()) && t.getEnd().isAfter(appointment.start()))) {
+            throw new IllegalArgumentException("Appointment overlaps");
         }
 
-        Patient patient = patientRepository.findById(termin.patientId()).orElseThrow(() -> new IllegalArgumentException("Nije pronadjen pacijent"));
+        Patient patient = patientRepository.findById(appointment.patientId()).orElseThrow(() -> new IllegalArgumentException("Nije pronadjen pacijent"));
 
         ScheduledAppointment scheduledAppointment = ScheduledAppointment.builder()
-                .start(termin.start())
-                .end(termin.end())
+                .start(appointment.start())
+                .end(appointment.end())
                 .doctor(doctor)
                 .patient(patient)
                 .build();
 
         return scheduledAppointmentRepository.save(scheduledAppointment);
+    }
+
+    public ScheduledAppointment getById(Long id) {
+        return scheduledAppointmentRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Appointment with id: " + id + " not found"));
+    }
+
+    public List<ScheduledAppointment> getByPatiendId(Long patiendId) {
+        return scheduledAppointmentRepository.findByPatientId(patiendId);
+    }
+
+    public List<ScheduledAppointment> getByDoctorId(Long doctorId) {
+        return scheduledAppointmentRepository.findByDoctorId(doctorId);
     }
 }

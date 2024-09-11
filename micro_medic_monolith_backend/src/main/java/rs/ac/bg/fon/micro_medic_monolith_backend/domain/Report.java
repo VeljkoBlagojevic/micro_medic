@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public abstract class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @PastOrPresent(message = "Creation time must be in the past or present")
     private LocalDateTime creationTime;
 
     protected Report() {

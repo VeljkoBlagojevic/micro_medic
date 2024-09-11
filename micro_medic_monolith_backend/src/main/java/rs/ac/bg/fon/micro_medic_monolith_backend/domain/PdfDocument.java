@@ -19,12 +19,12 @@ public class PdfDocument extends Report {
     public PdfDocument() {
     }
 
-    public PdfDocument(Long id, LocalDateTime vremeGenerisanja) {
-        super(id, vremeGenerisanja);
+    public PdfDocument(Long id, LocalDateTime timeGenerated) {
+        super(id, timeGenerated);
     }
 
-    public PdfDocument(LocalDateTime vremeGenerisanja) {
-        super(vremeGenerisanja);
+    public PdfDocument(LocalDateTime timeGenerated) {
+        super(timeGenerated);
     }
 
     @Override

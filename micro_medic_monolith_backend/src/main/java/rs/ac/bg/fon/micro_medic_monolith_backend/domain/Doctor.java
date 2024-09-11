@@ -3,6 +3,7 @@ package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity

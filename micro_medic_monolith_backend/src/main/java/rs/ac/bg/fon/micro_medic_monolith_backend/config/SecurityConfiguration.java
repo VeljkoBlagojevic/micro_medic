@@ -28,7 +28,15 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/seed**").permitAll()
+                        .requestMatchers("/api/v1/seed/**").permitAll()
+                        .requestMatchers("/api/v1/medicine/**").permitAll()
+                        .requestMatchers("/api/v1/therapy/**").permitAll()
+                        .requestMatchers("/api/v1/disease/**").permitAll()
+                        .requestMatchers("/api/v1/specializationDepartment/**").permitAll()
+
+                        .requestMatchers("/api/v1/calendar").hasAuthority(Role.DOCTOR.getAuthority())
+                        .requestMatchers( "/api/v1/examination").hasAuthority(Role.DOCTOR.getAuthority())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/examination").hasAuthority(Role.PATIENT.getAuthority())
 
                         .requestMatchers(HttpMethod.GET, "/doctor").hasAuthority(Role.DOCTOR.getAuthority())
                         .requestMatchers(HttpMethod.GET, "/patient").hasAuthority(Role.PATIENT.getAuthority())

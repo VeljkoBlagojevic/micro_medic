@@ -19,12 +19,12 @@ public class PrintedDocument extends Report {
     public PrintedDocument() {
     }
 
-    public PrintedDocument(Long id, LocalDateTime vremeGenerisanja) {
-        super(id, vremeGenerisanja);
+    public PrintedDocument(Long id, LocalDateTime timeGenerated) {
+        super(id, timeGenerated);
     }
 
-    public PrintedDocument(LocalDateTime vremeGenerisanja) {
-        super(vremeGenerisanja);
+    public PrintedDocument(LocalDateTime timeGenerated) {
+        super(timeGenerated);
     }
 
     @Override

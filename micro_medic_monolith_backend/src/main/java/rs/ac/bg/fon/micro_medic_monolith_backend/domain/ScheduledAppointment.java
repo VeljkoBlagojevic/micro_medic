@@ -1,13 +1,14 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 @Entity
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,6 +22,7 @@ public class ScheduledAppointment implements Comparable<ScheduledAppointment> {
     private Long id;
 
     private LocalDateTime start;
+
     private LocalDateTime end;
 
     @ManyToOne
