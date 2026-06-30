@@ -6,21 +6,19 @@ import rs.ac.bg.fon.micro_medic_monolith_backend.domain.MedicineForm;
 
 @Converter(autoApply = true)
 public class MedicineFormConverter implements AttributeConverter<MedicineForm, String> {
-
     @Override
     public String convertToDatabaseColumn(MedicineForm form) {
         if (form == null) {
             return null;
         }
-        return form.getName();  // Save the 'name' field to the database
+        return form.getName();
+
     }
 
     @Override
     public MedicineForm convertToEntityAttribute(String dbData) {
-        if (dbData == null) {
-            return null;
-        }
-        // Map the string value from the database back to the corresponding enum constant
+        if (dbData == null) return null;
+
         for (MedicineForm form : MedicineForm.values()) {
             if (form.getName().equals(dbData)) {
                 return form;

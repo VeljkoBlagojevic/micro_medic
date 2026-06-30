@@ -1,28 +1,34 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.PastOrPresent;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@SQLDelete(sql = "UPDATE scheduled_appointment SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
+
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class ScheduledAppointment implements Comparable<ScheduledAppointment> {
+public class ScheduledAppointment extends Auditable implements Comparable<ScheduledAppointment> {
+
+    public enum Status {
+        SCHEDULED,
+        COMPLETED,
+        CANCELLED
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime start;
-
     private LocalDateTime end;
 
     @ManyToOne
@@ -32,6 +38,13 @@ public class ScheduledAppointment implements Comparable<ScheduledAppointment> {
     @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.SCHEDULED;
+
+    @Builder.Default
+    private boolean deleted = false;
 
     @Override
     public int compareTo(ScheduledAppointment o) {

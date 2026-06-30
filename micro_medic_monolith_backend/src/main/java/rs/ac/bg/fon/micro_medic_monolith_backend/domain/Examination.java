@@ -1,35 +1,35 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
-
 @Entity
+@SQLDelete(sql = "UPDATE examination SET deleted = true WHERE ID = ?")
+@SQLRestriction("deleted = false")
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class Examination {
+public class Examination extends Auditable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     private LocalDateTime start;
-
     private LocalDateTime end;
 
     private String anamnesis;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToOne
     @JoinColumn(name = "scheduled_appointment_id")
@@ -38,5 +38,16 @@ public class Examination {
     @OneToOne
     @JoinColumn(name = "diagnosis")
     private Disease diagnosis;
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    public enum Status {
+        SCHEDULED,
+        IN_PROGRESS,
+        COMPLETED,
+        CANCELLED
+    }
+
 
 }

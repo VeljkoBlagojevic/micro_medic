@@ -1,39 +1,64 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import rs.ac.bg.fon.micro_medic_monolith_backend.exception.EntityNotFoundException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import rs.ac.bg.fon.micro_medic_monolith_backend.controller.DiseaseController;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Disease;
 import rs.ac.bg.fon.micro_medic_monolith_backend.repository.DiseaseRepository;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DiseaseService {
 
     private final DiseaseRepository diseaseRepository;
 
-    public void populateDiseases() throws Exception {
+    @CacheEvict(value = "diseases", allEntries = true)
+    @Transactional
+    public void populateDiseases() {
         ObjectMapper objectMapper = new ObjectMapper();
-        InputStream inputStream = TypeReference.class.getResourceAsStream("/icd10_codes.json");
+        try (InputStream inputStream = TypeReference.class.getResourceAsStream("/icd10_codes.json")) {
 
-        List<Disease> diseases = objectMapper.readValue(inputStream, new TypeReference<List<Disease>>() {});
+            List<Disease> diseases = objectMapper.readValue(inputStream, new TypeReference<List<Disease>>() {});
 
-        diseaseRepository.saveAll(diseases);
+            List<String> codes = diseases.stream().map(Disease::getCode).toList();
+            Set<String> existingCodes = diseaseRepository.findAllById(codes).stream()
+                    .map(Disease::getCode)
+                    .collect(Collectors.toSet());
+            List<Disease> newCodes = codes.stream().filter(code -> !existingCodes.contains(code))
+                    .map(code -> diseases.stream().filter(disease -> disease.getCode().equals(code)).findFirst().orElseThrow())
+                    .toList();
+
+            diseaseRepository.saveAll(newCodes);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while populating diseases", e);
+        }
     }
 
-    public List<Disease> getAll() {
-        return diseaseRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Disease> getDiseases(Pageable pageable) {
+        return diseaseRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Disease> search(String query, Pageable pageable) {
+        return diseaseRepository.search(query, pageable);
+    }
+
+    @Cacheable(value = "diseases", key = "#id")
     public Disease getById(String id) {
-        return diseaseRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Disease with id: " + id + " not found"));
+        return diseaseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Disease not found with ID: " + id));
     }
 }

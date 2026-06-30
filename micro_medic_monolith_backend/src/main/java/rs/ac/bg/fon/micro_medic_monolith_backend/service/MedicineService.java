@@ -1,37 +1,68 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Medicine;
+import rs.ac.bg.fon.micro_medic_monolith_backend.exception.EntityNotFoundException;
 import rs.ac.bg.fon.micro_medic_monolith_backend.repository.MedicineRepository;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class MedicineService {
 
-    private final MedicineRepository medicineRepository;
+    private final MedicineRepository repository;
 
-    public void populateMedicines() throws Exception {
+    @CacheEvict(value = "medicines", allEntries = true)
+    @Transactional
+    public void populateMedicines() {
         ObjectMapper objectMapper = new ObjectMapper();
-        InputStream inputStream = TypeReference.class.getResourceAsStream("/medicines.json");
+        try (InputStream inputStream = TypeReference.class.getResourceAsStream("/medicines.json")) {
+            List<Medicine> medicines = objectMapper.readValue(inputStream, new TypeReference<List<Medicine>>() {
+            });
 
-        List<Medicine> medicines = objectMapper.readValue(inputStream, new TypeReference<List<Medicine>>() {});
+            List<Long> ids = medicines.stream().map(Medicine::getId).toList();
 
-        medicineRepository.saveAll(medicines);
+            Set<Long> existingIds = repository.findAllById(ids).stream()
+                    .map(Medicine::getId)
+                    .collect(Collectors.toSet());
+
+            List<Medicine> newMedicines = ids.stream()
+                    .filter(id -> !existingIds.contains(id))
+                    .map(id -> medicines.stream().filter(medicine -> medicine.getId().equals(id)).findFirst().orElseThrow())
+                    .toList();
+
+            repository.saveAll(newMedicines);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while populating medicines", e);
+        }
     }
 
-    public List<Medicine> getAll() {
-        return medicineRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Medicine> getAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Medicine> search(String query, Pageable pageable) {
+        return repository.search(query, pageable);
+    }
+
+    @Cacheable(value = "medicines", key = "#id")
+    @Transactional(readOnly = true)
     public Medicine getById(Long id) {
-        return medicineRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Medicine with id: " + id + " not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Medicine not found with id: " + id));
     }
 }

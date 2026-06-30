@@ -1,26 +1,37 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Patient;
+import rs.ac.bg.fon.micro_medic_monolith_backend.exception.EntityNotFoundException;
 import rs.ac.bg.fon.micro_medic_monolith_backend.repository.PatientRepository;
+import rs.ac.bg.fon.micro_medic_monolith_backend.service.security.AccessGuard;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class PatientService {
 
-    private final PatientRepository patientRepository;
+    private final PatientRepository repository;
+    private final AccessGuard accessGuard;
 
-    public List<Patient> getAll() {
-        return patientRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Patient> listPatients(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Patient> searchPatients(String query, Pageable pageable) {
+        return repository.search(query, pageable);
+    }
+
+    @Transactional(readOnly = true)
     public Patient getById(Long id) {
-        return patientRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Patient with id: " + id + " not found"));
+        accessGuard.requirePatientAccess(id);
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + id));
     }
 
 }

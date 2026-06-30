@@ -4,34 +4,28 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Entity
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class MedicineUsage {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // general description of how to use medicine
-    @NotBlank(message = "Method of use cannot be blank")
+    @NotBlank
     private String methodUse;
 
-    // Every 6 hours
-    @NotNull(message = "Frequency of intake in hours cannot be null")
-    @PositiveOrZero(message = "Frequency of intake in hours must be zero or positive")
+    @NotNull
+    @PositiveOrZero
     private Integer frequencyIntakeInHours;
 
     @ManyToOne
     @JoinColumn(name = "medicine_id")
-    @NotNull(message = "Medicine cannot be null")
+    @NotNull
     private Medicine medicine;
-
 }

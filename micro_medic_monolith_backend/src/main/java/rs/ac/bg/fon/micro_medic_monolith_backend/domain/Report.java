@@ -1,39 +1,51 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
+@SQLDelete(sql = "UPDATE report SET deleted = true HWERE id = ?")
+@SQLRestriction("deleted = false")
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public abstract class Report {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Builder
+public class Report extends Auditable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PastOrPresent(message = "Creation time must be in the past or present")
+    @PastOrPresent
     private LocalDateTime creationTime;
 
-    protected Report() {
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type;
 
-    protected Report(Long id, LocalDateTime creationTime) {
-        this.id = id;
-        this.creationTime = creationTime;
-    }
+    private String title;
 
-    protected Report(LocalDateTime creationTime) {
-        this.creationTime = creationTime;
-    }
+    @OneToOne
+    @JoinColumn(name = "examination_id", unique = true)
+    private Examination examination;
 
-    public abstract String export();
+    @ManyToOne
+    @JoinColumn(name = "generated_by")
+    private User generatedBy;
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    public enum Type {
+        EXAMINATION_REPORT,
+        PRESCRIPTION,
+        MEDICAL_HISTORY
+    }
 }
