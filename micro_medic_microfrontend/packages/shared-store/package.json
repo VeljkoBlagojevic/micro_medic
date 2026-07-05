@@ -1,0 +1,25 @@
+{
+    "name": "@micro-medic/shared-store",
+    "version": "1.0.0",
+    "description": "Framework agnostic shared store and global auth store and event bus for micro-medic MicroFrontend architecture",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "module": "./src/index.ts",
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "start": "webpack serve",
+        "build": "webpack --mode production",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@micro-medic/shared-types": "1.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^6.0.3",
+        "webpack": "^5.108.4",
+        "webpack-cli": "^7.2.1",
+        "webpack-dev-server": "^6.0.0",
+        "html-webpack-plugin": "^5.6.7",
+        "ts-loader": "^9.6.2"
+    }
+}

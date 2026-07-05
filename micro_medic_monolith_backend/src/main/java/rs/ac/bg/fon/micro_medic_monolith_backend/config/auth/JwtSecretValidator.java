@@ -17,7 +17,7 @@ public class JwtSecretValidator {
     private final String secretKey;
     private final Environment environment;
 
-    public JwtSecretValidator(@Value("{app.jwt.secret:}") String secretKey, Environment environment) {
+    public JwtSecretValidator(@Value("${app.jwt.secret:}") String secretKey, Environment environment) {
         this.secretKey = secretKey;
         this.environment = environment;
     }
@@ -27,7 +27,7 @@ public class JwtSecretValidator {
         boolean dev = Arrays.asList(environment.getActiveProfiles()).contains("dev");
 
         if (secretKey == null || secretKey.trim().isEmpty()) {
-            fail(dev, "app.jwt.secret is missing or blank. Set thje JWT_SECRET env variable to a Base64-encoded key of at least 256 bits");
+            fail(dev, "app.jwt.secret is missing or blank. Set the JWT_SECRET env variable to a Base64-encoded key of at least 256 bits");
             return;
         }
 

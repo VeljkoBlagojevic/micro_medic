@@ -15,7 +15,7 @@ import rs.ac.bg.fon.micro_medic_monolith_backend.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository<User> userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User getCurrentUser() {

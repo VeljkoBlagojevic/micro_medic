@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,8 +16,8 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-
-@Data
+@Getter
+@Setter
 public abstract class User implements UserDetails {
 
     @Id
@@ -34,10 +35,6 @@ public abstract class User implements UserDetails {
     @Email
     private String email;
 
-    @NaturalId
-    @NotBlank
-    private String username;
-
     @JsonIgnore
     @NotBlank
     private String password;
@@ -53,7 +50,7 @@ public abstract class User implements UserDetails {
     @Override
     @NullMarked
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -64,5 +61,15 @@ public abstract class User implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         return false;
+    }
+
+    protected User(String firstname, String lastname, String email, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+    }
+
+    protected User() {
     }
 }

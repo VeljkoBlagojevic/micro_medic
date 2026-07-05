@@ -5,7 +5,6 @@ public record DoctorDto(
         String firstname,
         String lastname,
         String email,
-        String username,
         SpecializationDepartmentDto specialization
 ) {
 }

@@ -17,7 +17,6 @@ public final class DtoMapper {
                 user.getFirstname(),
                 user.getLastname(),
                 user.getEmail(),
-                user.getUsername(),
                 user.getRole().name()
         );
     }
@@ -28,7 +27,6 @@ public final class DtoMapper {
                 doctor.getFirstname(),
                 doctor.getLastname(),
                 doctor.getEmail(),
-                doctor.getUsername(),
                 toSpecializationDepartmentDto(doctor.getSpecialization())
         );
     }
@@ -38,8 +36,7 @@ public final class DtoMapper {
                 patient.getId(),
                 patient.getFirstname(),
                 patient.getLastname(),
-                patient.getEmail(),
-                patient.getUsername()
+                patient.getEmail()
         );
     }
 

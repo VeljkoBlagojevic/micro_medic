@@ -14,8 +14,5 @@ public record PatientDto(
 
         @NotBlank
         @Email
-        String email,
-
-        @NotBlank(message = "Username can't be blank")
-        String username) {
+        String email) {
 }

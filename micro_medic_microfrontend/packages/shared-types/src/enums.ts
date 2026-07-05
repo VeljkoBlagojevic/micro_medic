@@ -1,0 +1,24 @@
+export enum Role {
+    DOCTOR = 'ROLE_DOCTOR',
+    PATIENT = 'ROLE_PATIENT',
+    ADMIN = 'ROLE_ADMIN',
+}
+
+export enum AppointmentStatus {
+    SCHEDULED = 'SCHEDULED',
+    COMPLETED = 'COMPLETED',
+    CANCELED = 'CANCELED',
+}
+
+export enum ExaminationStatus {
+    SCHEDULED = 'SCHEDULED',
+    COMPLETED = 'COMPLETED',
+    CANCELED = 'CANCELED',
+    IN_PROGRESS = 'IN_PROGRESS'
+}
+
+export enum ReportType {
+    EXAMINATION_REPORT = 'EXAMINATION_REPORT',
+    PRESCRIPTION = 'PRESCRIPTION',
+    MEDICAL_HISTORY = 'MEDICAL_HISTORY',
+}

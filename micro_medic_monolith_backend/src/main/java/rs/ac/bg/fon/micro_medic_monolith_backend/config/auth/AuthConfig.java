@@ -10,18 +10,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import rs.ac.bg.fon.micro_medic_monolith_backend.domain.User;
 import rs.ac.bg.fon.micro_medic_monolith_backend.repository.UserRepository;
 
 @Configuration
 @RequiredArgsConstructor
 public class AuthConfig {
 
-    private final UserRepository<User> userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
+        return email -> userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 

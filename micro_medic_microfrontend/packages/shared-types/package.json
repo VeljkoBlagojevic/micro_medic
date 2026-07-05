@@ -1,0 +1,25 @@
+{
+	"name": "@micro-medic/shared-types",
+	"version": "1.0.0",
+	"description": "Shared TypeScript types for the Micro Medic MicroFrontend",
+	"main": "./src/index.ts",
+	"module": "./src/index.ts",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"files": [
+		"src"
+	],
+	"scripts": {
+		"typecheck": "tsc --noEmit"
+	},
+	"author": "VeljkoBlagojevic",
+	"license": "MIT",
+	"devDependencies": {
+		"typescript": "5.9.3"
+	}
+}
