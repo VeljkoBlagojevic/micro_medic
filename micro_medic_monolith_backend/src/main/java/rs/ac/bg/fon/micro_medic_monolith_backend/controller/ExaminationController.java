@@ -27,20 +27,20 @@ public class ExaminationController {
 
     @PostMapping
     public ExaminationDetailDto examine(@RequestBody @Valid ExaminationRequest request) {
-        return DtoMapper.toExaminationDetailDto(examinationService.examine(request).getFirst(), examinationService.examine(request).getSecond());
+        var result = examinationService.examine(request);
+        return DtoMapper.toExaminationDetailDto(result.getFirst(), result.getSecond());
     }
 
     @GetMapping("/{id}")
     public ExaminationDetailDto getExamination(@PathVariable Long id) {
-        return DtoMapper.toExaminationDetailDto(examinationService.getById(id).getFirst(), examinationService.getById(id).getSecond());
+        var result = examinationService.getById(id);
+        return DtoMapper.toExaminationDetailDto(result.getFirst(), result.getSecond());
     }
 
     @GetMapping("/patient/{patientId}")
     public Page<ExaminationDto> getExaminationsForPatient(
             @PathVariable Long patientId,
-            @PageableDefault(size = 10) @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+            @PageableDefault(size = 10) Pageable pageable) {
         Page<Examination> examinations = examinationService.getExaminationsForPatient(patientId, pageable);
         return examinations.map(DtoMapper::toExaminationDto);
     }
@@ -48,9 +48,7 @@ public class ExaminationController {
     @GetMapping("/doctor/{doctorId}")
     public Page<ExaminationDto> getExaminationsForDoctor(
             @PathVariable Long doctorId,
-            @PageableDefault(size = 10) @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+            @PageableDefault(size = 10) Pageable pageable) {
         Page<Examination> examinations = examinationService.getExaminationsForDoctor(doctorId, pageable);
         return examinations.map(DtoMapper::toExaminationDto);
     }

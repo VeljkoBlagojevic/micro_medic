@@ -23,7 +23,7 @@ public interface ScheduledAppointmentRepository extends JpaRepository<ScheduledA
 
     @Query("""
             SELECT COUNT(sa) FROM ScheduledAppointment sa
-            WHERE sa.doctor.id = :doctorId AND sa.start > :now
+            WHERE sa.patient.id = :patientId AND sa.start > :now
             """)
     long countUpcomingByPatientId(@Param("patientId") Long patientId, @Param("now")LocalDateTime now);
 

@@ -28,11 +28,11 @@ public class ExaminationService {
     private final ScheduledAppointmentRepository scheduledAppointmentRepository;
     private final DiseaseRepository diseaseRepository;
     private final TherapyRepository therapyRepository;
-    private final MedicineUsageRepository medicineUsageRepository;
     private final MedicineRepository medicineRepository;
     private final AccessGuard accessGuard;
 
     @PreAuthorize("hasAuthority('ROLE_DOCTOR')")
+    @Transactional
     public Pair<Examination, Therapy> examine(ExaminationRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("Examination request cannot be null");
@@ -68,8 +68,6 @@ public class ExaminationService {
                 })
                 .toList();
 
-        List<MedicineUsage> savedMedicineUsages = medicineUsageRepository.saveAll(medicineUsages);
-
         var examination = Examination.builder()
                 .start(request.startTime())
                 .end(LocalDateTime.now())
@@ -88,13 +86,14 @@ public class ExaminationService {
 
         var therapy = Therapy.builder()
                 .examination(savedExamination)
-                .medicineUsages(savedMedicineUsages)
+                .medicineUsages(medicineUsages)
                 .instructions(request.therapyDescription())
                 .build();
 
-        therapyRepository.save(therapy);
+        medicineUsages.forEach(mu -> mu.setTherapy(therapy));
+        var savedTherapy = therapyRepository.save(therapy);
 
-        return Pair.of(savedExamination, therapy);
+        return Pair.of(savedExamination, savedTherapy);
     }
 
     @Transactional(readOnly = true)

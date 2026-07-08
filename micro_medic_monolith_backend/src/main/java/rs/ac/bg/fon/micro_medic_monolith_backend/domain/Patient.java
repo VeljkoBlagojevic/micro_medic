@@ -16,4 +16,7 @@ public class Patient extends User {
     public Patient(String firstName, String lastName, String email, String password) {
         super(firstName, lastName, email, password);
     }
+
+    protected Patient() {
+    }
 }

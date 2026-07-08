@@ -59,7 +59,7 @@ public final class DtoMapper {
                 medicine.getId(),
                 medicine.getGenericName(),
                 medicine.getBrandName(),
-                medicine.getForm().getName()
+                medicine.getForm() != null ? medicine.getForm().getName() : null
         );
     }
 
@@ -100,9 +100,9 @@ public final class DtoMapper {
                 exam.getStart(), exam.getEnd(),
                 exam.getAnamnesis(),
                 exam.getStatus().name(),
-                toDiseaseDto(exam.getDiagnosis()),
-                toScheduledAppointmentDto(exam.getScheduledAppointment()),
-                toTherapyDto(therapy)
+                exam.getDiagnosis() != null ? toDiseaseDto(exam.getDiagnosis()) : null,
+                exam.getScheduledAppointment() != null ? toScheduledAppointmentDto(exam.getScheduledAppointment()) : null,
+                therapy != null ? toTherapyDto(therapy) : null
         );
     }
 
@@ -113,7 +113,7 @@ public final class DtoMapper {
                 ex.getEnd(),
                 ex.getAnamnesis(),
                 ex.getStatus().name(),
-                toDiseaseDto(ex.getDiagnosis())
+                ex.getDiagnosis() != null ? toDiseaseDto(ex.getDiagnosis()) : null
         );
     }
 
@@ -132,11 +132,11 @@ public final class DtoMapper {
     public static ReportDto toReportDto(Report report) {
         return new ReportDto(
                 report.getId(),
-                report.getCreatedAt(),
+                report.getCreationTime(),
                 report.getType().name(),
                 report.getTitle(),
-                report.getExamination().getId(),
-                toUserDto(report.getGeneratedBy())
+                report.getExamination() != null ? report.getExamination().getId() : null,
+                report.getGeneratedBy() != null ? toUserDto(report.getGeneratedBy()) : null
         );
     }
 }

@@ -12,6 +12,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "@micro-medic/api-client": "1.0.0",
         "@micro-medic/shared-types": "1.0.0"
     },
     "devDependencies": {

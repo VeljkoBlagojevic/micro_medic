@@ -49,7 +49,11 @@ public class CalendarService {
             throw new IllegalArgumentException("Appointment request cannot be null");
         }
 
-        if (appointment.start().plusHours(APPOINTMENT_MAX_DURATION_HOURS).isBefore(appointment.end())) {
+        if (appointment.end().isBefore(appointment.start())) {
+            throw new IllegalArgumentException("Appointment end time cannot be before start time");
+        }
+
+        if (appointment.end().isAfter(appointment.start().plusHours(APPOINTMENT_MAX_DURATION_HOURS))) {
             throw new IllegalArgumentException("Appointment duration cannot exceed " + APPOINTMENT_MAX_DURATION_HOURS + " hours");
         }
 
@@ -76,6 +80,7 @@ public class CalendarService {
 
     @Transactional(readOnly = true)
     public ScheduledAppointment getById(Long id) {
+        accessGuard.requireAppointmentAccess(id);
         return scheduledAppointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Scheduled appointment not found with ID: " + id));
     }
@@ -116,7 +121,9 @@ public class CalendarService {
         return scheduledAppointmentRepository.save(appointment);
     }
 
+    @Transactional
     public ScheduledAppointment reschedule(Long appointmentId, LocalDateTime newStart, LocalDateTime newEnd) {
+        accessGuard.requireAppointmentAccess(appointmentId);
         ScheduledAppointment appointment = scheduledAppointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Scheduled appointment not found with ID: " + appointmentId));
 
@@ -141,11 +148,13 @@ public class CalendarService {
     }
 
 
+    @Transactional(readOnly = true)
     public Page<ScheduledAppointment> getByPatient(Long patientId, Pageable pageable) {
         accessGuard.requirePatientAccess(patientId);
         return scheduledAppointmentRepository.findByPatientIdOrderByStartAsc(patientId, pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<ScheduledAppointment> getByDoctor(Long doctorId, Pageable pageable) {
         accessGuard.requireSelfDoctor(doctorId);
         return scheduledAppointmentRepository.findByDoctorIdOrderByStartAsc(doctorId, pageable);

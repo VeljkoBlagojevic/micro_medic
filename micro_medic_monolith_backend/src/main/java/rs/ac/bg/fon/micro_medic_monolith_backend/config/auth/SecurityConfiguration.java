@@ -33,21 +33,16 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/api/auth/**").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth/registerDoctor").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth/registerPatient").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated();
-                    authorize.requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated();
-                    authorize.requestMatchers(HttpMethod.POST, "/api/auth/refresh").authenticated();
-                    authorize.requestMatchers(HttpMethod.POST, "/api/auth/verify-email").authenticated();
 
                     authorize.requestMatchers(HttpMethod.GET, "/api/medicine/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/api/diseases/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/api/specializationDepartments/**").permitAll();
 
                     authorize.requestMatchers(HttpMethod.POST, "/api/calendar/**").hasAuthority(Role.DOCTOR.getAuthority());
-                    authorize.requestMatchers(HttpMethod.POST, "/api/examincation/**").hasAuthority(Role.DOCTOR.getAuthority());
+                    authorize.requestMatchers(HttpMethod.POST, "/api/examinations/**").hasAuthority(Role.DOCTOR.getAuthority());
 
                     authorize.anyRequest().authenticated();
                 })

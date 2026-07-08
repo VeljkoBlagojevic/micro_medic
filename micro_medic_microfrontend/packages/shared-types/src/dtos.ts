@@ -1,9 +1,9 @@
 import { Role } from "./enums";
 
 export interface UserDto {
-  id: string;
-  firstName: string;
-  lastName: string;
+  id: number;
+  firstname: string;
+  lastname: string;
   email: string;
   role: Role;
 }
@@ -47,8 +47,8 @@ export interface ScheduledAppointmentDto {
     id: string;
     patient: PatientDto;
     doctor: DoctorDto;
-    start: Date;
-    end: Date;
+    start: string;
+    end: string;
     status: string;
 }
 
@@ -67,25 +67,25 @@ export interface TherapyDto {
 
 export interface ExaminationDto {
     id: string;
-    start: Date;
-    end: Date;
+    start: string;
+    end: string;
     anamnesis: string;
     status: string;
     diagnosis: DiseaseDto | null;
 }
 
 export interface ExaminationDetailDto extends ExaminationDto {
-    scheduledAppointment: ScheduledAppointmentDto;
+    scheduledAppointment: ScheduledAppointmentDto | null;
     therapy: TherapyDto | null;
 }
 
 export interface ReportDto {
     id: string;
-    creationTime: Date;
-    reportType: string;
+    creationTime: string;
+    type: string;
     title: string;
-    examinationId: string;
-    generatedBy: string;
+    examinationId: string | null;
+    generatedBy: string | null;
 }
 
 export interface ApiResponse<T> {

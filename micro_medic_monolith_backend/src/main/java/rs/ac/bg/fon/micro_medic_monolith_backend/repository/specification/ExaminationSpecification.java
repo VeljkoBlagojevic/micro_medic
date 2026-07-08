@@ -12,26 +12,26 @@ public final class ExaminationSpecification {
     }
 
     public static Specification<Examination> hasStatus(Examination.Status status) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
+        return (root, query, criteriaBuilder) -> status == null ? null : criteriaBuilder.equal(root.get("status"), status);
     }
 
     public static Specification<Examination> hasPatientId(Long patientId) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("patient").get("id"), patientId);
+        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("patient").get("id"), patientId);
     }
 
     public static Specification<Examination> hasDoctorId(Long doctorId) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("doctor").get("id"), doctorId);
+        return (root, query, criteriaBuilder) -> doctorId == null ? null : criteriaBuilder.equal(root.get("doctor").get("id"), doctorId);
     }
 
     public static Specification<Examination> hasDiagnosisCode(String diagnosisCode) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("diagnosis").get("code"), diagnosisCode);
+        return (root, query, criteriaBuilder) -> diagnosisCode == null ? null : criteriaBuilder.equal(root.get("diagnosis").get("code"), diagnosisCode);
     }
 
     public static Specification<Examination> startedAfter(LocalDateTime after) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("startTime"), after);
+        return (root, query, criteriaBuilder) -> after == null ? null : criteriaBuilder.greaterThan(root.get("startTime"), after);
     }
 
     public static Specification<Examination> startedBefore(LocalDateTime before) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("startTime"), before);
+        return (root, query, criteriaBuilder) -> before == null ? null : criteriaBuilder.lessThan(root.get("startTime"), before);
     }
 }

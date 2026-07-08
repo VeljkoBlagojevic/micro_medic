@@ -58,11 +58,6 @@ public abstract class User implements UserDetails {
         return password;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
     protected User(String firstname, String lastname, String email, String password) {
         this.firstname = firstname;
         this.lastname = lastname;

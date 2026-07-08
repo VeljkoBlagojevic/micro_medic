@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.micro_medic_monolith_backend.dto.DtoMapper;
 import rs.ac.bg.fon.micro_medic_monolith_backend.dto.PatientDto;
 import rs.ac.bg.fon.micro_medic_monolith_backend.dto.PatientMedicalSummaryDto;
@@ -35,12 +32,12 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public PatientDto getPatient(@RequestParam Long id) {
+    public PatientDto getPatient(@PathVariable Long id) {
         return DtoMapper.toPatientDto(patientService.getById(id));
     }
 
     @GetMapping("/{id}/summary")
-    public PatientMedicalSummaryDto getPatientSummary(@RequestParam Long id) {
+    public PatientMedicalSummaryDto getPatientSummary(@PathVariable Long id) {
         return patientSummaryService.getMedicalSummary(id);
     }
 }

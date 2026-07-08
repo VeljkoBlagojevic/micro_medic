@@ -25,4 +25,7 @@ public class Doctor extends User {
         this.specialization = specialization;
     }
 
+    protected Doctor() {
+    }
+
 }

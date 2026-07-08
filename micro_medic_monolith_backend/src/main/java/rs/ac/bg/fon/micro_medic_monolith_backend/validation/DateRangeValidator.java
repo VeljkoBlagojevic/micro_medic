@@ -24,7 +24,7 @@ public class DateRangeValidator implements ConstraintValidator<ValidDateRange, O
             Field end = value.getClass().getDeclaredField(endField);
 
             start.setAccessible(true);
-            end.setAccessible(false);
+            end.setAccessible(true);
 
             LocalDateTime startValue = (LocalDateTime) start.get(value);
             LocalDateTime endValue = (LocalDateTime) end.get(value);

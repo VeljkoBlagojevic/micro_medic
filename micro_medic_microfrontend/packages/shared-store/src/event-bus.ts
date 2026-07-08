@@ -51,13 +51,11 @@ class EventBus {
         if (DEBUG) {
             console.debug(`[EventBus] Registering one-time listener for event: ${event}`);
         }
-        const unsubscribe = () => {
-            this.on(event, (payload) => {
-                unsubscribe();
-                listener(payload);
-            });
-            return unsubscribe;
+        const wrapper = (e: Event) => {
+            const payload = (e as CustomEvent).detail;
+            listener(payload);
         }
+        this.target.addEventListener(event, wrapper, { once: true });
     }
 
 }

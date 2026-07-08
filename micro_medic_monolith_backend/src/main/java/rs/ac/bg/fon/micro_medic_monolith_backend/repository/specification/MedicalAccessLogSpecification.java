@@ -12,11 +12,11 @@ public final class MedicalAccessLogSpecification {
     }
 
     public static Specification<MedicalAccessLog> hasPatientId(Long patientId) {
-        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("patient").get("id"), patientId);
+        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("patientId"), patientId);
     }
 
     public static Specification<MedicalAccessLog> hasAccessorId(Long accessorId) {
-        return (root, query, criteriaBuilder) -> accessorId == null ? null : criteriaBuilder.equal(root.get("accessor").get("id"), accessorId);
+        return (root, query, criteriaBuilder) -> accessorId == null ? null : criteriaBuilder.equal(root.get("accessorId"), accessorId);
     }
 
     public static Specification<MedicalAccessLog> hasResourceType(MedicalAccessLog.AccessedResourceType resourceType) {

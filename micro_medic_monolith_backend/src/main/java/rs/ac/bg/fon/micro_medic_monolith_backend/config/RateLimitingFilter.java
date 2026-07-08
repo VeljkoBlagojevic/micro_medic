@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
+    private static final int MAX_TRACKED_CLIENTS = 10_000;
+
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
     @Override
@@ -47,6 +49,15 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     }
 
     private Bucket resolveBucket(String clientIp) {
+        Bucket existing = buckets.get(clientIp);
+        if (existing != null) {
+            return existing;
+        }
+
+        if (buckets.size() >= MAX_TRACKED_CLIENTS) {
+            buckets.clear();
+        }
+
         return buckets.computeIfAbsent(clientIp, k -> createNewBucket());
     }
 
@@ -62,10 +73,6 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     }
 
     private String getClientIp(@NonNull HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
-        }
         return request.getRemoteAddr();
     }
 }

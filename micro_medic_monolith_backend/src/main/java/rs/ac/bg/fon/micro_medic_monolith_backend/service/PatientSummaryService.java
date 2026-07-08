@@ -1,6 +1,5 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,6 @@ public class PatientSummaryService {
     private final ExaminationRepository examinationRepository;
     private final TherapyService therapyService;
     private final ScheduledAppointmentRepository scheduledAppointmentRepository;
-    private final EntityManager entityManager;
     private final AccessGuard accessGuard;
 
     @Transactional(readOnly = true)
@@ -40,7 +38,7 @@ public class PatientSummaryService {
 
         List<ExaminationDetailDto> examDtos = recentExams.stream()
                 .map(exam -> {
-                    var therapy = therapyService.getById(exam.getId());
+                    var therapy = therapyService.getByExaminationId(exam.getId()).orElse(null);
                     return DtoMapper.toExaminationDetailDto(exam, therapy);
                 }).toList();
 

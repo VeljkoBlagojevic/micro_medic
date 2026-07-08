@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.MedicalAccessLog;
@@ -16,8 +17,9 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuditService {
 
-    private MedicalAccessLogRepository medicalAccessLogRepository;
+    private final MedicalAccessLogRepository medicalAccessLogRepository;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public Page<MedicalAccessLog> getAllAccessLogs(
             Long patientId, Long accessorId,

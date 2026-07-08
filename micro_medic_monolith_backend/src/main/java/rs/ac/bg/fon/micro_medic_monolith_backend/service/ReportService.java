@@ -32,7 +32,7 @@ public class ReportService {
     private final PdfGenerationService pdfService;
     private final AccessGuard accessGuard;
 
-    @PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_DOCTOR') or hasAuthority('ROLE_ADMIN')")
     public Report generateExaminationReport(Long examinationId) {
         if (reportRepository.findByExaminationId(examinationId).isPresent()) {
             throw new DuplicateResourceException("Report", "examinationId", examinationId);
@@ -55,18 +55,21 @@ public class ReportService {
 
     @Transactional(readOnly = true)
     public Report getById(Long reportId) {
+        accessGuard.requireReportAccess(reportId);
         return reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report not found with ID: " + reportId));
     }
 
     @Transactional(readOnly = true)
     public Report getByExaminationId(Long examinationId) {
+        accessGuard.requireReportAccess(examinationId);
         return reportRepository.findByExaminationId(examinationId)
                 .orElseThrow(() -> new EntityNotFoundException("Report not found for examination ID: " + examinationId));
     }
 
     @Transactional(readOnly = true)
     public Page<Report> getReportsByPatient(Long patientId, Pageable pageable) {
+        accessGuard.requirePatientAccess(patientId);
         return reportRepository.findByExaminationScheduledAppointmentPatientId(patientId, pageable);
     }
 

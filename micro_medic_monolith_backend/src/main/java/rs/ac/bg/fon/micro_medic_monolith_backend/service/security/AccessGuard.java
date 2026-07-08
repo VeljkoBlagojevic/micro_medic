@@ -1,8 +1,8 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service.security;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.*;
 import rs.ac.bg.fon.micro_medic_monolith_backend.exception.UnauthorizedActionException;
 import rs.ac.bg.fon.micro_medic_monolith_backend.repository.ExaminationRepository;
@@ -73,6 +73,13 @@ public class AccessGuard {
         ScheduledAppointment appointment = examination.getScheduledAppointment();
         requireAppointmentParticipant(appointment, "report");
         record(MedicalAccessLog.AccessedResourceType.REPORT, reportId, appointment.getPatient().getId(), current);
+    }
+
+    @Transactional
+    public void requireAppointmentAccess(Long appointmentId) {
+        ScheduledAppointment appointment = scheduledAppointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new UnauthorizedActionException("Scheduled appointment not found with ID: " + appointmentId));
+        requireAppointmentParticipant(appointment, "appointment");
     }
 
     private void requireAppointmentParticipant(ScheduledAppointment appointment, String resourceLabel) {

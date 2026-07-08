@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.micro_medic_monolith_backend.config.auth.JwtService;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Doctor;
 import rs.ac.bg.fon.micro_medic_monolith_backend.domain.Patient;
@@ -28,6 +29,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public AuthenticationResponseDto registerDoctor(@Valid DoctorRegisterRequest request) {
         validateUniqueEmail(request.getEmail());
 
@@ -53,6 +55,7 @@ public class AuthenticationService {
         }
     }
 
+    @Transactional
     public AuthenticationResponseDto registerPatient(@Valid PatientRegisterRequest request) {
         validateUniqueEmail(request.getEmail());
 

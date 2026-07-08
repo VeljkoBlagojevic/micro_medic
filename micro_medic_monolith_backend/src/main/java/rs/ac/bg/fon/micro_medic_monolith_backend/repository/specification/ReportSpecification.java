@@ -11,7 +11,7 @@ public final class ReportSpecification {
     }
 
     public static Specification<Report> hasPatientId(Long patientId) {
-        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("patient").get("id"), patientId);
+        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("examination").get("scheduledAppointment"), patientId);
     }
 
     public static Specification<Report> hasGeneratedBy(Long userId) {
@@ -21,19 +21,19 @@ public final class ReportSpecification {
     public static Specification<Report> hasType(Report.Type reportType) {
         return (root, query, criteriaBuilder) -> {
             if (reportType == null) return null;
-            return criteriaBuilder.equal(root.get("reportType"), reportType);
+            return criteriaBuilder.equal(root.get("type"), reportType);
         };
     }
 
-    public static Specification<Report> hasDateBetween(java.time.LocalDate startDate, java.time.LocalDate endDate) {
+    public static Specification<Report> hasDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
         return (root, query, criteriaBuilder) -> {
             if (startDate == null && endDate == null) return null;
             if (startDate != null && endDate != null) {
-                return criteriaBuilder.between(root.get("date"), startDate, endDate);
+                return criteriaBuilder.between(root.get("creationTime"), startDate, endDate);
             } else if (startDate != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get("date"), startDate);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("creationTime"), startDate);
             } else {
-                return criteriaBuilder.lessThanOrEqualTo(root.get("date"), endDate);
+                return criteriaBuilder.lessThanOrEqualTo(root.get("creationTime"), endDate);
             }
         };
     }

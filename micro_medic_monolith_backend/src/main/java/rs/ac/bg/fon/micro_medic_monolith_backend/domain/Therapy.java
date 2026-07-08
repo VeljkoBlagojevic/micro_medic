@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @SQLDelete(sql = "UPDATE therapy SET deleted = true WHERE id = ?")
-@SQLRestriction("WHERE deleted = false")
+@SQLRestriction("deleted = false")
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -28,8 +28,7 @@ public class Therapy extends Auditable {
     @JoinColumn(name = "examination_id")
     private Examination examination;
 
-    @OneToMany
-    @JoinColumn(name = "therapy_id")
+    @OneToMany(mappedBy = "therapy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MedicineUsage> medicineUsages;
 
     @Builder.Default

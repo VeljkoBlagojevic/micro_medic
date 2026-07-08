@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record ReportDto(
         Long id,
-        LocalDateTime createdAt,
+        LocalDateTime creationTime,
         String reportType,
         String title,
         Long examinationId,

@@ -8,7 +8,7 @@ const globalScope = globalThis as typeof globalThis & { __MICRO_MEDIC_API_CLIENT
 
 function defaultConfig(): ApiClientConfig {
     return {
-        baseUrl: 'localhost:8080',
+        baseUrl: 'http://localhost:8080',
         getAuthToken: () => localStorage.getItem('authToken'),
     };
 }

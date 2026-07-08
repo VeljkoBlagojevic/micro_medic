@@ -14,26 +14,27 @@ export const authService = {
         return await httpClient.post<void>(`${BASE}/logout`, {});
     },
 
-    registerPatient: async (patientData: any): Promise<UserDto> => {
-        return await httpClient.post<UserDto>(`${BASE}/register-patient`, patientData);
+    registerPatient: async (patientData: any): Promise<{ token: string; user: UserDto }> => {
+        return await httpClient.post<{ token: string; user: UserDto }>(`${BASE}/register-patient`, patientData);
     },
 
-    registerDoctor: async (doctorData: any): Promise<UserDto> => {
-        return await httpClient.post<UserDto>(`${BASE}/register-doctor`, doctorData);
+    registerDoctor: async (doctorData: any): Promise<{ token: string; user: UserDto }> => {
+        return await httpClient.post<{ token: string; user: UserDto }>(`${BASE}/register-doctor`, doctorData);
     },
 
     getCurrentUser: async (): Promise<UserDto> => {
         return await httpClient.get<UserDto>(`${BASE}/me`);
     },
 
-    updateProfile: async (userData: any): Promise<UserDto> => {
-        return await httpClient.put<UserDto>(`${BASE}/update-profile`, userData);
+    updateProfile: async (userData: { firstname: string; lastname: string; email: string }): Promise<UserDto> => {
+        return await httpClient.put<UserDto>(`${BASE}/me`, userData);
     },
 
-    changePassword: async (oldPassword: string, newPassword: string): Promise<void> => {
-        return await httpClient.post<void>(`${BASE}/change-password`, {
-            oldPassword,
+    changePassword: async (currentPassword: string, newPassword: string, confirmPassword: string): Promise<void> => {
+        return await httpClient.put<void>(`${BASE}/me/password`, {
+            currentPassword,
             newPassword,
+            confirmPassword
         });
     }
 
