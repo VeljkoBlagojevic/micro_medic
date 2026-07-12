@@ -1,0 +1,80 @@
+:root {
+    --mm-color-primary: #1a1a2e;
+    --mm-color-primary-light: #162447;
+    --mm-color-primary-dark: #0f3460;
+    --mm-color-accent: #3498bd;
+    --mm-color-accent-hover: #2980b9;
+    --mm-color-success: #2ecc71;
+    --mm-color-error: #e74c3c;
+    --mm-color-warning: #f39c12;
+    --mm-color-info: #3498db;
+
+    /* Neutrals */
+    --mm-color-neutral-100: #f8f9fa;
+    --mm-color-neutral-200: #e9ecef;
+    --mm-color-neutral-300: #dee2e6;
+    --mm-color-neutral-400: #ced4da;
+    --mm-color-neutral-500: #adb5bd;
+    --mm-color-neutral-600: #6c757d;
+    --mm-color-neutral-700: #495057;
+    --mm-color-neutral-800: #343a40;
+    --mm-color-neutral-900: #212529;
+
+    --mm-color-bg: var(--mm-color-neutral-100);
+    --mm-color-text: var(--mm-color-neutral-900);
+    --mm-color-text-light: var(--mm-color-neutral-600);
+    --mm-color-text-primary: var(--mm-color-primary);
+    --mm-color-text-secondary: var(--mm-color-neutral-700);
+    --mm-color-border: var(--mm-color-neutral-300);
+    --mm-color-border-hover: var(--mm-color-neutral-400);
+    --mm-color-shadow: rgba(0, 0, 0, 0.1);
+
+    /* Typography */
+    --mm-font-family: 'Roboto', sans-serif;
+    --mm-font-size-base: 16px;
+    --mm-font-size-sm: 14px;
+    --mm-font-size-lg: 18px;
+
+    --mm-spacing-xs: 4px;
+    --mm-spacing-sm: 8px;
+    --mm-spacing-md: 16px;
+    --mm-spacing-lg: 24px;
+    --mm-spacing-xl: 32px;
+
+    --mm-font-weight-normal: 400;
+    --mm-font-weight-bold: 700;
+
+    /* Spacing */
+    --mm-space-1: 4px;
+    --mm-space-2: 8px;
+    --mm-space-3: 12px;
+    --mm-space-4: 16px;
+    --mm-space-5: 20px;
+
+
+    /* Border radius */
+    --mm-border-radius-sm: 4px;
+    --mm-border-radius-md: 8px;
+    --mm-border-radius-lg: 12px;
+
+    /* Shadows */
+    --mm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --mm-shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    --mm-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
+    /* Z index scale */
+    --mm-z-index-1: 100;
+    --mm-z-index-2: 200;
+    --mm-z-index-3: 300;
+    --mm-z-index-4: 400;
+    --mm-z-index-5: 500;
+
+    /* Transitions */
+    --mm-transition-fast: 150ms;
+    --mm-transition-normal: 300ms;
+    --mm-transition-slow: 500ms;
+
+    /* Layout */
+    --mm-layout-max-width: 1200px;
+    --mm-header-height: 60px;
+}

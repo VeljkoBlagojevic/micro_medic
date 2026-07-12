@@ -1,0 +1,17 @@
+{
+    "name": "@micro-medic/design-system",
+    "version": "1.0.0",
+    "description": "Design system for the Micro Medic MicroFrontend",
+    "main": "src/index.ts",
+    "module": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "lit": "^3.3.3"
+    },
+    "devDependencies": {
+        "typescript": "^6.0.3"
+    }
+}
