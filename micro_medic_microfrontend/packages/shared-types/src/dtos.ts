@@ -52,6 +52,12 @@ export interface ScheduledAppointmentDto {
     status: string;
 }
 
+export interface AppointmentRequest {
+    start: string;
+    end: string;
+    patientId: number;
+}
+
 export interface MedicineUsageDto {
     id: string;
     medicine: MedicineDto;

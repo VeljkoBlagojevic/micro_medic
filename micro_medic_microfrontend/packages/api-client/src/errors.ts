@@ -27,6 +27,10 @@ export class ApiError extends Error {
         return this.status >= 500 && this.status < 600;
     }
 
+    get isValidationError(): boolean {
+        return this.status === 422 || this.status === 400;
+    }
+
     get isClientError(): boolean {
         return this.status >= 400 && this.status < 500;
     }

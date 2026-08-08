@@ -7,13 +7,13 @@ export enum Role {
 export enum AppointmentStatus {
     SCHEDULED = 'SCHEDULED',
     COMPLETED = 'COMPLETED',
-    CANCELED = 'CANCELED',
+    CANCELLED = 'CANCELLED',
 }
 
 export enum ExaminationStatus {
     SCHEDULED = 'SCHEDULED',
     COMPLETED = 'COMPLETED',
-    CANCELED = 'CANCELED',
+    CANCELLED = 'CANCELLED',
     IN_PROGRESS = 'IN_PROGRESS'
 }
 

@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
 module.exports = {
-  entry: './src/index',
+  entry: './src/bootstrap-standalone',
   cache: false,
 
   mode: 'development',
@@ -16,18 +16,34 @@ module.exports = {
     publicPath: 'http://localhost:3009/'
   },
 
+  devServer: {
+    port: 3009,
+    historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    }
+  },
+
   resolve: {
-    extensions: ['.jsx', '.js', '.json', '.ts', '.tsx']
+    extensions: ['.ts', '.tsx', '.js', '.json']
   },
 
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        loader: require.resolve('babel-loader'),
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        loader: require.resolve('ts-loader'),
         options: {
-          presets: [require.resolve('@babel/preset-react')]
+          transpileOnly: true,
+          compilerOptions: {
+            noEmit: false
+          }
         }
+      },
+      {
+        test: /\.css$/i,
+        use: [require.resolve('style-loader'), require.resolve('css-loader')],
       }
     ]
   },
@@ -37,17 +53,24 @@ module.exports = {
       name: 'calendar',
       library: { type: 'var', name: 'calendar' },
       filename: 'remoteEntry.js',
-      remotes: {
-        store: 'store',
-      },
       exposes: {
         './Calendar': './src/calendar',
       },
-      shared: ['react', 'react-dom', 'single-spa-react']
+      shared: {
+        react: { singleton: true, requiredVersion: '^19.2.7' },
+        'react-dom': { singleton: true, requiredVersion: '^19.2.7' },
+        'single-spa-react': { singleton: true },
+        'single-spa': { singleton: true },
+        lit: { singleton: true, requiredVersion: '^3.3.3' },
+        axios: { singleton: true },
+        "@micro-medic/shared-store": { singleton: true, requiredVersion: '^1.0.0' },
+        "@micro-medic/shared-types": { singleton: true, requiredVersion: '^1.0.0' },
+        "@micro-medic/api-client": { singleton: true, requiredVersion: '^1.0.0' },
+        "@micro-medic/design-system": { singleton: true, requiredVersion: '^1.0.0' },
+      }
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      chunks: ['main']
     })
   ]
 };
