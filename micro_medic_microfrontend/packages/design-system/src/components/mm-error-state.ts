@@ -1,49 +1,88 @@
-import { LitElement, css, html } from "lit";
-import { baseStyles } from "../styles/shared.styles";
+import { LitElement, css, html, nothing } from 'lit';
+import { baseStyles } from '../styles/shared.styles';
+import { defineElement } from '../define';
 
 export class MmErrorState extends LitElement {
     static properties = {
         heading: { type: String },
         description: { type: String },
-        retryable: { type: Boolean, },
+        /** Alias for `description`, because `Calendar.tsx` passed `message=`. */
+        message: { type: String },
+        retryable: { type: Boolean },
+        retryLabel: { type: String, attribute: 'retry-label' },
     };
 
-    heading: string = 'An error occurred';
-    description: string = 'Something went wrong. Please try again later.'
-    retryable: boolean = false;
+    heading = 'An error occurred';
+    description = 'Something went wrong. Please try again later.';
+    message = '';
+    retryable = false;
+    retryLabel = 'Try again';
 
     static styles = [
         baseStyles,
         css`
             :host {
                 display: block;
+                padding: var(--mm-space-8, 32px) var(--mm-space-4, 16px);
                 text-align: center;
-                padding: var(--mm-spacing-lg, 32px);
-                color: var(--mm-error-state-color, #dc3545);
+            }
+            .icon {
+                font-size: 40px;
+                line-height: 1;
+                margin-bottom: var(--mm-space-3, 12px);
             }
             .heading {
-                font-size: var(--mm-error-state-heading-font-size, 24px);
-                font-weight: var(--mm-error-state-heading-font-weight, 600);
-                margin-bottom: var(--mm-spacing-sm, 8px);
+                font-size: var(--mm-font-size-lg, 16px);
+                font-weight: var(--mm-font-weight-bold, 600);
+                color: var(--mm-color-danger, #dc3545);
+                margin-bottom: var(--mm-space-1, 4px);
             }
             .description {
-                font-size: var(--mm-error-state-description-font-size, 16px);
-                color: var(--mm-error-state-description-color, #dc3545);
+                font-size: var(--mm-font-size-base, 14px);
+                color: var(--mm-color-text-muted, #6c757d);
+            }
+            .retry {
+                margin-top: var(--mm-space-4, 16px);
+                padding: var(--mm-space-2, 8px) var(--mm-space-4, 16px);
+                font: inherit;
+                color: var(--mm-color-on-primary, #fff);
+                background-color: var(--mm-color-primary, #0f3460);
+                border: none;
+                border-radius: var(--mm-radius-sm, 4px);
+                cursor: pointer;
+            }
+            .retry:hover {
+                filter: brightness(0.92);
+            }
+            .retry:focus-visible {
+                outline: 2px solid var(--mm-color-accent, #3498db);
+                outline-offset: 2px;
             }
         `,
     ];
 
+    private onRetry() {
+        this.dispatchEvent(new CustomEvent('mm-retry', { bubbles: true, composed: true }));
+    }
+
     render() {
+        // `role="alert"` so the failure is announced rather than silently swapped in.
         return html`
-            <div class="heading">${this.heading}</div>
-            <div class="description">${this.description}</div>
+            <div role="alert">
+                <div class="icon" aria-hidden="true">⚠️</div>
+                ${this.heading ? html`<div class="heading">${this.heading}</div>` : nothing}
+                <div class="description">${this.message || this.description}</div>
+                ${this.retryable
+                    ? html`<button class="retry" type="button" @click=${this.onRetry}>
+                          ${this.retryLabel}
+                      </button>`
+                    : nothing}
+            </div>
         `;
     }
 }
 
-if (!customElements.get('mm-error-state')) {
-    customElements.define('mm-error-state', MmErrorState);
-}
+defineElement('mm-error-state', MmErrorState);
 
 declare global {
     interface HTMLElementTagNameMap {

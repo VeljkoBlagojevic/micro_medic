@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="http://localhost:3009/remoteEntry.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar MFE — standalone</title>
+    <!--
+      remoteEntry.js is NOT loaded here. This page is the standalone dev harness: webpack's
+      own bundle is injected by HtmlWebpackPlugin, and pulling in remoteEntry.js as well
+      would evaluate the container a second time.
+    -->
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; }
+      #calendar-root { height: calc(100vh - 48px); padding: 16px; box-sizing: border-box; }
+      .harness {
+        display: flex; gap: 16px; align-items: center;
+        height: 48px; padding: 0 16px; box-sizing: border-box;
+        background: #0f3460; color: #fff; font-size: 13px;
+      }
+      .harness button { font: inherit; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div class="harness">
+      <span id="cal-auth-state">Not authenticated</span>
+      <span id="cal-last-event"></span>
+      <button id="cal-sim-logout" type="button">Simulate logout</button>
+    </div>
+    <div id="calendar-root"></div>
   </body>
 </html>

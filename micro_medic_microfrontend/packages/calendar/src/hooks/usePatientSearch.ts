@@ -19,7 +19,7 @@ export function usePatientSearch(): PatientSearchResult {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<PatientOption[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | string | null>('');
+    const [error, setError] = useState<Error | string | null>(null);
     
     const seqRef = useRef(0);
 
@@ -51,7 +51,7 @@ export function usePatientSearch(): PatientSearchResult {
         const trimmedQuery = query.trim();
         if (trimmedQuery.length < MIN_CHARACTERS) {
             runSearch.cancel();
-            // Bpm the sequence so any in-flight requests are ignored
+            // Bump the sequence so any in-flight requests are ignored
             seqRef.current++;
             setResults([]);
             setIsLoading(false);

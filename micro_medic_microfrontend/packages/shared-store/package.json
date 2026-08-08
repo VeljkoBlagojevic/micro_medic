@@ -5,11 +5,19 @@
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "module": "./src/index.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
+        }
+    },
+    "files": [
+        "src"
+    ],
     "scripts": {
         "typecheck": "tsc --noEmit",
         "start": "webpack serve",
-        "build": "webpack --mode production",
-        "test": "jest"
+        "build": "webpack --mode production"
     },
     "dependencies": {
         "@micro-medic/api-client": "1.0.0",

@@ -4,7 +4,8 @@
   "scripts": {
     "build": "yarn workspaces run build",
     "serve": "wsrun --parallel serve",
-    "start": "concurrently \"wsrun --parallel start\" \"wsrun --parallel serve\""
+    "start": "concurrently \"wsrun --parallel start\" \"wsrun --parallel serve\"",
+    "typecheck": "wsrun --parallel typecheck"
   },
   "workspaces": [
     "packages/*"

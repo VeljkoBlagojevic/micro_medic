@@ -1,3 +1,5 @@
+import type { DiseaseDto, MedicineDto, ScheduledAppointmentDto, UserDto } from './dtos';
+
 export const EventTypes = {
     ICD10_DISEASE_SELECTED: 'ICD10_DISEASE_SELECTED',
 
@@ -18,8 +20,6 @@ export const EventTypes = {
 
 export type EventType = typeof EventTypes[keyof typeof EventTypes];
 
-import type { DiseaseDto, MedicineDto, ScheduledAppointmentDto, UserDto } from './dtos';
-
 export interface DiseaseSelectedPayload {
     disease: DiseaseDto;
 }
@@ -29,7 +29,7 @@ export interface CalendarAppointmentSelectedPayload {
 }
 
 export interface ExaminationCompletedPayload {
-    examinationId: string;
+    examinationId: number;
 }
 
 export interface PharmacyMedicineSelectedPayload {
@@ -42,7 +42,8 @@ export interface AuthLoginPayload {
 }
 
 export interface NotificationPayload {
-    id: string;
+    /** Optional: the emitter usually has no meaningful id, so let the consumer generate one. */
+    id?: string;
     message: string;
     type: 'success' | 'error' | 'info' | 'warning';
     duration?: number;

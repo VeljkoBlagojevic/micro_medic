@@ -16,7 +16,11 @@
         "declarationMap": true,
         "sourceMap": true,
         "paths": {
-            "@micro-medic/shared-types": ["./packages/shared-types/src/index.ts"]
+            "@micro-medic/shared-types": ["./packages/shared-types/src/index.ts"],
+            "@micro-medic/api-client": ["./packages/api-client/src/index.ts"],
+            "@micro-medic/shared-store": ["./packages/shared-store/src/index.ts"],
+            "@micro-medic/design-system": ["./packages/design-system/src/index.ts"],
+            "@micro-medic/design-system-react": ["./packages/design-system-react/src/index.ts"]
         }
     },
     "exclude": ["./node_modules", "./dist", "./build", "./coverage", "./scripts", "./tests"]

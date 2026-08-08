@@ -1,44 +1,32 @@
 import { AppointmentStatus } from '@micro-medic/shared-types';
 
+const FALLBACK_COLOR = '#6C757D'; // Gray
+
 const STATUS_COLOR_MAP: Record<AppointmentStatus, string> = {
     [AppointmentStatus.SCHEDULED]: '#3A7BD5', // Blue
     [AppointmentStatus.COMPLETED]: '#6C757D', // Gray
     [AppointmentStatus.CANCELLED]: '#DC3545', // Red
 };
 
-export function getStatusColor(status: AppointmentStatus | string): string {
-    if (typeof status === 'string') {
-        if (!isValidStatus(status)) {
-            return '#6C757D'; // Default to gray if status is unknown
-        }
-    }
+// Each helper also accepts a bare string: `status` arrives off the wire, so an
+// unrecognised value has to degrade gracefully rather than blow up the calendar.
 
-    return STATUS_COLOR_MAP[status as AppointmentStatus] || '#6C757D'; // Default to gray if status is unknown
+export function getStatusColor(status: AppointmentStatus | string): string {
+    return isValidStatus(status) ? STATUS_COLOR_MAP[status] : FALLBACK_COLOR;
 }
 
+/** Only a SCHEDULED appointment can still be rescheduled or cancelled. */
 export function isActionable(status: AppointmentStatus | string): boolean {
-    if (typeof status === 'string') {
-        if (!isValidStatus(status)) {
-            return false;
-        }
-        status = status as AppointmentStatus;
-    }
     return status === AppointmentStatus.SCHEDULED;
 }
 
+/** `"SCHEDULED"` -> `"Scheduled"`. Unknown values pass through untouched. */
 export function statusLabel(status: AppointmentStatus | string): string {
-    if (!status) {
-        return '';
-    }
-    if (typeof status === 'string') {
-        if (!isValidStatus(status)) {
-            return status;
-        }
-        status = status as AppointmentStatus;
-    }
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    if (!status) return '';
+    if (!isValidStatus(status)) return status;
+    return status.charAt(0) + status.slice(1).toLowerCase();
 }
 
-function isValidStatus(status: string): status is AppointmentStatus {
-    return Object.values(AppointmentStatus).includes(status as AppointmentStatus);
+function isValidStatus(status: AppointmentStatus | string): status is AppointmentStatus {
+    return (Object.values(AppointmentStatus) as string[]).includes(status);
 }

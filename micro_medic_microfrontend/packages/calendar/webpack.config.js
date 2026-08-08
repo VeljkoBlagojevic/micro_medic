@@ -54,7 +54,9 @@ module.exports = {
       library: { type: 'var', name: 'calendar' },
       filename: 'remoteEntry.js',
       exposes: {
-        './Calendar': './src/calendar',
+        // Capital C — the file is `src/Calendar.tsx`. A lowercase path resolves on Windows
+        // but fails on a case-sensitive filesystem (i.e. CI and Linux containers).
+        './Calendar': './src/Calendar',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^19.2.7' },
@@ -67,6 +69,9 @@ module.exports = {
         "@micro-medic/shared-types": { singleton: true, requiredVersion: '^1.0.0' },
         "@micro-medic/api-client": { singleton: true, requiredVersion: '^1.0.0' },
         "@micro-medic/design-system": { singleton: true, requiredVersion: '^1.0.0' },
+        // Must be a singleton too: it holds the @lit/react wrappers, and two copies would
+        // mean two registrations racing for the same custom element tags.
+        "@micro-medic/design-system-react": { singleton: true, requiredVersion: '^1.0.0' },
       }
     }),
     new HtmlWebpackPlugin({

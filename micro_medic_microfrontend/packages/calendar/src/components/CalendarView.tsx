@@ -1,9 +1,10 @@
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, startOfWeek, getDay } from "date-fns";
-import { date, parse } from "zod";
+// `parse` must come from date-fns — it was previously imported from `zod`, whose `parse` has
+// an entirely different signature, so every date the localizer tried to parse threw.
+import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import { CalendarEvent, CalendarViewKind } from "../types";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { getStatusColor } from "../utils";
 
 const localizer = dateFnsLocalizer({
@@ -15,6 +16,9 @@ const localizer = dateFnsLocalizer({
         'en-US': enUS,
     },
 });
+
+/** react-big-calendar's `views` prop; kept module-level so it is referentially stable. */
+const VIEWS: CalendarViewKind[] = ['day', 'week', 'month'];
 
 interface CalendarViewProps {
     events: CalendarEvent[];
@@ -33,37 +37,41 @@ export const CalendarView = ({
     onNavigate,
     onSelectEvent,
 }: CalendarViewProps) => {
-    const eventPropGetter = useMemo(() => {
-        return (event: CalendarEvent) => {
-            const backgroundColor = getStatusColor(event.status) || "#3174ad"; // Default color if none is provided
-            return {
-                style: {
-                    backgroundColor,
-                    borderRadius: "0px",
-                    opacity: 0.8,
-                    color: "white",
-                    border: "0px",
-                    display: "block",
-                },
-            };
-        }
-    }, []);
+    const eventPropGetter = useCallback(
+        (event: CalendarEvent) => ({
+            style: {
+                backgroundColor: getStatusColor(event.status),
+                borderRadius: '4px',
+                border: '0',
+                color: '#fff',
+                display: 'block',
+            },
+        }),
+        []
+    );
+
+    const titleAccessor = useCallback((event: CalendarEvent) => event.title, []);
 
     return (
-        <div className="cal-grid">
+        // `cal-grid` was a `display: grid` with auto-fill columns, which fights
+        // react-big-calendar's own layout — the calendar needs a plain block container.
+        <div className="cal-calendar">
             <Calendar<CalendarEvent>
                 localizer={localizer}
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: 500 }}
+                titleAccessor={titleAccessor}
+                style={{ height: '100%', minHeight: 500 }}
                 view={view}
+                views={VIEWS}
                 date={date}
-                onView={nextView => onView(nextView as CalendarViewKind)}
+                onView={(nextView) => onView(nextView as CalendarViewKind)}
                 onNavigate={onNavigate}
                 onSelectEvent={onSelectEvent}
                 eventPropGetter={eventPropGetter}
+                popup
             />
         </div>
     );
-}
+};

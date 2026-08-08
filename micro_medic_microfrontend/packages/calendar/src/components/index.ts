@@ -5,6 +5,8 @@ export { RescheduleModal } from './RescheduleModal';
 export { CancelConfirm } from './CancelConfirm';
 export { ConflictBanner } from './ConflictBanner';
 export { PatientSearchField } from './PatientSearchField';
-export { MmModal } from './MmModal';
-export { MmButton } from './MmButton';
-export { MmField } from './MmField';
+
+// The hand-written MmButton/MmModal/MmField adapters are gone — React bindings now come from
+// `@micro-medic/design-system-react`. Only the form bridge stays local, because it depends on
+// react-hook-form.
+export { MmFormField } from './MmFormField';

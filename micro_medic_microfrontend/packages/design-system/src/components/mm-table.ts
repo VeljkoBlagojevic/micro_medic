@@ -1,104 +1,173 @@
-import { LitElement, css, html } from "lit";
-import { baseStyles } from "../styles/shared.styles";
+import { LitElement, css, html, nothing } from 'lit';
+import { baseStyles } from '../styles/shared.styles';
+import { defineElement } from '../define';
 
-export interface MmTableColumn {
+export type MmTableRow = Record<string, unknown>;
+
+export interface MmTableColumn<TRow extends MmTableRow = MmTableRow> {
     key: string;
     label: string;
-    format?: (value: any, rowData: Record<string, unknown>) => string;
+    /** Renders the cell. Return `''` for "no value" — the default renderer already blanks nullish. */
+    format?: (value: unknown, row: TRow) => string;
     align?: 'left' | 'center' | 'right';
+    width?: string;
 }
 
 export class MmTable extends LitElement {
     static properties = {
-        columns: { attribute: false, type: Array },
-        rows: { attribute: false, type: Array },
+        // Objects and arrays cannot round-trip through an attribute, so these are
+        // property-only: React/Lit consumers must assign them, not set an attribute.
+        columns: { attribute: false },
+        rows: { attribute: false },
         clickable: { type: Boolean, reflect: true },
+        rowKey: { type: String, attribute: 'row-key' },
         emptyStateMessage: { type: String, attribute: 'empty-state-message' },
+        caption: { type: String },
     };
 
     columns: MmTableColumn[] = [];
-    rows: Record<string, unknown>[] = [];
-    clickable: boolean = false;
-    emptyStateMessage: string = 'No data available';
+    rows: MmTableRow[] = [];
+    clickable = false;
+    /** Column used as the stable row identity. Falls back to the row index. */
+    rowKey = 'id';
+    emptyStateMessage = 'No data available';
+    caption = '';
 
     static styles = [
         baseStyles,
         css`
             :host {
                 display: block;
-                font-family: var(--mm-font-family, Arial, sans-serif);
             }
             table {
                 width: 100%;
                 border-collapse: collapse;
-                border: 1px solid var(--mm-table-border-color, #ccc);
+                border: 1px solid var(--mm-color-border, #dee2e6);
             }
-            th, td {
-                padding: var(--mm-table-cell-padding, 8px);
+            caption {
+                padding: var(--mm-space-2, 8px);
+                font-weight: var(--mm-font-weight-bold, 600);
                 text-align: left;
-                border-bottom: 1px solid var(--mm-table-border-color, #ccc);
+            }
+            th,
+            td {
+                padding: var(--mm-space-2, 8px);
+                border-bottom: 1px solid var(--mm-color-border, #dee2e6);
+                text-align: left;
             }
             th {
-                background-color: var(--mm-table-header-background-color, #f5f5f5);
-                font-weight: bold;
+                background-color: var(--mm-color-neutral-100, #f8f9fa);
+                font-weight: var(--mm-font-weight-bold, 600);
             }
-            tr:hover {
-                background-color: var(--mm-table-row-hover-background-color, #f1f1f1);
+            /* Only body rows should highlight — the old `tr:hover` also lit up the header. */
+            tbody tr:hover {
+                background-color: var(--mm-color-neutral-100, #f8f9fa);
             }
-            :host([clickable]) tr {
+            :host([clickable]) tbody tr {
                 cursor: pointer;
             }
-            .empty-state {
+            :host([clickable]) tbody tr:focus-visible {
+                outline: 2px solid var(--mm-color-accent, #3498db);
+                outline-offset: -2px;
+            }
+            .align-center {
                 text-align: center;
-                padding: var(--mm-spacing-lg, 32px);
-                color: var(--mm-empty-state-color, #666);
+            }
+            .align-right {
+                text-align: right;
+            }
+            .empty-state {
+                padding: var(--mm-space-8, 32px);
+                text-align: center;
+                color: var(--mm-color-text-muted, #6c757d);
             }
         `,
     ];
 
-    private cellValue(column: MmTableColumn, rowData: Record<string, unknown>): string {
-        const value = rowData[column.key];
-        if (column.format) {
-            return column.format(value, rowData);
-        }
-        return String(value);
+    /**
+     * `String(value)` turned a missing field into the literal text "undefined" or "null" in
+     * the cell. Nullish values render as an empty cell instead.
+     */
+    private cellValue(column: MmTableColumn, row: MmTableRow): string {
+        const value = row[column.key];
+        if (column.format) return column.format(value, row);
+        return value === null || value === undefined ? '' : String(value);
     }
 
-    private onRowClick(rowData: Record<string, unknown>) {
-        if (this.clickable) {
-            this.dispatchEvent(new CustomEvent('mm-row-click', { detail: { rowData } }));
+    private onRowClick(row: MmTableRow) {
+        if (!this.clickable) return;
+        // `composed: true` — without it the event stops at the shadow boundary and no
+        // consumer outside the component can ever hear it.
+        this.dispatchEvent(
+            new CustomEvent('mm-row-click', { detail: { row }, bubbles: true, composed: true })
+        );
+    }
+
+    private onRowKeyDown(event: KeyboardEvent, row: MmTableRow) {
+        if (!this.clickable) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.onRowClick(row);
         }
+    }
+
+    private rowIdentity(row: MmTableRow, index: number): string | number {
+        const key = row[this.rowKey];
+        return typeof key === 'string' || typeof key === 'number' ? key : index;
     }
 
     render() {
         if (this.rows.length === 0) {
             return html`<div class="empty-state">${this.emptyStateMessage}</div>`;
         }
+
         return html`
             <table>
+                ${this.caption ? html`<caption>${this.caption}</caption>` : nothing}
                 <thead>
                     <tr>
-                        ${this.columns.map(column => html`<th>${column.label}</th>`)}
+                        ${this.columns.map(
+                            (column) => html`
+                                <th
+                                    scope="col"
+                                    class=${column.align ? `align-${column.align}` : nothing}
+                                    style=${column.width ? `width:${column.width}` : nothing}
+                                >
+                                    ${column.label}
+                                </th>
+                            `
+                        )}
                     </tr>
                 </thead>
                 <tbody>
-                    ${this.rows.map(rowData => html`
-                        <tr @click="${() => this.onRowClick(rowData)}">
-                            ${this.columns.map(column => html`<td>${this.cellValue(column, rowData)}</td>`)}
-                        </tr>
-                    `)}
+                    ${this.rows.map(
+                        (row, index) => html`
+                            <tr
+                                data-row-key=${this.rowIdentity(row, index)}
+                                tabindex=${this.clickable ? 0 : nothing}
+                                @click=${() => this.onRowClick(row)}
+                                @keydown=${(event: KeyboardEvent) => this.onRowKeyDown(event, row)}
+                            >
+                                ${this.columns.map(
+                                    (column) => html`
+                                        <td class=${column.align ? `align-${column.align}` : nothing}>
+                                            ${this.cellValue(column, row)}
+                                        </td>
+                                    `
+                                )}
+                            </tr>
+                        `
+                    )}
                 </tbody>
             </table>
         `;
     }
 }
 
-if (!customElements.get('mm-table')) {
-    customElements.define('mm-table', MmTable);
-}
+defineElement('mm-table', MmTable);
 
 declare global {
     interface HTMLElementTagNameMap {
         'mm-table': MmTable;
     }
-};
+}

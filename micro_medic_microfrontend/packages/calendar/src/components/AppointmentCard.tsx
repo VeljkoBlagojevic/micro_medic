@@ -1,5 +1,5 @@
 import type { ScheduledAppointmentDto } from '@micro-medic/shared-types';
-import { MmButton } from './MmButton';
+import { MmButton } from '@micro-medic/design-system-react';
 import { getStatusColor, isActionable, statusLabel } from '../utils/status';
 import { formatAppointmentRange } from '../utils';
 
@@ -26,16 +26,16 @@ export const AppointmentCard = ({
 
     return (
       <aside className="cal-detail" aria-label={`Appointment details for ${appointment.patient?.firstname} ${appointment.patient?.lastname}`}>
-        <header className="cal-detail-header">
+        <header className="cal-detail__head">
           <span
-            className="cal-detail-header-status"
+            className="cal-detail__status"
             style={{ backgroundColor: getStatusColor(appointment.status) }}
           >
             {statusLabel(appointment.status)}
           </span>
           <button
             type="button"
-            className="cal-detail-header-close"
+            className="cal-detail__close"
             aria-label="Close appointment details"
             onClick={onClose}
           >
@@ -43,7 +43,7 @@ export const AppointmentCard = ({
           </button>
         </header>
 
-        <dl className="cal-detail-content">
+        <dl className="cal-detail__grid">
           <dt>When</dt>
           <dd>
             {formatAppointmentRange(appointment.start, appointment.end)}
@@ -63,7 +63,7 @@ export const AppointmentCard = ({
         </dl>
 
         {(showReschedule || showCancel) && (
-          <div className="cal-detail-actions">
+          <div className="cal-detail__actions">
             {showReschedule && (
               <MmButton variant="secondary" onClick={() => onReschedule(appointment)}>
                 Reschedule
@@ -78,7 +78,7 @@ export const AppointmentCard = ({
         )}
 
         {!actionable && (
-          <div className="cal-detail-info">
+          <div className="cal-detail__info">
             <p>This appointment is {statusLabel(appointment.status)} and can no longer be changed.</p>
           </div>
         )}

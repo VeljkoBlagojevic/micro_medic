@@ -1,63 +1,96 @@
 import './components';
 
+/**
+ * Props for the single-spa parcel. `props` are assigned as element **properties**, so arrays
+ * and objects (e.g. `mm-table`'s `columns`/`rows`) survive; the old implementation only set
+ * attributes and JSON-stringified anything non-scalar, which `mm-table` could never read back.
+ */
 export interface DesignSystemParcelProps {
-    tag: keyof HTMLElementTagNameMap;
-    attrs?: Record<string, any>;
+    tag: keyof HTMLElementTagNameMap | `mm-${string}`;
+    /** Assigned as properties on the element. */
+    props?: Record<string, unknown>;
+    /** Set as literal attributes. Use for styling hooks like `class`. */
+    attrs?: Record<string, string | number | boolean | null | undefined>;
+    /** Event name → handler, attached with `addEventListener` and removed on unmount. */
+    events?: Record<string, EventListener>;
+    /** Text or HTML placed in the element's light DOM (slotted content). */
+    textContent?: string;
     domElement?: HTMLElement;
-    // single-spa injects additional lifecycle props into the parcel, so we need to allow for any additional props
-    [key: string]: any;
+    // single-spa injects its own lifecycle props into a parcel.
+    [key: string]: unknown;
 }
 
-const mountedElemented = new WeakMap<HTMLElement, HTMLElement>();
+interface MountRecord {
+    element: HTMLElement;
+    events: Record<string, EventListener>;
+}
 
-function applyAttributes(element: HTMLElement, attrs: Record<string, any> = {}) {
-    Object.entries(attrs).forEach(([key, value]) => {
-        if (value === null || value === undefined) {
+const mounted = new WeakMap<HTMLElement, MountRecord>();
+
+function applyAttributes(element: HTMLElement, attrs: DesignSystemParcelProps['attrs'] = {}) {
+    for (const [key, value] of Object.entries(attrs)) {
+        if (value === null || value === undefined || value === false) {
             element.removeAttribute(key);
-        } else if (typeof value === 'boolean') {
-            if (value) {
-                element.setAttribute(key, '');
-            } else {
-                element.removeAttribute(key);
-            }
-        } else if (typeof value === 'object') {
-            element.setAttribute(key, JSON.stringify(value));
+        } else if (value === true) {
+            element.setAttribute(key, '');
         } else {
             element.setAttribute(key, String(value));
         }
-    });
+    }
 }
 
-// Builds a single-spa compatible parcel for the design system, allowing it to be mounted and unmounted in a single-spa application.
+/**
+ * Builds a single-spa parcel that mounts one design-system element. This is the framework-
+ * agnostic escape hatch — it lets the plain-JS and Svelte micro-frontends use the design
+ * system without a framework-specific wrapper.
+ */
 export function mountDesignSystemParcel() {
     return {
         bootstrap(): Promise<void> {
             return Promise.resolve();
         },
 
-        mount(props: DesignSystemParcelProps): Promise<void> {
-            const container = props.domElement;
+        async mount(parcelProps: DesignSystemParcelProps): Promise<void> {
+            const container = parcelProps.domElement;
             if (!container) {
-                return Promise.reject(new Error('No container element provided for mounting the design system parcel.'));
+                throw new Error('mountDesignSystemParcel: props.domElement is required to mount.');
             }
-            const el = document.createElement(props.tag);
-            applyAttributes(el, props.attrs);
-            container.appendChild(el);
-            mountedElemented.set(container, el);
-            return Promise.resolve();
+            // Remounting into a container that still holds an element would orphan the old
+            // one and leak its listeners.
+            if (mounted.has(container)) {
+                await this.unmount(parcelProps);
+            }
+
+            const element = document.createElement(parcelProps.tag);
+            applyAttributes(element, parcelProps.attrs);
+            Object.assign(element, parcelProps.props ?? {});
+            if (parcelProps.textContent !== undefined) {
+                element.textContent = parcelProps.textContent;
+            }
+
+            const events = parcelProps.events ?? {};
+            for (const [type, handler] of Object.entries(events)) {
+                element.addEventListener(type, handler);
+            }
+
+            container.appendChild(element);
+            mounted.set(container, { element, events });
         },
 
-        unmount(props: DesignSystemParcelProps): Promise<void> {
-            const container = props.domElement;
+        unmount(parcelProps: DesignSystemParcelProps): Promise<void> {
+            const container = parcelProps.domElement;
             if (!container) {
-                return Promise.reject(new Error('No container element provided for unmounting the design system parcel.'));
+                throw new Error('mountDesignSystemParcel: props.domElement is required to unmount.');
             }
-            const el = mountedElemented.get(container);
-            if (el) {
-                container.removeChild(el);
-                mountedElemented.delete(container);
+            const record = mounted.get(container);
+            if (record) {
+                for (const [type, handler] of Object.entries(record.events)) {
+                    record.element.removeEventListener(type, handler);
+                }
+                record.element.remove();
+                mounted.delete(container);
             }
             return Promise.resolve();
-        }
-    }
+        },
+    };
 }

@@ -1,2 +1,16 @@
 node_modules
 dist
+
+# webpack / tsc caches
+.cache
+*.tsbuildinfo
+
+# local env overrides
+.env
+.env.local
+
+# editor / OS noise
+.DS_Store
+.idea
+.vscode
+*.log

@@ -1,41 +1,48 @@
-import type { UserDto } from '@micro-medic/shared-types';
+import type {
+    AuthenticationResponseDto,
+    ChangePasswordRequest,
+    DoctorRegisterRequest,
+    PatientRegisterRequest,
+    UpdateProfileRequest,
+    UserDto
+} from '@micro-medic/shared-types';
 import { httpClient } from '../http-client';
 
 const BASE = '/api/auth';
 
+/**
+ * Mirrors `auth/AuthenticationController`.
+ *
+ * The register paths are camelCase (`/registerDoctor`, `/registerPatient`) — together
+ * with `/login` they are the only `permitAll` POST matchers in `SecurityConfiguration`,
+ * so a hyphenated spelling would 403 (unauthenticated) rather than 404.
+ *
+ * There is deliberately no `logout`: auth is stateless JWT, the backend exposes no
+ * logout endpoint, and `authStore.logout()` simply discards the token client-side.
+ */
 export const authService = {
-    login: async (email: string, password: string): Promise<{ token: string; user: UserDto }> => {
-        return await httpClient.post<{ token: string; user: UserDto }>(`${BASE}/login`, {
-            email,
-            password,
-        });
-    },
-    logout: async (): Promise<void> => {
-        return await httpClient.post<void>(`${BASE}/logout`, {});
+    login(email: string, password: string): Promise<AuthenticationResponseDto> {
+        return httpClient.post<AuthenticationResponseDto>(`${BASE}/login`, { email, password });
     },
 
-    registerPatient: async (patientData: any): Promise<{ token: string; user: UserDto }> => {
-        return await httpClient.post<{ token: string; user: UserDto }>(`${BASE}/register-patient`, patientData);
+    registerPatient(patient: PatientRegisterRequest): Promise<AuthenticationResponseDto> {
+        return httpClient.post<AuthenticationResponseDto>(`${BASE}/registerPatient`, patient);
     },
 
-    registerDoctor: async (doctorData: any): Promise<{ token: string; user: UserDto }> => {
-        return await httpClient.post<{ token: string; user: UserDto }>(`${BASE}/register-doctor`, doctorData);
+    registerDoctor(doctor: DoctorRegisterRequest): Promise<AuthenticationResponseDto> {
+        return httpClient.post<AuthenticationResponseDto>(`${BASE}/registerDoctor`, doctor);
     },
 
-    getCurrentUser: async (): Promise<UserDto> => {
-        return await httpClient.get<UserDto>(`${BASE}/me`);
+    getCurrentUser(): Promise<UserDto> {
+        return httpClient.get<UserDto>(`${BASE}/me`);
     },
 
-    updateProfile: async (userData: { firstname: string; lastname: string; email: string }): Promise<UserDto> => {
-        return await httpClient.put<UserDto>(`${BASE}/me`, userData);
+    updateProfile(profile: UpdateProfileRequest): Promise<UserDto> {
+        return httpClient.put<UserDto>(`${BASE}/me`, profile);
     },
 
-    changePassword: async (currentPassword: string, newPassword: string, confirmPassword: string): Promise<void> => {
-        return await httpClient.put<void>(`${BASE}/me/password`, {
-            currentPassword,
-            newPassword,
-            confirmPassword
-        });
+    /** Returns 204 No Content, hence `void`. */
+    changePassword(request: ChangePasswordRequest): Promise<void> {
+        return httpClient.put<void>(`${BASE}/me/password`, request);
     }
-
-}
+};

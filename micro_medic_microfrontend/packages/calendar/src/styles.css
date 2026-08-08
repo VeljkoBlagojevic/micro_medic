@@ -1,7 +1,15 @@
+/*
+ * Calendar MFE layout. Uses the `--mm-*` design tokens with fallbacks, so it degrades
+ * gracefully if the shell has not loaded `tokens.css`.
+ *
+ * Naming: `cal-block__element`. Several classes previously used a `cal-block-element`
+ * spelling that matched nothing in this file, so those elements rendered unstyled.
+ */
+
 .cal-root {
     display: flex;
     flex-direction: column;
-    gap: var(--mm-spacing-4, 1rem);
+    gap: var(--mm-space-4, 16px);
     height: 100%;
     min-height: 100%;
 }
@@ -10,58 +18,58 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--mm-spacing-4, 1rem);
-    border-bottom: 1px solid var(--mm-color-border, #ccc);
+    gap: var(--mm-space-4, 16px);
+    padding: var(--mm-space-4, 16px);
+    border-bottom: 1px solid var(--mm-color-border, #dee2e6);
 }
 
 .cal-title {
-    font-size: var(--mm-font-size-2, 1.5rem);
-    font-weight: bold;
+    margin: 0;
+    font-size: var(--mm-font-size-xl, 20px);
+    font-weight: var(--mm-font-weight-bold, 600);
 }
 
 .cal-subtitle {
-    font-size: var(--mm-font-size-1, 1rem);
-    color: var(--mm-color-text-secondary, #666);
+    margin: var(--mm-space-1, 4px) 0 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
 }
 
 .cal-body {
     flex: 1;
-    overflow-y: auto;
-    padding: var(--mm-spacing-4, 1rem);
+    min-height: 0;
+    padding: var(--mm-space-4, 16px);
 }
 
+/* Calendar grid + detail pane side by side, stacking on narrow viewports. */
 .cal-main {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mm-spacing-4, 1rem);
-}
-
-.cal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--mm-spacing-4, 1rem);
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--mm-space-4, 16px);
+    align-items: start;
 }
 
-.cal-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+@media (max-width: 900px) {
+    .cal-main {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
-.cal-refreshing {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    font-size: var(--mm-font-size-1, 1rem);
-    color: var(--mm-color-text-secondary, #666);
+/* react-big-calendar needs a plain block container with a resolved height. */
+.cal-calendar {
+    min-width: 0;
+    height: 600px;
 }
 
+/* Appointment detail pane */
 .cal-detail {
     display: flex;
     flex-direction: column;
-    gap: var(--mm-spacing-4, 1rem);
+    gap: var(--mm-space-3, 12px);
+    padding: var(--mm-space-4, 16px);
+    background: var(--mm-color-surface, #fff);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-md, 8px);
 }
 
 .cal-detail__head {
@@ -70,68 +78,164 @@
     align-items: center;
 }
 
+/* Background colour is set inline from the appointment status, so only the shape is here. */
 .cal-detail__status {
-    font-size: var(--mm-font-size-1, 1rem);
-    color: var(--mm-color-text-secondary, #666);
+    padding: var(--mm-space-1, 4px) var(--mm-space-2, 8px);
+    border-radius: var(--mm-radius-sm, 4px);
+    color: #fff;
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
 }
 
 .cal-detail__close {
     background: none;
     border: none;
-    font-size: var(--mm-font-size-2, 1.5rem);
+    font-size: var(--mm-font-size-xl, 20px);
+    line-height: 1;
     cursor: pointer;
+    color: var(--mm-color-text-muted, #6c757d);
 }
 
 .cal-detail__close:hover {
-    color: var(--mm-color-primary, #007bff);
+    color: var(--mm-color-text, #212529);
 }
 
 .cal-detail__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--mm-spacing-4, 1rem);
+    grid-template-columns: auto 1fr;
+    gap: var(--mm-space-1, 4px) var(--mm-space-3, 12px);
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
 }
 
-.cal-detail__readonly-field {
+.cal-detail__grid dt {
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.cal-detail__grid dd {
+    margin: 0;
+}
+
+.cal-detail__actions {
     display: flex;
-    flex-direction: column;
-    gap: var(--mm-spacing-2, 0.5rem);
+    gap: var(--mm-space-2, 8px);
 }
 
-/* Form modals */
+.cal-detail__info {
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+/* Forms inside modals */
 .cal-form {
     display: flex;
     flex-direction: column;
-    gap: var(--mm-spacing-4, 1rem);
-}
-
-.cal-form__row {
-    display: flex;
-    gap: var(--mm-spacing-4, 1rem);
+    gap: var(--mm-space-4, 16px);
 }
 
 .cal-form__hint {
-    font-size: var(--mm-font-size-1, 1rem);
-    color: var(--mm-color-text-secondary, #666);
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
 }
 
-
-/* conflict banner */
-.cal-conflict-banner {
-    background-color: var(--mm-color-background-warning, #fff3cd);
-    border: 1px solid var(--mm-color-border-warning, #ffeaa7);
-    color: var(--mm-color-text-warning, #856404);
-}
-
-.cal-conflict-banner__message {
-    font-size: var(--mm-font-size-1, 1rem);
-    padding: var(--mm-spacing-4, 1rem);
+/* Conflict banner — class name matches ConflictBanner.tsx. */
+.conflict-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--mm-space-2, 8px);
+    padding: var(--mm-space-3, 12px);
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: var(--mm-radius-sm, 4px);
+    color: #856404;
+    font-size: var(--mm-font-size-sm, 12px);
 }
 
 /* Patient search */
 .cal-patient-search {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--mm-spacing-4, 1rem);
+    gap: var(--mm-space-2, 8px);
 }
 
+.cal-field-label {
+    display: block;
+    margin-bottom: var(--mm-space-1, 4px);
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.cal-chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--mm-space-2, 8px);
+    padding: var(--mm-space-2, 8px);
+    background: var(--mm-color-neutral-100, #f8f9fa);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
+.cal-chip-subtext {
+    display: block;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.cal-chip-remove {
+    background: none;
+    border: none;
+    font-size: var(--mm-font-size-lg, 16px);
+    line-height: 1;
+    cursor: pointer;
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.cal-search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--mm-color-surface, #fff);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
+.cal-search-results li + li {
+    border-top: 1px solid var(--mm-color-border, #dee2e6);
+}
+
+.cal-search-results button {
+    display: block;
+    width: 100%;
+    padding: var(--mm-space-2, 8px);
+    font: inherit;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.cal-search-results button:hover,
+.cal-search-results button:focus-visible {
+    background: var(--mm-color-neutral-100, #f8f9fa);
+}
+
+.cal-search-result-sublabel {
+    display: block;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.cal-error {
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-danger, #dc3545);
+}
+
+.cal-no-results {
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
+}

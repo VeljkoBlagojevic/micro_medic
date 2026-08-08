@@ -1,5 +1,6 @@
-import { LitElement, css, html } from "lit";
-import { baseStyles } from "../styles/shared.styles";
+import { LitElement, css, html, nothing } from 'lit';
+import { baseStyles } from '../styles/shared.styles';
+import { defineElement } from '../define';
 
 export class MmEmptyState extends LitElement {
     static properties = {
@@ -8,49 +9,58 @@ export class MmEmptyState extends LitElement {
         icon: { type: String },
     };
 
-    heading: string = 'Nothing here yet';
-    description: string = 'There is no content to display at the moment.'
-    icon: string = 'info-circle';
+    heading = 'Nothing here yet';
+    description = 'There is no content to display at the moment.';
+    /**
+     * A literal glyph, not an icon-font name. The previous default was `'info-circle'`
+     * rendered into an `<sl-icon>` — a Shoelace element this design system never registers,
+     * so it produced an empty inline box. Slot `icon` for anything richer.
+     */
+    icon = '📋';
 
     static styles = [
         baseStyles,
         css`
             :host {
                 display: block;
+                padding: var(--mm-space-8, 32px) var(--mm-space-4, 16px);
                 text-align: center;
-                padding: var(--mm-spacing-lg, 32px);
-                color: var(--mm-empty-state-color, #6c757d);
+                color: var(--mm-color-text-muted, #6c757d);
             }
             .icon {
-                font-size: var(--mm-empty-state-icon-size, 48px);
-                margin-bottom: var(--mm-spacing-md, 16px);
+                font-size: 40px;
+                line-height: 1;
+                margin-bottom: var(--mm-space-3, 12px);
             }
             .heading {
-                font-size: var(--mm-empty-state-heading-font-size, 24px);
-                font-weight: var(--mm-empty-state-heading-font-weight, 600);
-                margin-bottom: var(--mm-spacing-sm, 8px);
+                font-size: var(--mm-font-size-lg, 16px);
+                font-weight: var(--mm-font-weight-bold, 600);
+                color: var(--mm-color-text, #212529);
+                margin-bottom: var(--mm-space-1, 4px);
             }
             .description {
-                font-size: var(--mm-empty-state-description-font-size, 16px);
-                color: var(--mm-empty-state-description-color, #6c757d);
+                font-size: var(--mm-font-size-base, 14px);
+            }
+            .actions {
+                margin-top: var(--mm-space-4, 16px);
+            }
+            [hidden] {
+                display: none;
             }
         `,
     ];
 
     render() {
         return html`
-            <div class="icon">
-                <sl-icon name="${this.icon}"></sl-icon>
-            </div>
-            <div class="heading">${this.heading}</div>
-            <div class="description">${this.description}</div>
+            <div class="icon" aria-hidden="true"><slot name="icon">${this.icon}</slot></div>
+            ${this.heading ? html`<div class="heading">${this.heading}</div>` : nothing}
+            ${this.description ? html`<div class="description">${this.description}</div>` : nothing}
+            <div class="actions"><slot></slot></div>
         `;
     }
 }
 
-if (!customElements.get('mm-empty-state')) {
-    customElements.define('mm-empty-state', MmEmptyState);
-}
+defineElement('mm-empty-state', MmEmptyState);
 
 declare global {
     interface HTMLElementTagNameMap {

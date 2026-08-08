@@ -16,8 +16,8 @@ export function useAppointmentMutations() {
     }
 
     const notifySuccess = (message: string) => eventBus.emit(EventTypes.NOTIFICATION_SHOW, {
-        message, type: 'success',
-        id: ''
+        message,
+        type: 'success'
     });
 
     const book = useMutation<ScheduledAppointmentDto, unknown, AppointmentRequest>({
@@ -28,7 +28,7 @@ export function useAppointmentMutations() {
         }
     });
 
-    const reschedule = useMutation<ScheduledAppointmentDto, unknown, { appointmentId: string, rescheduleRequest: AppointmentRequest }>({
+    const reschedule = useMutation<ScheduledAppointmentDto, unknown, { appointmentId: number, rescheduleRequest: AppointmentRequest }>({
         mutationFn: ({ appointmentId, rescheduleRequest }) => calendarService.reschedule(appointmentId, rescheduleRequest),
         onSuccess: () => {
             invalidate();
@@ -36,7 +36,7 @@ export function useAppointmentMutations() {
         }
     });
 
-    const cancel = useMutation<void, unknown, string>({
+    const cancel = useMutation<ScheduledAppointmentDto, unknown, number>({
         mutationFn: calendarService.cancel,
         onSuccess: () => {
             invalidate();

@@ -1,83 +1,135 @@
-import { LitElement, html, css, render } from "lit";
-import { baseStyles } from "../styles/shared.styles";
+import { LitElement, html, css } from 'lit';
+import { baseStyles } from '../styles/shared.styles';
+import { defineElement } from '../define';
 
 export class MmCard extends LitElement {
     static properties = {
         heading: { type: String },
         clickable: { type: Boolean, reflect: true },
+        _hasHeader: { state: true },
         _hasFooter: { state: true },
     };
 
-    heading: string = '';
-    clickable: boolean = false;
-    private _hasFooter: boolean = false;
+    heading = '';
+    clickable = false;
+
+    private _hasHeader = false;
+    private _hasFooter = false;
 
     static styles = [
         baseStyles,
         css`
             :host {
                 display: block;
-                border: 1px solid var(--mm-border-color, #e0e0e0);
-                border-radius: var(--mm-radius-md, 4px);
-                background-color: var(--mm-card-bg-color, #fff);
-                box-shadow: var(--mm-card-box-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
-                transition: box-shadow var(--mm-transition-duration, 0.2s) var(--mm-transition-timing-function, ease-in-out);
+                background-color: var(--mm-color-surface, #fff);
+                border: 1px solid var(--mm-color-border, #dee2e6);
+                border-radius: var(--mm-radius-md, 8px);
+                box-shadow: var(--mm-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.12));
+                transition: box-shadow var(--mm-transition-normal, 250ms)
+                    var(--mm-transition-timing, ease-in-out);
             }
             :host([clickable]) {
                 cursor: pointer;
-                transition: box-shadow var(--mm-transition-duration, 0.2s) var(--mm-transition-timing-function, ease-in-out);
             }
             :host([clickable]:hover) {
-                box-shadow: var(--mm-card-hover-box-shadow, 0 4px 6px rgba(0, 0, 0, 0.1));
+                box-shadow: var(--mm-shadow-md, 0 3px 6px rgba(0, 0, 0, 0.16));
             }
-            .card-header {
-                padding: var(--mm-spacing-md, 16px);
-                border-bottom: 1px solid var(--mm-border-color, #e0e0e0);
+            :host([clickable]:focus-visible) {
+                outline: 2px solid var(--mm-color-accent, #3498db);
+                outline-offset: 2px;
             }
-            .card-body {
-                padding: var(--mm-spacing-md, 16px);
+            .header,
+            .footer,
+            .body {
+                padding: var(--mm-space-4, 16px);
             }
-            .card-footer {
-                padding: var(--mm-spacing-md, 16px);
-                border-top: 1px solid var(--mm-border-color, #e0e0e0);
+            .header {
+                border-bottom: 1px solid var(--mm-color-border, #dee2e6);
+                font-weight: var(--mm-font-weight-bold, 600);
+            }
+            .footer {
+                border-top: 1px solid var(--mm-color-border, #dee2e6);
+            }
+            [hidden] {
+                display: none;
             }
         `,
     ];
 
-    onClick(event: MouseEvent) {
+    /**
+     * A clickable card must be reachable by keyboard. Setting these here (rather than in the
+     * template) keeps them on the host, where assistive technology looks for them.
+     */
+    protected willUpdate() {
         if (this.clickable) {
-            this.dispatchEvent(new CustomEvent('card-click', { detail: { event } }));
+            if (!this.hasAttribute('tabindex')) this.setAttribute('tabindex', '0');
+            if (!this.hasAttribute('role')) this.setAttribute('role', 'button');
+        } else {
+            if (this.getAttribute('tabindex') === '0') this.removeAttribute('tabindex');
+            if (this.getAttribute('role') === 'button') this.removeAttribute('role');
         }
     }
 
-    private onFooterSlotChange() {
-        const footerSlot = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement;
-        this._hasFooter = footerSlot?.assignedNodes().length > 0;
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('click', this.onClick);
+        this.addEventListener('keydown', this.onKeyDown);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener('click', this.onClick);
+        this.removeEventListener('keydown', this.onKeyDown);
+    }
+
+    /**
+     * Namespaced as `mm-card-click` to match every other component's event naming; the old
+     * `card-click` was the only unprefixed event in the design system.
+     */
+    private onClick = () => {
+        if (!this.clickable) return;
+        this.dispatchEvent(new CustomEvent('mm-card-click', { bubbles: true, composed: true }));
+    };
+
+    private onKeyDown = (event: KeyboardEvent) => {
+        if (!this.clickable) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.onClick();
+        }
+    };
+
+    private onHeaderSlotChange(event: Event) {
+        this._hasHeader = (event.target as HTMLSlotElement).assignedNodes().length > 0;
+    }
+
+    private onFooterSlotChange(event: Event) {
+        this._hasFooter = (event.target as HTMLSlotElement).assignedNodes().length > 0;
     }
 
     render() {
+        const showHeader = this._hasHeader || !!this.heading;
         return html`
-            <div class="card-header">
-                <slot name="header">${this.heading}</slot>
+            <div class="header" ?hidden=${!showHeader}>
+                <slot name="header" @slotchange=${this.onHeaderSlotChange}>${this.heading}</slot>
             </div>
-            <div class="card-body">
-                <slot></slot>
+            <div class="body"><slot></slot></div>
+            <!--
+              The footer slot is always rendered but hidden when empty. Rendering it
+              conditionally on \`_hasFooter\` was a deadlock: \`slotchange\` can only fire once
+              the slot exists, so a footer was never displayed.
+            -->
+            <div class="footer" ?hidden=${!this._hasFooter}>
+                <slot name="footer" @slotchange=${this.onFooterSlotChange}></slot>
             </div>
-            ${this._hasFooter
-                ? html`<div class="card-footer">
-                      <slot name="footer" @slotchange=${this.onFooterSlotChange}></slot>
-                    </div>`
-                : ''}
         `;
     }
 }
 
-if (!customElements.get('mm-card')) {
-    customElements.define('mm-card', MmCard);
-}
+defineElement('mm-card', MmCard);
 
 declare global {
     interface HTMLElementTagNameMap {
-        "mm-card": MmCard;
+        'mm-card': MmCard;
     }
 }

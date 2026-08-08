@@ -1,13 +1,32 @@
+/**
+ * Design tokens — the single source of truth for every `--mm-*` custom property.
+ *
+ * Custom properties pierce shadow DOM, so this file is how the host application themes
+ * the Lit components. It must be loaded once per page (the shell imports it); components
+ * carry hardcoded fallbacks so they still look sane if it is missing.
+ *
+ * Add a token here before referencing it from a component. Anything a component reads
+ * that is not defined below silently falls back, which is how the palette drifted before.
+ */
 :root {
-    --mm-color-primary: #1a1a2e;
-    --mm-color-primary-light: #162447;
-    --mm-color-primary-dark: #0f3460;
-    --mm-color-accent: #3498bd;
-    --mm-color-accent-hover: #2980b9;
+    /* Brand */
+    --mm-color-primary: #0f3460;
+    --mm-color-primary-dark: #0b2647;
+    --mm-color-on-primary: #ffffff;
+    --mm-color-secondary: #6c757d;
+    --mm-color-secondary-dark: #565e64;
+    --mm-color-on-secondary: #ffffff;
+    --mm-color-accent: #3498db;
+
+    /* Status */
+    --mm-color-danger: #dc3545;
+    --mm-color-on-danger: #ffffff;
     --mm-color-success: #2ecc71;
-    --mm-color-error: #e74c3c;
+    --mm-color-on-success: #ffffff;
     --mm-color-warning: #f39c12;
+    --mm-color-on-warning: #212529;
     --mm-color-info: #3498db;
+    --mm-color-on-info: #ffffff;
 
     /* Neutrals */
     --mm-color-neutral-100: #f8f9fa;
@@ -20,61 +39,62 @@
     --mm-color-neutral-800: #343a40;
     --mm-color-neutral-900: #212529;
 
+    /* Semantic surfaces */
     --mm-color-bg: var(--mm-color-neutral-100);
+    --mm-color-surface: #ffffff;
     --mm-color-text: var(--mm-color-neutral-900);
-    --mm-color-text-light: var(--mm-color-neutral-600);
-    --mm-color-text-primary: var(--mm-color-primary);
-    --mm-color-text-secondary: var(--mm-color-neutral-700);
+    --mm-color-text-muted: var(--mm-color-neutral-600);
     --mm-color-border: var(--mm-color-neutral-300);
-    --mm-color-border-hover: var(--mm-color-neutral-400);
-    --mm-color-shadow: rgba(0, 0, 0, 0.1);
+    --mm-color-border-strong: var(--mm-color-neutral-400);
+    --mm-color-disabled-bg: var(--mm-color-neutral-200);
+    --mm-color-overlay: rgba(0, 0, 0, 0.5);
+    --mm-color-focus-ring: rgba(52, 152, 219, 0.45);
 
     /* Typography */
-    --mm-font-family: 'Roboto', sans-serif;
-    --mm-font-size-base: 16px;
-    --mm-font-size-sm: 14px;
-    --mm-font-size-lg: 18px;
-
-    --mm-spacing-xs: 4px;
-    --mm-spacing-sm: 8px;
-    --mm-spacing-md: 16px;
-    --mm-spacing-lg: 24px;
-    --mm-spacing-xl: 32px;
-
+    --mm-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+        Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --mm-font-size-sm: 12px;
+    --mm-font-size-base: 14px;
+    --mm-font-size-lg: 16px;
+    --mm-font-size-xl: 20px;
+    --mm-font-size-2xl: 24px;
     --mm-font-weight-normal: 400;
-    --mm-font-weight-bold: 700;
+    --mm-font-weight-medium: 500;
+    --mm-font-weight-bold: 600;
+    --mm-line-height: 1.5;
 
-    /* Spacing */
+    /* Spacing — a 4px scale. `space-N` is `N * 4px`. */
     --mm-space-1: 4px;
     --mm-space-2: 8px;
     --mm-space-3: 12px;
     --mm-space-4: 16px;
     --mm-space-5: 20px;
+    --mm-space-6: 24px;
+    --mm-space-8: 32px;
 
+    /* Radius */
+    --mm-radius-sm: 4px;
+    --mm-radius-md: 8px;
+    --mm-radius-lg: 12px;
 
-    /* Border radius */
-    --mm-border-radius-sm: 4px;
-    --mm-border-radius-md: 8px;
-    --mm-border-radius-lg: 12px;
-
-    /* Shadows */
+    /* Elevation */
     --mm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     --mm-shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     --mm-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 
-    /* Z index scale */
-    --mm-z-index-1: 100;
-    --mm-z-index-2: 200;
-    --mm-z-index-3: 300;
-    --mm-z-index-4: 400;
-    --mm-z-index-5: 500;
-
-    /* Transitions */
+    /* Motion */
     --mm-transition-fast: 150ms;
-    --mm-transition-normal: 300ms;
-    --mm-transition-slow: 500ms;
+    --mm-transition-normal: 250ms;
+    --mm-transition-timing: ease-in-out;
 
     /* Layout */
     --mm-layout-max-width: 1200px;
     --mm-header-height: 60px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --mm-transition-fast: 0ms;
+        --mm-transition-normal: 0ms;
+    }
 }

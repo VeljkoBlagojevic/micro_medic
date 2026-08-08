@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAppointmentMutations } from "../hooks/useAppointmentMutations";
-import { MmModal } from "./MmModal";
-import { MmButton } from "./MmButton";
-import { ConflictBanner } from "./ConflictBanner";
 import { useForm } from "react-hook-form";
-import { MmField } from "./MmField";
+import { MmButton, MmModal } from "@micro-medic/design-system-react";
+import { useAppointmentMutations } from "../hooks/useAppointmentMutations";
+import { ConflictBanner } from "./ConflictBanner";
+import { MmFormField } from "./MmFormField";
 import { PatientSearchField } from "./PatientSearchField";
 import type { PatientOption } from "../types";
 import { BookingSchema, bookingSchema } from "../schemas";
-import { dateTimeLocalToLocalDate, defaultBookingWindow } from "../utils";
-
+import { bookingErrorMessage, dateTimeLocalToLocalDate, defaultBookingWindow } from "../utils";
 
 interface BookingModalProps {
     open: boolean;
@@ -30,7 +28,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         formState: { errors },
     } = useForm<BookingSchema>({
         resolver: zodResolver(bookingSchema),
-        defaultValues: { patientId: undefined, start: undefined, end: undefined },
+        defaultValues: { patientId: undefined, start: '', end: '' },
     });
 
     // seed sensible default times + clear state whenever the modal opens
@@ -45,21 +43,27 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
 
     const onSelectPatient = (nextPatient: PatientOption | null) => {
         setPatient(nextPatient);
-        if (nextPatient?.id) {
-            setValue('patientId', nextPatient.id, { shouldValidate: true });
-        }
-    }
+        // `undefined` (not `null`) clears the field, so zod reports "required" rather than
+        // "expected number, received null".
+        setValue('patientId', nextPatient?.id as BookingSchema['patientId'], {
+            shouldValidate: !!nextPatient,
+        });
+    };
 
     const submit = handleSubmit(async (data) => {
+        setConflict('');
         try {
             await book.mutateAsync({
-                patientId: data.patientId!,
-                start: dateTimeLocalToLocalDate(data.start!),
-                end: dateTimeLocalToLocalDate(data.end!),
+                patientId: data.patientId,
+                start: dateTimeLocalToLocalDate(data.start),
+                end: dateTimeLocalToLocalDate(data.end),
             });
             onClose();
-        } catch (error: any) {
-            setConflict(error?.response?.data?.message || 'An error occurred while booking the appointment.');
+        } catch (error) {
+            // The api-client interceptor turns every failure into an `ApiError`, so
+            // `error.response.data.message` is always undefined — `bookingErrorMessage`
+            // reads the normalised shape.
+            setConflict(bookingErrorMessage(error));
         }
     });
 
@@ -68,15 +72,8 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
             open={open}
             heading="Book Appointment"
             onClose={onClose}
-            footer={
-                <>
-                    <MmButton variant="secondary" onClick={onClose}>Cancel</MmButton>
-                    <MmButton variant="primary" onClick={submit}>Book</MmButton>
-                </>
-            }
         >
-            <form onSubmit={submit}>
-
+            <form onSubmit={submit} className="cal-form">
                 <ConflictBanner message={conflict} />
 
                 <PatientSearchField
@@ -84,13 +81,14 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                     onSelect={onSelectPatient}
                     error={errors.patientId?.message}
                 />
-                <div className="form-group">
-                    <MmField control={control} name="start" label="Start Time" type="datetime-local" />
-                </div>
-                <div className="form-group">
-                    <MmField control={control} name="end" label="End Time" type="datetime-local" />
-                </div>
+                <MmFormField control={control} name="start" label="Start Time" type="datetime-local" required />
+                <MmFormField control={control} name="end" label="End Time" type="datetime-local" required />
             </form>
+
+            <div slot="footer">
+                <MmButton variant="secondary" onClick={onClose}>Cancel</MmButton>
+                <MmButton variant="primary" loading={book.isPending} onClick={submit}>Book</MmButton>
+            </div>
         </MmModal>
     );
 }
