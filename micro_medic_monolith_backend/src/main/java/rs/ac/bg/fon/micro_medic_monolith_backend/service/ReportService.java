@@ -62,9 +62,12 @@ public class ReportService {
 
     @Transactional(readOnly = true)
     public Report getByExaminationId(Long examinationId) {
-        accessGuard.requireReportAccess(examinationId);
-        return reportRepository.findByExaminationId(examinationId)
+        Report report = reportRepository.findByExaminationId(examinationId)
                 .orElseThrow(() -> new EntityNotFoundException("Report not found for examination ID: " + examinationId));
+        // Authorize against the report actually being returned, not against whichever report
+        // happens to share the examination's numeric id.
+        accessGuard.requireReportAccess(report.getId());
+        return report;
     }
 
     @Transactional(readOnly = true)

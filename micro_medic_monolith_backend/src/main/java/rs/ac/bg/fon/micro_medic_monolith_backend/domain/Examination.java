@@ -35,7 +35,7 @@ public class Examination extends Auditable {
     @JoinColumn(name = "scheduled_appointment_id")
     private ScheduledAppointment scheduledAppointment;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "diagnosis")
     private Disease diagnosis;
 

@@ -11,7 +11,7 @@ public final class ReportSpecification {
     }
 
     public static Specification<Report> hasPatientId(Long patientId) {
-        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("examination").get("scheduledAppointment"), patientId);
+        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("examination").get("scheduledAppointment").get("patient").get("id"), patientId);
     }
 
     public static Specification<Report> hasGeneratedBy(Long userId) {

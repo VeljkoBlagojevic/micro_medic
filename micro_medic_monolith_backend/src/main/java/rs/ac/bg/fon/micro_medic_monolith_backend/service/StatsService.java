@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StatsService {
 
+    /**
+     * How many recent examinations feed the top-diagnoses ranking.
+     */
+    private static final int TOP_DIAGNOSES_SAMPLE_SIZE = 1000;
+    private static final int TOP_DIAGNOSES_LIMIT = 5;
+
     private final ExaminationRepository examinationRepository;
     private final ScheduledAppointmentRepository scheduledAppointmentRepository;
     private final AccessGuard accessGuard;
@@ -30,7 +37,8 @@ public class StatsService {
         long totalScheduledAppointments = scheduledAppointmentRepository.countByDoctorId(doctorId);
         long uniquePatients = examinationRepository.countDistinctPatientsByDoctorId(doctorId);
 
-        List<Examination> examinations = examinationRepository.findByDoctorId(doctorId, PageRequest.of(0, Integer.MAX_VALUE)).getContent();
+        Page<Examination> examinationPage = examinationRepository.findByDoctorId(doctorId, PageRequest.of(0, TOP_DIAGNOSES_SAMPLE_SIZE));
+        List<Examination> examinations = examinationPage.getContent();
 
         List<DoctorStatsDto.DiagnosisCountDto> topDiagnoses = getTopDiagnoses(examinations);
 
@@ -42,18 +50,10 @@ public class StatsService {
         accessGuard.requirePatientAccess(patientId);
         long totalExaminations = examinationRepository.countByPatientId(patientId);
         long totalScheduledAppointments = scheduledAppointmentRepository.countByPatientId(patientId);
-        long uniqueDoctors = examinationRepository.countDistinctDoctorsByPatientId(patientId);
+        long upcomingAppointments = scheduledAppointmentRepository.countUpcomingByPatientId(patientId, java.time.LocalDateTime.now());
+        long distinctDoctorsSeen = examinationRepository.countDistinctDoctorsByPatientId(patientId);
 
-        List<Examination> examinations = examinationRepository.findByPatientId(patientId, PageRequest.of(0, Integer.MAX_VALUE)).getContent();
-
-        long uniqueDiagnoses = examinations.stream()
-                .map(Examination::getDiagnosis)
-                .filter(diagnosis -> diagnosis != null && diagnosis.getCode() != null)
-                .map(Disease::getCode)
-                .distinct()
-                .count();
-
-        return new PatientStatsDto(totalExaminations, totalScheduledAppointments, uniqueDoctors, uniqueDiagnoses);
+        return new PatientStatsDto(totalExaminations, totalScheduledAppointments, upcomingAppointments, distinctDoctorsSeen);
     }
 
     private List<DoctorStatsDto.DiagnosisCountDto> getTopDiagnoses(List<Examination> examinations) {
@@ -62,12 +62,13 @@ public class StatsService {
                 .collect(Collectors.groupingBy(exam -> exam.getDiagnosis().getCode()))
                 .entrySet().stream()
                 .sorted((e1, e2) -> Long.compare(e2.getValue().size(), e1.getValue().size()))
-                .limit(5)
+                .limit(TOP_DIAGNOSES_LIMIT)
                 .map(entry -> {
                     Examination representative = entry.getValue().iterator().next();
+                    Disease diagnosis = representative.getDiagnosis();
                     return new DoctorStatsDto.DiagnosisCountDto(
-                            representative.getDiagnosis().getCode(),
-                            representative.getDiagnosis().getCode(),
+                            diagnosis.getCode(),
+                            diagnosis.getDescription(),
                             entry.getValue().size()
                     );
                 })

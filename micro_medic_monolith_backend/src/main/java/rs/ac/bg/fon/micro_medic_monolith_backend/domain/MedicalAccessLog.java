@@ -39,6 +39,7 @@ public class MedicalAccessLog {
         PATIENT,
         EXAMINATION,
         REPORT,
-        DOCTOR
+        DOCTOR,
+        APPOINTMENT
     }
 }

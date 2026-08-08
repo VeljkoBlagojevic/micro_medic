@@ -28,19 +28,21 @@ public class DiseaseService {
     @Transactional
     public void populateDiseases() {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = TypeReference.class.getResourceAsStream("/icd10_codes.json")) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/icd10_codes.json")) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Resource /icd10_codes.json not found on the classpath");
+            }
 
             List<Disease> diseases = objectMapper.readValue(inputStream, new TypeReference<List<Disease>>() {});
 
-            List<String> codes = diseases.stream().map(Disease::getCode).toList();
-            Set<String> existingCodes = diseaseRepository.findAllById(codes).stream()
+            Set<String> existingCodes = diseaseRepository.findAllById(diseases.stream().map(Disease::getCode).toList()).stream()
                     .map(Disease::getCode)
                     .collect(Collectors.toSet());
-            List<Disease> newCodes = codes.stream().filter(code -> !existingCodes.contains(code))
-                    .map(code -> diseases.stream().filter(disease -> disease.getCode().equals(code)).findFirst().orElseThrow())
+            List<Disease> newDiseases = diseases.stream()
+                    .filter(disease -> !existingCodes.contains(disease.getCode()))
                     .toList();
 
-            diseaseRepository.saveAll(newCodes);
+            diseaseRepository.saveAll(newDiseases);
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while populating diseases", e);
         }

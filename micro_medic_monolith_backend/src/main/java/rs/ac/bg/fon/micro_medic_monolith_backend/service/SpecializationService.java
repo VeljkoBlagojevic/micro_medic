@@ -26,7 +26,10 @@ public class SpecializationService {
     @Transactional
     public void populateSpecializations() {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (var inputStream = getClass().getResourceAsStream("/specializations.json")) {
+        try (var inputStream = getClass().getResourceAsStream("/specialization_departments.json")) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Resource /specialization_departments.json not found on the classpath");
+            }
 
             List<SpecializationDepartment> specializations = objectMapper.readValue(inputStream, objectMapper.getTypeFactory().constructCollectionType(List.class, SpecializationDepartment.class));
 

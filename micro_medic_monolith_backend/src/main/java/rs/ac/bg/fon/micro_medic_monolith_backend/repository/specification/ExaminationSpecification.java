@@ -16,11 +16,11 @@ public final class ExaminationSpecification {
     }
 
     public static Specification<Examination> hasPatientId(Long patientId) {
-        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("patient").get("id"), patientId);
+        return (root, query, criteriaBuilder) -> patientId == null ? null : criteriaBuilder.equal(root.get("scheduledAppointment").get("patient").get("id"), patientId);
     }
 
     public static Specification<Examination> hasDoctorId(Long doctorId) {
-        return (root, query, criteriaBuilder) -> doctorId == null ? null : criteriaBuilder.equal(root.get("doctor").get("id"), doctorId);
+        return (root, query, criteriaBuilder) -> doctorId == null ? null : criteriaBuilder.equal(root.get("scheduledAppointment").get("doctor").get("id"), doctorId);
     }
 
     public static Specification<Examination> hasDiagnosisCode(String diagnosisCode) {
@@ -28,10 +28,10 @@ public final class ExaminationSpecification {
     }
 
     public static Specification<Examination> startedAfter(LocalDateTime after) {
-        return (root, query, criteriaBuilder) -> after == null ? null : criteriaBuilder.greaterThan(root.get("startTime"), after);
+        return (root, query, criteriaBuilder) -> after == null ? null : criteriaBuilder.greaterThan(root.get("start"), after);
     }
 
     public static Specification<Examination> startedBefore(LocalDateTime before) {
-        return (root, query, criteriaBuilder) -> before == null ? null : criteriaBuilder.lessThan(root.get("startTime"), before);
+        return (root, query, criteriaBuilder) -> before == null ? null : criteriaBuilder.lessThan(root.get("start"), before);
     }
 }

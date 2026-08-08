@@ -28,19 +28,20 @@ public class MedicineService {
     @Transactional
     public void populateMedicines() {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = TypeReference.class.getResourceAsStream("/medicines.json")) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/medicines.json")) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Resource /medicines.json not found on the classpath");
+            }
             List<Medicine> medicines = objectMapper.readValue(inputStream, new TypeReference<List<Medicine>>() {
             });
 
-            List<Long> ids = medicines.stream().map(Medicine::getId).toList();
-
-            Set<Long> existingIds = repository.findAllById(ids).stream()
+            Set<Long> existingIds = repository.findAllById(medicines.stream().map(Medicine::getId).toList()).stream()
                     .map(Medicine::getId)
                     .collect(Collectors.toSet());
 
-            List<Medicine> newMedicines = ids.stream()
-                    .filter(id -> !existingIds.contains(id))
-                    .map(id -> medicines.stream().filter(medicine -> medicine.getId().equals(id)).findFirst().orElseThrow())
+            List<Medicine> newMedicines = medicines.stream()
+                    .filter(medicine -> !existingIds.contains(medicine.getId()))
+                    .map(MedicineService::normalizeBlankBrandName)
                     .toList();
 
             repository.saveAll(newMedicines);
@@ -64,5 +65,16 @@ public class MedicineService {
     public Medicine getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Medicine not found with id: " + id));
+    }
+
+    /**
+     * 380 entries in {@code medicines.json} carry {@code "brandName": ""}. Store those as
+     * null so no brand is one value rather than an empty string competing with it.
+     */
+    private static Medicine normalizeBlankBrandName(Medicine medicine) {
+        if (medicine.getBrandName() != null && medicine.getBrandName().isBlank()) {
+            medicine.setBrandName(null);
+        }
+        return medicine;
     }
 }

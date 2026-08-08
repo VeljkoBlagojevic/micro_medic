@@ -13,7 +13,7 @@ public @interface ValidDateRange {
 
     String message() default "End time must be after start time";
 
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 

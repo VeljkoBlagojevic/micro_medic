@@ -37,9 +37,11 @@ public class SecurityConfiguration {
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth/registerPatient").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
 
-                    authorize.requestMatchers(HttpMethod.GET, "/api/medicine/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/api/diseases/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/api/specializationDepartments/**").permitAll();
+                    // Reference data. The bare path and the sub-paths need separate matchers -
+                    // '/x/*' does not match '/**' itself.
+                    authorize.requestMatchers(HttpMethod.GET, "/api/medicines", "/api/medicines/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/api/diseases", "/api/diseases/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/api/specializationDepartments", "/api/specializationDepartments/**").permitAll();
 
                     authorize.requestMatchers(HttpMethod.POST, "/api/calendar/**").hasAuthority(Role.DOCTOR.getAuthority());
                     authorize.requestMatchers(HttpMethod.POST, "/api/examinations/**").hasAuthority(Role.DOCTOR.getAuthority());

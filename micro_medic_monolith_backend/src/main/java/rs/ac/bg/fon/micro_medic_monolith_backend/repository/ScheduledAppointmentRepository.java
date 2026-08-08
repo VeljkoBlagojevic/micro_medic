@@ -27,5 +27,25 @@ public interface ScheduledAppointmentRepository extends JpaRepository<ScheduledA
             """)
     long countUpcomingByPatientId(@Param("patientId") Long patientId, @Param("now")LocalDateTime now);
 
+/**
+ * True when the doctor or the patient already has a SCHEDULED appointment overlapping
+ * [start, end). Half-open on purpose: back-to-back slots do not overlap.
+ * Pass {@code excludedId = null} when creating, or the appointment's own id when rescheduling.
+ */
+@Query("""
+            SELECT COUNT(sa) > 0 FROM ScheduledAppointment sa
+            WHERE sa.status = :status
+            AND (sa.doctor.id = :doctorId OR sa.patient.id = :patientId)
+            AND sa.start < :end AND sa.end > :start
+            AND (:excludedId IS NULL OR sa.id <> :excludedId)
+            """)
+    boolean existsOverlapping(@Param("doctorId") Long doctorId,
+                              @Param("patientId") Long patientId,
+                              @Param("start") LocalDateTime start,
+                              @Param("end") LocalDateTime end,
+                              @Param("excludedId") Long excludedId,
+                              @Param("status") ScheduledAppointment.Status status);
 
 }
+
+

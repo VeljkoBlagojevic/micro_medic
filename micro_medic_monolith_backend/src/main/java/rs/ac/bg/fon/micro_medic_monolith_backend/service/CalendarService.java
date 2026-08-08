@@ -65,7 +65,7 @@ public class CalendarService {
         Patient patient = patientRepository.findById(appointment.patientId())
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found with ID: " + appointment.patientId()));
 
-        // TODO: check the existing doctor and patient overlap
+        requireNoOverlap(doctor.getId(), patient.getId(), appointment.start(), appointment.end(), null);
 
         ScheduledAppointment scheduledAppointment = ScheduledAppointment.builder()
                 .start(appointment.start())
@@ -100,23 +100,18 @@ public class CalendarService {
             throw new IllegalArgumentException("Cannot cancel an appointment that has already started or passed.");
         }
 
-        if (appointment.getDoctor() != null) {
-            accessGuard.requireSelfDoctor(appointment.getDoctor().getId());
-        } else {
-            throw new IllegalStateException("Scheduled appointment does not have an associated doctor.");
+        if (appointment.getDoctor() == null) {
+            throw new IllegalArgumentException("Scheduled appointment does not have an associated doctor.");
         }
 
-        if (appointment.getPatient() != null) {
-            accessGuard.requirePatientAccess(appointment.getPatient().getId());
-        } else {
-            throw new IllegalStateException("Scheduled appointment does not have an associated patient.");
+        if (appointment.getPatient() == null) {
+            throw new IllegalArgumentException("Scheduled appointment does not have an associated patient.");
         }
 
-        if (appointment.getStatus() != ScheduledAppointment.Status.SCHEDULED) {
-            throw new IllegalArgumentException("Appointment needs to be scheduled so it can be cancelled.");
-        }
+        // Either participant may cancel, so authorise against the appointment as a whole
+        // rather than requiring the caller to be the doctor.
+        accessGuard.requireAppointmentAccess(appointmentId);
 
-        appointment.setStatus(ScheduledAppointment.Status.CANCELLED);
         log.info("Cancelling appointment: {} by user: {}", appointment, userService.getCurrentUser().getId());
         return scheduledAppointmentRepository.save(appointment);
     }
@@ -139,7 +134,7 @@ public class CalendarService {
             throw new IllegalArgumentException("New appointment duration cannot exceed " + APPOINTMENT_MAX_DURATION_HOURS + " hours.");
         }
 
-        // TODO: check the existing doctor and patient overlap
+        requireNoOverlap(appointment.getDoctor().getId(), appointment.getPatient().getId(), newStart, newEnd, appointmentId);
 
         appointment.setStart(newStart);
         appointment.setEnd(newEnd);
@@ -158,5 +153,11 @@ public class CalendarService {
     public Page<ScheduledAppointment> getByDoctor(Long doctorId, Pageable pageable) {
         accessGuard.requireSelfDoctor(doctorId);
         return scheduledAppointmentRepository.findByDoctorIdOrderByStartAsc(doctorId, pageable);
+    }
+
+    private void requireNoOverlap(Long doctorId, Long patientId, LocalDateTime start, LocalDateTime end, Long excludedId) {
+        if (scheduledAppointmentRepository.existsOverlapping(doctorId, patientId, start, end, excludedId, ScheduledAppointment.Status.SCHEDULED)) {
+            throw new IllegalArgumentException("The doctor or the patient already has an appointment overlapping " + start + "-" + end + ".");
+        }
     }
 }
