@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ScheduledAppointmentDto } from "@micro-medic/shared-types";
+import { type ScheduledAppointmentDto } from "@micro-medic/shared-types";
 import { MmButton, MmModal } from "@micro-medic/design-system-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppointmentMutations } from "../hooks/useAppointmentMutations";
-import { RescheduleSchema, rescheduleSchema } from "../schemas";
+import { type RescheduleSchema, rescheduleSchema } from "../schemas";
 import {
     bookingErrorMessage,
     dateTimeLocalToLocalDateTime,

@@ -11,8 +11,16 @@ import { queryKeys } from '../state';
 export function useAppointmentMutations() {
     const queryClient = useQueryClient();
 
+    /*
+     * `invalidateQueries` returns a promise that settles when the refetch it triggers completes.
+     * Nothing here awaits it — the refetch drives the query's own `isFetching`/`data`, which is
+     * what the UI already renders — but a rejection still has to go somewhere, or a failed
+     * refetch is an unhandled rejection and the list silently keeps showing stale appointments.
+     */
     const invalidate = () => {
-        queryClient.invalidateQueries({ queryKey: queryKeys.calendar });
+        queryClient.invalidateQueries({ queryKey: queryKeys.calendar }).catch((error: unknown) => {
+            console.error('[calendar] Failed to refresh appointments after a mutation:', error);
+        });
     }
 
     const notifySuccess = (message: string) => eventBus.emit(EventTypes.NOTIFICATION_SHOW, {

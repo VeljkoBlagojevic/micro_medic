@@ -1,5 +1,5 @@
 import { Role, type ScheduledAppointmentDto } from "@micro-medic/shared-types";
-import { CalendarEvent } from "../types";
+import { type CalendarEvent } from "../types";
 import { parseLocalDateTime } from "./datetime";
 
 /**

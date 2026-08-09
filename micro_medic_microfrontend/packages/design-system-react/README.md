@@ -41,6 +41,7 @@ bound a `dissmissible` typo, another declared a `heading` prop while its callers
 | Component | Prop | DOM event |
 |---|---|---|
 | `MmInput` | `onInput`, `onChange`, `onBlur` | `mm-input`, `mm-change`, `mm-blur` |
+| `MmSelect` | `onInput`, `onChange`, `onBlur` | `mm-input`, `mm-change`, `mm-blur` |
 | `MmModal` | `onClose` | `mm-close` |
 | `MmCard` | `onCardClick` | `mm-card-click` |
 | `MmTable` | `onRowClick` | `mm-row-click` |
@@ -61,6 +62,13 @@ import { valueOf, type MmRowClickEvent } from '@micro-medic/design-system-react'
 A controlled input built on `MmInput`, taking `value` / `onValueChange`. It is deliberately
 **not** bound to a form library — the react-hook-form adapter lives in the consuming MFE
 (`calendar/src/components/MmFormField.tsx`), so the design system stays dependency-free.
+
+## `MmSelectField`
+
+The same contract for `MmSelect`: `value` / `onValueChange` plus an `options` array. Values are
+always strings, because a DOM select value is a string — a caller that needs a number converts
+at its own edge (see `auth/src/components/MmSelectFormField.tsx`, whose `numeric` flag also maps
+"nothing selected" to `undefined` rather than `NaN`).
 
 ## Adding a binding
 

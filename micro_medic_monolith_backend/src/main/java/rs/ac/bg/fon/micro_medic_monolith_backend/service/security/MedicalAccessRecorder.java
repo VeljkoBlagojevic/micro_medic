@@ -16,10 +16,19 @@ public class MedicalAccessRecorder {
     private final MedicalAccessLogRepository medicalAccessLogRepository;
 
     /**
-     * Records access log with REQUIRES_NEW propagation so it writes independently
-     * of callers marked @Transactional(readOnly=true) which would otherwise use FlushMode.MANUAL.
+     * Writes the audit row in its own transaction.
+     *
+     * <p>{@code REQUIRES_NEW} is required, not defensive: most callers of {@link AccessGuard} are
+     * read paths annotated {@code @Transactional(readOnly = true)}, and Spring sets the Hibernate
+     * session's flush mode to {@code MANUAL} for those. Joining such a transaction (the default
+     * {@code REQUIRED}) leaves the row in the persistence context and never issues the INSERT —
+     * the access silently goes unaudited.
+     *
+     * <p>Correspondingly this method must <b>not</b> be {@code readOnly}. That flag is what sets
+     * {@code FlushMode.MANUAL} in the first place, so marking the new transaction read-only
+     * reproduces the bug it exists to avoid, one transaction further down.
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void record(MedicalAccessLog.AccessedResourceType resourceType, Long resourceId, Long patientId, User accessor) {
         MedicalAccessLog log = MedicalAccessLog.builder()
                 .accessorId(accessor.getId())

@@ -87,11 +87,36 @@ export class MmTable extends LitElement {
     /**
      * `String(value)` turned a missing field into the literal text "undefined" or "null" in
      * the cell. Nullish values render as an empty cell instead.
+     *
+     * A cell holding an object or array has no sensible default rendering — `String()` would put
+     * "[object Object]" in front of the user, which looks like a bug in the *app*. That is the
+     * column's decision, so it renders empty and warns instead, pointing at the `format` hook
+     * that exists for exactly this case. `Date` is special-cased as the one object type with a
+     * useful built-in string form.
      */
     private cellValue(column: MmTableColumn, row: MmTableRow): string {
         const value = row[column.key];
         if (column.format) return column.format(value, row);
-        return value === null || value === undefined ? '' : String(value);
+        if (value === null || value === undefined) return '';
+        if (value instanceof Date) return value.toLocaleString();
+
+        // Allow-list the types with a meaningful string form rather than excluding the ones
+        // without: `typeof value !== 'object'` still admits `function`, whose `String()` is its
+        // source text. Listing what is renderable keeps the fallback honest as the row type
+        // widens.
+        if (
+            typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            typeof value === 'bigint'
+        ) {
+            return String(value);
+        }
+
+        console.warn(
+            `[mm-table] Column "${column.key}" holds a ${typeof value}; provide a \`format\` function to render it.`
+        );
+        return '';
     }
 
     private onRowClick(row: MmTableRow) {

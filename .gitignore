@@ -1,0 +1,31 @@
+# Root ignore rules. The two projects keep their own .gitignore for build output
+# (`micro_medic_monolith_backend/.gitignore`, `micro_medic_microfrontend/.gitignore`); this file
+# covers the repository root and anything that applies to both.
+
+# --- dependencies and build output -------------------------------------------------
+node_modules/
+dist/
+target/
+coverage/
+
+# --- editor and OS ----------------------------------------------------------------
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- secrets ----------------------------------------------------------------------
+# Nothing in this repo reads a .env file today, but JWT_SECRET and the MySQL credentials are
+# passed as environment variables, so a contributor reaching for a .env is the obvious next step.
+# Ignoring it up front is cheaper than removing a committed secret from history.
+.env
+.env.local
+.env*.local
+
+# --- npm/yarn registry configuration ----------------------------------------------
+# See micro_medic_microfrontend/README.md: this repo is developed behind a corporate registry
+# mirror, and a checked-in registry override would silently redirect every contributor's
+# installs. Keep that configuration machine-local.
+.npmrc
+.yarnrc

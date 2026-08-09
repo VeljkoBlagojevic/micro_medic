@@ -1,0 +1,153 @@
+/**
+ * Styles owned by the `nav` micro-frontend.
+ *
+ * Namespaced `nav-*`, and every value a `--mm-*` token — the two rules every MFE stylesheet in
+ * this repo follows, because several independently deployed remotes share one document and an
+ * unprefixed class or a literal hex is how they collide or drift.
+ *
+ * The bar itself is `.mm-appbar` from the design system's `global.css` (height, colour and
+ * padding, so every fragment lines up against the same header height). Only what is specific to
+ * *this* bar lives here — and note what is *not*: there is no rule for the sign-out control,
+ * because it is an `<mm-button>` and its appearance is the design system's business. A local
+ * override would either be unreachable (the component renders into a shadow root) or a
+ * `--mm-*` token override, which in the chrome would mean the most visible button in the
+ * application is the one that no longer matches the rest of it.
+ *
+ * No reset and no `:root` block: those belong to the shell.
+ */
+
+/*
+ * A custom element is `display: inline` until told otherwise, and an inline box ignores
+ * `align-items`, `min-height` and the rest of what `.mm-appbar` sets. So the host needs a
+ * `display` of its own before the layout classes on it mean anything.
+ *
+ * The selectors are the tag names rather than the classes: the class is added in the element's
+ * constructor, so a tag present in the initial HTML would be unstyled for the moment before its
+ * definition is applied (`nav`'s bundle is a federated remote and loads asynchronously). Styling
+ * the tag makes the frame correct from first paint — a smaller version of the same reason the
+ * shell, not an MFE, owns the theme.
+ */
+nav-app-bar {
+    display: flex;
+}
+
+nav-footer {
+    display: block;
+}
+
+.nav-bar {
+    /* `.mm-appbar` is already a flex row; this pushes the account block to the far end. */
+    justify-content: space-between;
+}
+
+.nav-bar__links {
+    display: flex;
+    align-items: center;
+    gap: var(--mm-space-4, 16px);
+    /* Takes the slack so the account block sits hard right regardless of link count. */
+    margin-right: auto;
+    margin-left: var(--mm-space-6, 24px);
+}
+
+/*
+ * The bar's links, including "Sign in". `.mm-appbar a` in `global.css` already fixes the colour
+ * (the bar is dark, so accent-blue links would be unreadable); this adds the bar's own affordance.
+ */
+.nav-bar__link {
+    padding-block: var(--mm-space-1, 4px);
+    /* A transparent border, so the current-page underline below does not shift the text. */
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+.nav-bar__link:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+
+/* Driven by `aria-current`, so the visual state cannot disagree with the announced one. */
+.nav-bar__link[aria-current='page'] {
+    border-bottom-color: currentColor;
+    opacity: 1;
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.nav-bar__account {
+    display: flex;
+    align-items: center;
+    gap: var(--mm-space-3, 12px);
+}
+
+.nav-bar__user {
+    display: flex;
+    align-items: center;
+    gap: var(--mm-space-2, 8px);
+    font-size: var(--mm-font-size-sm, 12px);
+    opacity: 0.85;
+}
+
+/*
+ * The role badge. A tinted pill rather than a status colour: `--mm-color-success` and friends mean
+ * something in this system ("this went well"), and a role is not a status. `currentColor` keeps it
+ * legible whatever the bar is themed to, which a hardcoded neutral would not.
+ */
+.nav-bar__role {
+    padding: 0 var(--mm-space-2, 8px);
+    border: 1px solid currentColor;
+    border-radius: var(--mm-radius-lg, 12px);
+    font-size: var(--mm-font-size-sm, 12px);
+    line-height: 1.6;
+    opacity: 0.75;
+}
+
+/*
+ * "Skip to content" — off-screen until focused, then pinned to the top-left of the viewport.
+ *
+ * `position: fixed` rather than `absolute`: the bar is inside the shell's layout and an absolutely
+ * positioned child would be clipped by, or scroll with, whatever ancestor establishes the
+ * containing block. The z-index comes from the shared scale for the same reason every overlay in
+ * the repo does — a link that appears *behind* a sticky header on focus is worse than no link.
+ */
+.nav-bar__skip {
+    position: fixed;
+    top: var(--mm-space-2, 8px);
+    left: var(--mm-space-2, 8px);
+    z-index: var(--mm-z-index-sticky, 200);
+    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
+    color: var(--mm-color-on-primary, #fff);
+    background-color: var(--mm-color-primary-dark, #0b2647);
+    border-radius: var(--mm-radius-sm, 4px);
+    font-size: var(--mm-font-size-sm, 12px);
+    text-decoration: none;
+    /* Moved out of view rather than `display: none`, which would drop it from the tab order —
+       the whole point is that it is the first thing a keyboard user reaches. */
+    transform: translateY(-200%);
+}
+
+.nav-bar__skip:focus-visible {
+    transform: translateY(0);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .nav-bar__name {
+        /* The name is the first thing to go when the bar runs out of room; the role badge and the
+           sign-out control carry more information per pixel. */
+        display: none;
+    }
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.nav-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mm-space-3, 12px);
+    padding-block: var(--mm-space-4, 16px);
+    border-top: 1px solid var(--mm-color-border, #dee2e6);
+    color: var(--mm-color-text-muted, #6c757d);
+    font-size: var(--mm-font-size-sm, 12px);
+}

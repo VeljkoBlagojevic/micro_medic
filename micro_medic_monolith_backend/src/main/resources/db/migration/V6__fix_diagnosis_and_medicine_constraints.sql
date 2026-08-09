@@ -1,6 +1,6 @@
 -- A diagnosis is many-to-one: any number of examinations may carry the same ICD-10 code.
 -- V1 declared examination.diagnosis UNIQUE, which capped each code at one examination
--- system-wide, so the second patient diagnosed with anything failed with a 489.
+-- system-wide, so the second patient diagnosed with anything failed with a 409.
 -- The FK is dropped first because it depends on the unique index, and the replacement
 -- index is created before the FK is re-added so MySQL does not auto-create its own.
 

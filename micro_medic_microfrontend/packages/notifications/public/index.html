@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notifications MFE — standalone</title>
+    <!--
+      remoteEntry.js is NOT loaded here. This page is the standalone dev harness: webpack's own
+      bundle is injected by HtmlWebpackPlugin, and pulling in remoteEntry.js as well would
+      evaluate the container a second time.
+    -->
+    <style>
+      /* Harness chrome only. This MFE ships no stylesheet of its own — everything it renders is
+         inside `mm-toast-region`'s shadow root. */
+      body { margin: 0; padding: 24px; }
+      .harness { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 24px; }
+      .harness__label { opacity: 0.6; margin-inline-start: 8px; }
+      .harness button { font: inherit; cursor: pointer; }
+      .notes { max-width: 60ch; }
+    </style>
+  </head>
+  <body>
+    <h1>Notifications</h1>
+
+    <!--
+      Stands in for the other micro-frontends. In the composed application these events come from
+      `calendar` (booking, rescheduling, cancelling), `auth` (sign-in failures) and `examination`.
+    -->
+    <div class="harness">
+      <span class="harness__label">Emit</span>
+      <button type="button" data-harness-notify="success">success</button>
+      <button type="button" data-harness-notify="info">info</button>
+      <button type="button" data-harness-notify="warning">warning</button>
+      <button type="button" data-harness-notify="error">error</button>
+
+      <span class="harness__label">Behaviour</span>
+      <button type="button" data-harness-sticky>same id (replaces)</button>
+      <button type="button" data-harness-flood>five at once (cap is 4)</button>
+      <button type="button" data-harness-logout>sign out (clears)</button>
+    </div>
+
+    <div class="notes">
+      <p>
+        The <code>error</code> toast stays until it is dismissed; the others expire on the schedule in
+        <code>src/durations.ts</code>. A failure that vanishes after four seconds is worse than no
+        toast at all — the user is left believing the save succeeded.
+      </p>
+      <p>
+        Open the console: every removal, whether clicked or expired, is republished on the bus as
+        <code>NOTIFICATION_DISMISSED</code>. Nothing subscribes to it yet, and it is the half of the
+        contract that lets an emitter correlate a toast it owns.
+      </p>
+      <p>
+        There is no mount point in this page. The region is <code>position: fixed</code>, which is why
+        the shell can mount this micro-frontend anywhere in the document.
+      </p>
+    </div>
+
+    <!--
+      Placed by markup rather than created in `src/standalone.ts`, the same way the shell's own
+      `index.html` declares its mount points — the harness mirrors the real composition.
+    -->
+    <notification-center></notification-center>
+  </body>
+</html>

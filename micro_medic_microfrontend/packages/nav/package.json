@@ -1,20 +1,27 @@
 {
-  "name": "search",
-  "version": "0.0.0",
+  "//": "Named `nav` to match its Module Federation name and directory; it was `search`, a leftover from the single-spa starter this package was copied from.",
+  "name": "nav",
+  "version": "1.0.0",
   "private": true,
+  "//deps": "No framework runtime, and no `single-spa` either. The chrome is mounted on every route, so anything it depends on is paid for on first paint by every visitor — see README.md. The single-spa adapter is `src/lifecycles.ts`, and it is short because a custom element's connect/disconnect already IS the lifecycle contract.",
+  "//design-system": "A real dependency: the bar renders `<mm-button>`, so the components must be registered at runtime, not just their CSS tokens present. Lit rides along transitively and is a federation singleton (see webpack.config.js) — the shell already has it on the page for `calendar` and `auth`, so the marginal cost to first paint is nil, and a chrome that hand-rolled its own button would be the most visible thing in the app to drift from the theme.",
   "dependencies": {
-    "@babel/core": "^7.8.6",
-    "@babel/preset-react": "^7.8.3",
-    "babel-loader": "^8.0.6",
+    "@micro-medic/design-system": "1.0.0",
+    "@micro-medic/shared-store": "1.0.0",
+    "@micro-medic/shared-types": "1.0.0"
+  },
+  "devDependencies": {
+    "css-loader": "7.1.4",
     "html-webpack-plugin": "^5.6.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "serve": "^14.0.1",
-    "single-spa-react": "^4.6.1",
-    "webpack": "5.74.0",
-    "webpack-cli": "^4.10.0"
+    "style-loader": "4.0.0",
+    "ts-loader": "9.6.2",
+    "typescript": "^6.0.3",
+    "webpack": "5.108.4",
+    "webpack-cli": "7.2.1"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "start": "webpack --watch",
     "build": "webpack --mode production",
     "serve": "serve dist -p 3003"

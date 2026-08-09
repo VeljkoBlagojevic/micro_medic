@@ -30,6 +30,14 @@ import { createComponent as litCreateComponent, type EventName } from '@lit/reac
  */
 export function createComponent<
     TElement extends HTMLElement,
+    /*
+     * `{}` is load-bearing and must not be "modernised" to `Record<string, never>` or `object`.
+     * `@lit/react` computes its props as `Omit<…, keyof TEvents>`, and `keyof {}` is `never`, so
+     * nothing is stripped. `keyof Record<string, never>` is `string`, which strips *every* prop —
+     * that substitution makes `<MmButton variant="primary">Save</MmButton>` fail to compile with
+     * "Type 'string' is not assignable to type '(e: never) => void'" at every call site.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     TEvents extends Record<string, EventName | string> = {},
 >(tagName: string, elementClass: { new (): TElement; prototype: TElement }, events?: TEvents) {
     return litCreateComponent({

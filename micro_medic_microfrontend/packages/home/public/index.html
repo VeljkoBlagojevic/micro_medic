@@ -5,13 +5,15 @@
       Remote containers, loaded eagerly because each remote uses `library: { type: 'var' }` —
       the global must exist before single-spa imports from it. One tag per port in the topology:
       3001 home (self), 3002 icd10, 3003 nav, 3004 examination, 3005 shared-store,
-      3009 calendar. Adding a remote means adding it here too.
+      3006 auth, 3007 notifications, 3009 calendar. Adding a remote means adding it here too.
     -->
     <script src="http://localhost:3001/remoteEntry.js"></script>
     <script src="http://localhost:3002/remoteEntry.js"></script>
     <script src="http://localhost:3003/remoteEntry.js"></script>
     <script src="http://localhost:3004/remoteEntry.js"></script>
     <script src="http://localhost:3005/remoteEntry.js"></script>
+    <script src="http://localhost:3006/remoteEntry.js"></script>
+    <script src="http://localhost:3007/remoteEntry.js"></script>
     <script src="http://localhost:3009/remoteEntry.js"></script>
     <!--
       Legacy: MUI CSS is still used by the plain-JS packages (`nav`, `examination`). It stays
@@ -23,16 +25,59 @@
     <script src="//cdn.muicss.com/mui-0.10.1/js/mui.min.js"></script>
   </head>
   <body>
-    <div class="mui-container">
+    <!--
+      Mount points, in DOM order. single-spa renders each application into
+      `#single-spa-application:NAME`, and appends its own div to `<body>` for any application
+      without one — which is how a remote ends up outside the layout entirely.
+
+      `auth` is deliberately outside `.mui-container`: it is a vertical split that owns the whole
+      viewport, and the shell's chrome is switched off on its routes (`exceptRoutes` in
+      `src/routes.js`).
+    -->
+    <div id="single-spa-application:auth"></div>
+
+    <div class="mm-container">
       <div id="single-spa-application:header"></div>
-      <div class="examination-area">
-        <div id="single-spa-application:icd10"></div>
-        <div>
+
+      <!--
+        The main landmark, and the target of the header's "skip to content" link (nav names the id
+        as `MAIN_LANDMARK_ID`, so the contract is written down on both sides). It belongs to the
+        shell because the shell owns the composition: which fragments count as "the content" is a
+        layout decision, and no single remote can see enough of the page to declare it.
+
+        `tabindex="-1"` is what makes the skip link actually work. Following a fragment link scrolls
+        to the target but moves focus only if the target is focusable, so without this a keyboard
+        user lands visually on the content while the next Tab returns them to the second nav link.
+      -->
+      <main id="mm-main" tabindex="-1">
+        <!--
+          The horizontal split, active on `/examination`: the ICD-10 catalogue beside the
+          examination form. Two independently deployed micro-frontends composed onto one screen,
+          talking only over the event bus (`ICD10_DISEASE_SELECTED`) — neither imports the other.
+
+          `.mm-split` is a design-system layout utility, not a shell-local class: composing
+          fragments is the shell's job, but the vocabulary it does it with is shared.
+        -->
+        <div class="mm-split mm-region">
+          <div id="single-spa-application:icd10"></div>
           <div id="single-spa-application:examination"></div>
         </div>
-      </div>
-      <div id="single-spa-application:calendar"></div>
+
+        <div id="single-spa-application:calendar" class="mm-region"></div>
+      </main>
+
       <div id="single-spa-application:footer"></div>
     </div>
+
+    <!--
+      The notification layer, last in the document and outside `.mm-container` on purpose: its
+      region is `position: fixed`, so it is positioned against the viewport rather than this
+      element, and the container's `max-width` would otherwise be inherited for nothing.
+
+      Unlike the header and footer it is active on *every* route including `/login` — a failed
+      sign-in has to be able to say so. That difference in route contract is why it is its own
+      micro-frontend on :3007 rather than a third application inside `nav`.
+    -->
+    <div id="single-spa-application:notifications"></div>
   </body>
 </html>

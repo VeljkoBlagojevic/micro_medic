@@ -24,9 +24,16 @@ export function getStatusColor(status: AppointmentStatus | string): string {
     return isValidStatus(status) ? STATUS_COLOR_MAP[status] : FALLBACK_COLOR;
 }
 
-/** Only a SCHEDULED appointment can still be rescheduled or cancelled. */
+/**
+ * Only a SCHEDULED appointment can still be rescheduled or cancelled.
+ *
+ * Narrows through `isValidStatus` rather than comparing the parameter to the enum member
+ * directly: `status` is typed `AppointmentStatus | string`, and comparing a bare `string` to an
+ * enum member is exactly the unsound comparison that would keep passing if the enum's value
+ * were ever changed away from its own name.
+ */
 export function isActionable(status: AppointmentStatus | string): boolean {
-    return status === AppointmentStatus.SCHEDULED;
+    return isValidStatus(status) && status === AppointmentStatus.SCHEDULED;
 }
 
 /** `"SCHEDULED"` -> `"Scheduled"`. Unknown values pass through untouched. */

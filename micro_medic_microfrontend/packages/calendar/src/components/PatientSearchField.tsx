@@ -1,6 +1,6 @@
 import { MmField, MmSpinner } from "@micro-medic/design-system-react";
 import { MIN_SEARCH_CHARACTERS, usePatientSearch } from "../hooks/usePatientSearch";
-import { PatientOption } from "../types";
+import { type PatientOption } from "../types";
 import { searchErrorMessage } from "../utils";
 
 interface PatientSearchFieldProps {

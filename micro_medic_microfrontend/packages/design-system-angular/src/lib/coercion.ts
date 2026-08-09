@@ -15,7 +15,11 @@
  * of what the template author wrote.
  */
 export function booleanInput(value: unknown): boolean {
-    return value != null && `${value}` !== 'false';
+    // The input is genuinely `unknown` — it comes from a template binding — and stringifying an
+    // object here is intended, not a bug: any non-null value that is not the literal `'false'` is
+    // `true`, so *what* it stringifies to is irrelevant. Only the `'false'` case reads the text.
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    return value != null && String(value) !== 'false';
 }
 
 /** Mirrors Angular's `numberAttribute`, so `rows="4"` from a template is forwarded as `4`. */

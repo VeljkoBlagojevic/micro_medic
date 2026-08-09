@@ -130,6 +130,9 @@ hr {
  * Deliberately a small, closed set: layout primitives and a11y helpers only. Anything
  * component-shaped belongs in a Lit component instead, so that React, Angular and Svelte
  * consumers all get it — a utility class only helps whoever remembers to type it.
+ *
+ * The layout ones (`.mm-container`, `.mm-region`, `.mm-split`) are for the *shell*: composing
+ * fragments into a page is its job, and these are the vocabulary it does it with.
  */
 
 /** Centred page container. Used by the shell to bound the composed page width. */
@@ -147,6 +150,20 @@ hr {
 
 .mm-region + .mm-region {
     border-top: 1px solid var(--mm-color-border);
+}
+
+/*
+ * Collapse a region whose micro-frontend is not mounted.
+ *
+ * single-spa removes an application's *content* on unmount but leaves the mount `<div>` in the
+ * document, so without this an inactive region keeps its padding and separator — a stray
+ * horizontal rule and a band of empty space on every route where that MFE is off. `:empty` alone
+ * is not enough: a wrapper like `.mm-split` still has its (empty) child mount points, hence the
+ * `:has()` form as well.
+ */
+.mm-region:empty,
+.mm-region:not(:has(*:not(:empty))) {
+    display: none;
 }
 
 /** Full-width bar pinned to the shared header height, so fragments line up. */
@@ -192,6 +209,32 @@ hr {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: var(--mm-space-4);
+}
+
+/**
+ * Two micro-frontends side by side on one screen — a *horizontal split*.
+ *
+ * A layout primitive rather than a component, because the shell is the only thing allowed to
+ * know that two fragments share a screen. Neither MFE can own this rule: each renders into its
+ * own mount point and must work on its own, so whichever one shipped the two-column CSS would
+ * be imposing a layout the other cannot see.
+ *
+ * `minmax(0, 1fr)` rather than `1fr`: a grid item's automatic minimum size is its content, so a
+ * wide table or long unbroken string inside one fragment would otherwise push the column past
+ * its share and overflow the container.
+ */
+.mm-split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--mm-space-4);
+    align-items: start;
+}
+
+/* One column below this width: two fragments in ~300px each is unusable. */
+@media (max-width: 900px) {
+    .mm-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 .mm-muted {

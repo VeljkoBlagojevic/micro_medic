@@ -1,0 +1,11 @@
+# Build output
+dist
+node_modules
+coverage
+
+# Generated
+yarn.lock
+package-lock.json
+
+# Svelte needs the prettier-plugin-svelte parser; the one legacy component is left alone.
+*.svelte

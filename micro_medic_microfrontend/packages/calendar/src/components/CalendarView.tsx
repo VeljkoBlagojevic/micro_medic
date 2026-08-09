@@ -3,8 +3,8 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 // an entirely different signature, so every date the localizer tried to parse threw.
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
-import { CalendarEvent, CalendarViewKind } from "../types";
-import { useCallback, useMemo } from "react";
+import { type CalendarEvent, type CalendarViewKind } from "../types";
+import { useCallback } from "react";
 import { getStatusColor } from "../utils";
 
 const localizer = dateFnsLocalizer({

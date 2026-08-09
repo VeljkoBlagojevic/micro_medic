@@ -5,13 +5,35 @@
     "build": "yarn workspaces run build",
     "serve": "wsrun --parallel serve",
     "start": "concurrently \"wsrun --parallel start\" \"wsrun --parallel serve\"",
-    "typecheck": "wsrun --parallel typecheck"
+    "typecheck": "wsrun --parallel typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "//format": "Prettier is adopted in report-only mode: the config is authoritative for new and touched files, but the ~86 pre-existing files have not been reflowed, so `format:check` is not part of `verify` yet. Run `yarn format` as its own commit to switch it on — do that alone, never mixed with a change, or the reflow buries the real diff.",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "//verify": "What CI runs, and the one command to run before pushing.",
+    "verify": "yarn lint && yarn typecheck && yarn build"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
+    "@eslint/js": "9.39.5",
     "concurrently": "^7.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "globals": "16.5.0",
+    "prettier": "3.6.2",
+    "typescript-eslint": "8.65.0",
     "wsrun": "^5.2.0"
+  },
+  "comments": {
+    "resolutions": "babel-loader 8 resolves @babel/core from the hoisted root, but @babel/preset-react 7 asserts a peer of ^7.0.0-0 and throws on 8.x. Without this pin an install that hoists @babel/core 8 breaks every babel-loader package (home, nav, icd10) with 'Requires Babel ^7.0.0-0, but was loaded with 8.x'.",
+    "lint-versions": "The lint toolchain is pinned exactly, not ranged. typescript-eslint's `typescript` peer is an upper-bounded range (`>=4.8.4 <6.1.0`) and this repo is on TS 6, so a caret range would let an install pick a version that refuses to resolve. 8.65.0 is the lowest release whose peer range admits TS 6."
+  },
+  "resolutions": {
+    "@babel/core": "^7.29.7"
   }
 }

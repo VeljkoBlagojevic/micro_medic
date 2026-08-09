@@ -1,0 +1,94 @@
+name: Frontend
+
+# Two jobs, split by what they prove rather than by package: `checks` proves the source is
+# well-formed (lint + typecheck), `build` proves every micro-frontend still bundles. They are
+# separate because the second is much slower and only worth running on a source tree that already
+# passes the first — and because a failure in one tells you something different from the other.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  # Manual runs, for checking a branch without pushing to it.
+  workflow_dispatch:
+
+defaults:
+  run:
+    # Every step runs from the monorepo root; there is no build file above it.
+    working-directory: micro_medic_microfrontend
+
+concurrency:
+  # A new push to the same branch cancels the previous run — CI minutes spent finishing a check
+  # on a commit nobody will look at again are wasted.
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 22 is what this repo is developed against. Pinned to the major, not `latest`: the
+          # legacy packages sit on webpack 5.74 and babel 7, and a Node bump has broken that
+          # combination before.
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: micro_medic_microfrontend/yarn.lock
+
+      # `--frozen-lockfile` is the point of running install in CI at all: it fails if
+      # `package.json` and `yarn.lock` disagree, which is the one dependency problem local
+      # development reliably hides.
+      - run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      # Runs every package's own `tsc --noEmit`. Deliberately separate from lint even though
+      # typescript-eslint already builds a program: `tsc` checks the whole package, while the
+      # linter only checks the files it visits.
+      - name: Typecheck
+        run: yarn typecheck
+
+      # Report-only for now — the repo predates Prettier and ~86 files have not been reflowed.
+      # `continue-on-error` makes the diff visible in the log without failing the build; drop it
+      # once `yarn format` has been run as its own commit.
+      - name: Format check (report only)
+        run: yarn format:check
+        continue-on-error: true
+
+  build:
+    name: Build all micro-frontends
+    runs-on: ubuntu-latest
+    needs: checks
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: micro_medic_microfrontend/yarn.lock
+
+      - run: yarn install --frozen-lockfile
+
+      # Builds every workspace. This is the check that catches what neither lint nor `tsc` can:
+      # a Module Federation misconfiguration, a missing loader, or a `.js`-specifier that TS
+      # accepts but webpack cannot resolve without an `extensionAlias` entry.
+      - name: Build
+        run: yarn build
+
+      # Uploaded so a failed integration can be inspected without reproducing the build. Each
+      # remote's `remoteEntry.js` is the contract other MFEs load at runtime, so having the
+      # actual artifacts is the difference between reading a config and reading what it produced.
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: micro-frontend-bundles
+          path: micro_medic_microfrontend/packages/*/dist
+          retention-days: 7
+          # A package with no `build` script produces no `dist`; that is expected, not an error.
+          if-no-files-found: ignore

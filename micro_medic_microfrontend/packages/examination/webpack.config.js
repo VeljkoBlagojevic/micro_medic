@@ -1,7 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const path = require('path');
 
 module.exports = {
   entry: './src/index',
@@ -19,7 +17,10 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.svelte', '.js', '.json']
+    extensions: ['.svelte', '.js', '.json'],
+    // svelte-loader warns without this: Svelte packages publish a `svelte` export condition
+    // pointing at uncompiled component sources, and webpack must prefer it over `browser`.
+    conditionNames: ['svelte', 'browser', 'import', 'module', 'require', 'node']
   },
 
   module: {
@@ -33,10 +34,6 @@ module.exports = {
             externalDependencies: true,
           },
         },
-      },
-      {
-        test: /\.md$/,
-        loader: 'raw-loader'
       }
     ]
   },
@@ -47,13 +44,19 @@ module.exports = {
       library: { type: 'var', name: 'examination' },
       filename: 'remoteEntry.js',
       remotes: {
-        home: 'home',
-        store: 'store',
+        // Was `store: 'store'`, which matched no remote — the shared store publishes itself
+        // as `shared_store`. The `home: 'home'` entry was unused; a remote importing the
+        // shell would invert the dependency direction.
+        shared_store: 'shared_store'
       },
       exposes: {
         './Examination': './src/index'
       },
-      shared: []
+      shared: {
+        // Singleton, to match the shared store's own declaration — two axios copies would
+        // mean one that never received `configureApiClient`.
+        axios: { singleton: true }
+      }
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html'

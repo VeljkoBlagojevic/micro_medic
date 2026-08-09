@@ -61,6 +61,7 @@ are applied.
 | Element | Output | DOM event |
 |---|---|---|
 | `mm-input` | `valueInput`, `valueChange`, `touched` | `mm-input`, `mm-change`, `mm-blur` |
+| `mm-select` | `valueInput`, `valueChange`, `touched` | `mm-input`, `mm-change`, `mm-blur` |
 | `mm-modal` | `close` | `mm-close` |
 | `mm-card` | `cardClick` | `mm-card-click` |
 | `mm-table` | `rowClick` | `mm-row-click` |
@@ -98,6 +99,14 @@ what `MmField` does for react-hook-form on the React side.
 
 Do **not** combine `[value]` with a form directive on the same element — the form control and the
 template binding would both claim ownership of the value. Pick one.
+
+`MmSelectDirective` does the same for `<mm-select>`, for the same reason: Angular's
+`SelectControlValueAccessor` drives a real `<select>` and its `<option>` children, but here both
+live in a shadow root and the options arrive as an `options` property.
+
+```html
+<mm-select label="Specialization" [options]="departments" formControlName="specializationId" />
+```
 
 ## Theming
 

@@ -1,9 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="http://localhost:3005/remoteEntry.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nav MFE — standalone</title>
+    <!--
+      remoteEntry.js is NOT loaded here. This page is the standalone dev harness: webpack's own
+      bundle is injected by HtmlWebpackPlugin, and pulling in remoteEntry.js as well would
+      evaluate the container a second time.
+    -->
+    <style>
+      body { margin: 0; }
+      .harness {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        padding: 8px 16px; background: #212529; color: #fff; font-size: 13px;
+      }
+      .harness button { font: inherit; cursor: pointer; }
+      .harness__label { opacity: 0.7; margin-inline-start: 8px; }
+      main { min-height: 40vh; padding: 24px; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Stands in for the shell: it fakes the two inputs the chrome reacts to but does not own —
+      auth state and the current route. Toasts are not here; they belong to the `notifications`
+      MFE on :3007, which has a harness of its own.
+    -->
+    <div class="harness">
+      <span class="harness__label">Auth</span>
+      <button type="button" data-harness-login="doctor">Sign in as doctor</button>
+      <button type="button" data-harness-login="patient">Sign in as patient</button>
+      <button type="button" data-harness-logout>Sign out</button>
+
+      <span class="harness__label">Route</span>
+      <button type="button" data-harness-route="/calendar">/calendar</button>
+      <button type="button" data-harness-route="/examination">/examination</button>
+      <button type="button" data-harness-route="/calendar-archive">/calendar-archive</button>
+    </div>
+
+    <!-- The elements themselves, in the order the shell mounts them. -->
+    <nav-app-bar></nav-app-bar>
+    <main id="mm-main">
+      <p>Feature micro-frontends render here in the composed application.</p>
+      <p>
+        Sign in as a doctor and then as a patient: the <code>Examination</code> link is offered
+        only to clinicians. Switching to <code>/calendar-archive</code> shows that
+        <code>/calendar</code> is not marked current — the match is on segment boundaries.
+      </p>
+      <p>Tab from the address bar to reveal the “Skip to content” link, which targets this element.</p>
+    </main>
+    <nav-footer></nav-footer>
   </body>
 </html>

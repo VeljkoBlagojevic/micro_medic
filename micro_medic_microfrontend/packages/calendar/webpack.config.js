@@ -25,7 +25,14 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json']
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+    // `moduleResolution: nodenext` makes tsc demand a `.js` extension on relative ESM
+    // imports (TS2835) even when the file is `.ts`/`.tsx`. This maps the specifier back to
+    // the real source so both tools agree; otherwise webpack looks for a literal `.js`
+    // sibling and fails to resolve. See `src/bootstrap-standalone.ts`.
+    extensionAlias: {
+      '.js': ['.ts', '.tsx', '.js']
+    }
   },
 
   module: {

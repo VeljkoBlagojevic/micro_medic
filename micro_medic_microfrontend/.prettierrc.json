@@ -1,0 +1,20 @@
+{
+    "printWidth": 100,
+    "tabWidth": 4,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "//": "The legacy plain-JS packages were written at 2 spaces and are not being reformatted wholesale — a repo-wide reflow would bury every future diff in whitespace.",
+            "files": ["packages/home/**/*.js", "packages/nav/**/*.js", "packages/icd10/**/*.js", "packages/examination/**/*.js"],
+            "options": { "tabWidth": 2 }
+        },
+        {
+            "//": "Prettier's default for JSON/YAML/Markdown. 4-space JSON is unusual and yaml is whitespace-significant.",
+            "files": ["*.json", "*.yml", "*.yaml", "*.md"],
+            "options": { "tabWidth": 2 }
+        }
+    ]
+}

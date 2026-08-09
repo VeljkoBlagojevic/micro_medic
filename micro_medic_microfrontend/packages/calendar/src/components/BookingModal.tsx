@@ -7,7 +7,7 @@ import { ConflictBanner } from "./ConflictBanner";
 import { MmFormField } from "./MmFormField";
 import { PatientSearchField } from "./PatientSearchField";
 import type { PatientOption } from "../types";
-import { BookingSchema, bookingSchema } from "../schemas";
+import { type BookingSchema, bookingSchema } from "../schemas";
 import { bookingErrorMessage, dateTimeLocalToLocalDate, defaultBookingWindow } from "../utils";
 
 interface BookingModalProps {

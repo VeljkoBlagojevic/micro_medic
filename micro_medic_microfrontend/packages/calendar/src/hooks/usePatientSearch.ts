@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { patientService } from "../services/patient.service";
-import { PatientOption } from "../types";
+import { type PatientOption } from "../types";
 import { debounce } from "../utils";
 
 /** Exported so the UI can describe the threshold without hardcoding the same number. */

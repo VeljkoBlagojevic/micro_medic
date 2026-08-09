@@ -1,0 +1,103 @@
+name: Backend
+
+# The backend's only test is `contextLoads()`, which sounds like it proves nothing — but under
+# this project's configuration it is the single most valuable check available. The `dev` profile
+# runs Flyway to head and then sets `ddl-auto=validate`, so booting the context against an empty
+# database asserts that *the migration chain produces exactly the schema the entities declare*.
+# That is the one invariant this repo can drift on silently: Hibernate creates nothing, so a new
+# `@Column` without a matching `V<n>__*.sql` only fails at startup — in CI here, rather than in
+# front of whoever next runs the app.
+#
+# Hence a real MySQL service container rather than `-DskipTests`. It costs ~20s of container boot
+# and buys migration verification on every push.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: micro_medic_monolith_backend
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and verify migrations
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        # Matches what the project targets locally. Pinned to a minor: the schema uses
+        # `ON DELETE SET NULL` FKs and index drops whose behaviour has shifted between majors.
+        image: mysql:8.4
+        env:
+          # The app authenticates as root (see `MYSQL_ROOT_USERNAME` in application.properties).
+          # A throwaway password for a container that lives for one job.
+          MYSQL_ROOT_PASSWORD: ci_root_password
+          # Created empty; Flyway owns every object in it. `baseline-on-migrate=false` in the dev
+          # profile means an empty schema is exactly what the migration chain expects.
+          MYSQL_DATABASE: micro_medic_monolith_backend
+        ports:
+          - 3306:3306
+        # Without a health check the job races the container: MySQL accepts TCP connections
+        # several seconds before it will accept a login, so the build would fail intermittently.
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pci_root_password"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+          --health-start-period=30s
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          # `<java.version>25</java.version>` in the pom. Note this is ahead of the JDK most
+          # contributors have installed locally, so CI is the first place a Java-25-only
+          # construct gets compiled against the version the project actually claims.
+          java-version: '25'
+          distribution: temurin
+          # Caches ~/.m2 keyed on the pom — Boot 4.1 pulls a large dependency tree.
+          cache: maven
+
+      - name: Make the Maven wrapper executable
+        # `mvnw`'s executable bit is routinely lost on Windows checkouts (this repo is developed
+        # there), and git stores the mode, so without this the run fails with "Permission denied".
+        run: chmod +x ./mvnw
+
+      - name: Build and run tests
+        run: ./mvnw --batch-mode --no-transfer-progress verify
+        env:
+          # The credentials the container was just created with.
+          MYSQL_ROOT_USERNAME: root
+          MYSQL_ROOT_PASSWORD: ci_root_password
+          # `JwtSecretValidator` only *warns* on a bad secret under `dev`, so the boot would
+          # survive without this — but then every token-signing path is untested. This is a
+          # throwaway 32-byte key generated for CI, not a secret: it signs nothing that leaves
+          # the job. A real deployment reads `JWT_SECRET` from its own secret store.
+          JWT_SECRET: Y2lfb25seV9kdW1teV9rZXlfZm9yX2dpdGh1Yl9hY3Rpb25zXzI1Ng==
+          SPRING_PROFILES_ACTIVE: dev
+
+      - name: Upload the jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: micro-medic-backend-jar
+          path: micro_medic_monolith_backend/target/*.jar
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Upload test reports
+        # `if: always()` is the point of this step — reports matter most when the build failed.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-surefire-reports
+          path: micro_medic_monolith_backend/target/surefire-reports
+          retention-days: 7
+          if-no-files-found: ignore

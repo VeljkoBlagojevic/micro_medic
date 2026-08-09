@@ -38,7 +38,11 @@ import {
  */
 @Directive()
 export abstract class MmElementDirective<TElement extends HTMLElement> implements OnChanges {
-    protected readonly elementRef: ElementRef<TElement> = inject(ElementRef);
+    // The type argument is on `inject`, not just the field: `inject(ElementRef)` resolves to
+    // `ElementRef<any>`, and annotating only the field launders that `any` through an assignment
+    // instead of narrowing it. Naming the type at the injection site is what actually types
+    // `nativeElement` as `TElement`.
+    protected readonly elementRef = inject<ElementRef<TElement>>(ElementRef);
 
     /** The underlying custom element, for callers that need its imperative API. */
     get nativeElement(): TElement {

@@ -5,12 +5,16 @@ export {
     MmErrorState,
     MmInput,
     MmModal,
+    MmSelect,
     MmSpinner,
     MmTable,
 } from './components';
 
 export { MmField } from './MmField';
 export type { MmFieldProps } from './MmField';
+
+export { MmSelectField } from './MmSelectField';
+export type { MmSelectFieldProps } from './MmSelectField';
 
 export { valueOf } from './types';
 export type { MmInputEvent, MmRowClickEvent, MmValueDetail } from './types';
@@ -23,6 +27,7 @@ export type {
     ButtonSize,
     ButtonVariant,
     ButtonType,
+    MmSelectOption,
     MmTableColumn,
     MmTableRow,
     SpinnerSize,

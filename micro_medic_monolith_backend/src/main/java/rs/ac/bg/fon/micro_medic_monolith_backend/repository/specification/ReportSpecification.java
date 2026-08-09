@@ -7,6 +7,18 @@ import java.time.LocalDateTime;
 
 public final class ReportSpecification {
 
+    /**
+     * The attribute every date filter here narrows on.
+     *
+     * <p>{@code creationTime} is {@link Report}'s own timestamp and the one {@code ReportDto}
+     * exposes, so it is what a caller filtering by date means. {@code Auditable.createdAt} also
+     * exists and is also a {@code LocalDateTime}, which is why filtering the wrong one of the two
+     * compiled cleanly and returned plausible-looking results — the dates a client can see came
+     * from one column while the filter read another. Named once so the two cannot drift apart
+     * again.
+     */
+    private static final String DATE_ATTRIBUTE = "creationTime";
+
     private ReportSpecification() {
     }
 
@@ -29,20 +41,20 @@ public final class ReportSpecification {
         return (root, query, criteriaBuilder) -> {
             if (startDate == null && endDate == null) return null;
             if (startDate != null && endDate != null) {
-                return criteriaBuilder.between(root.get("creationTime"), startDate, endDate);
+                return criteriaBuilder.between(root.get(DATE_ATTRIBUTE), startDate, endDate);
             } else if (startDate != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get("creationTime"), startDate);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(DATE_ATTRIBUTE), startDate);
             } else {
-                return criteriaBuilder.lessThanOrEqualTo(root.get("creationTime"), endDate);
+                return criteriaBuilder.lessThanOrEqualTo(root.get(DATE_ATTRIBUTE), endDate);
             }
         };
     }
 
     public static Specification<Report> createdAfter(LocalDateTime after) {
-        return ((root, query, criteriaBuilder) -> after == null ? null : criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), after));
+        return ((root, query, criteriaBuilder) -> after == null ? null : criteriaBuilder.greaterThanOrEqualTo(root.get(DATE_ATTRIBUTE), after));
     }
 
     public static Specification<Report> createdBefore(LocalDateTime before) {
-        return ((root, query, criteriaBuilder) -> before == null ? null : criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), before));
+        return ((root, query, criteriaBuilder) -> before == null ? null : criteriaBuilder.lessThanOrEqualTo(root.get(DATE_ATTRIBUTE), before));
     }
 }

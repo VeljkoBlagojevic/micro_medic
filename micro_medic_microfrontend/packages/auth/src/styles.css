@@ -1,0 +1,117 @@
+/**
+ * Styles owned by the `auth` micro-frontend.
+ *
+ * Two rules this file follows, both of which exist because several independently deployed
+ * MFEs share one document:
+ *
+ *  1. Every class is namespaced (`auth-*`, BEM `block__element`). An unprefixed `.card` or
+ *     `.form` would collide with whatever another remote ships under the same name, and the
+ *     stylesheet that loaded second would win — silently, and differently per deploy order.
+ *  2. Every value is a `--mm-*` token. A literal hex here drifts away from the design system
+ *     the moment the palette changes, and cannot be re-themed by the shell.
+ *
+ * No reset and no `:root` block: those are the shell's job (`global.css` / `tokens.css`).
+ * Shipping either from an MFE is the classic collision. Nothing here reaches into a `mm-*`
+ * component either — their internals are in a shadow root and unreachable by construction.
+ */
+
+.auth-root {
+    /*
+     * The vertical split: brand panel beside the form, each owning a full-height column.
+     * `1fr 1fr` rather than a fixed width so neither column can squeeze the other's text.
+     */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Fills the viewport below the shell's app bar, so the split reads as a full-page screen. */
+    min-height: calc(100vh - var(--mm-header-height, 60px));
+}
+
+/* Below this width two columns leave neither enough room; the brand panel stacks above. */
+@media (max-width: 900px) {
+    .auth-root {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+}
+
+.auth-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--mm-space-3, 12px);
+    padding: var(--mm-space-8, 32px);
+    background-color: var(--mm-color-primary, #0f3460);
+    color: var(--mm-color-on-primary, #fff);
+}
+
+.auth-brand__mark {
+    margin: 0;
+    font-size: var(--mm-font-size-2xl, 24px);
+    font-weight: var(--mm-font-weight-bold, 600);
+    letter-spacing: 0.02em;
+}
+
+.auth-brand__tagline {
+    margin: 0;
+    max-width: 28ch;
+    font-size: var(--mm-font-size-lg, 16px);
+    /* Inherits `--mm-color-on-primary`; dimmed rather than recoloured so it stays on-palette. */
+    opacity: 0.85;
+}
+
+.auth-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--mm-space-8, 32px) var(--mm-space-4, 16px);
+    background-color: var(--mm-color-bg, #f8f9fa);
+}
+
+.auth-card {
+    width: 100%;
+    /* Matches `--mm-modal-width-md`: a form this wide is the design system's own limit. */
+    max-width: var(--mm-modal-width-md, 560px);
+}
+
+.auth-card__lede {
+    margin: 0 0 var(--mm-space-4, 16px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.auth-error {
+    margin: 0 0 var(--mm-space-4, 16px);
+    padding: var(--mm-space-3, 12px);
+    border: 1px solid var(--mm-color-danger-border, #f1aeb5);
+    border-radius: var(--mm-radius-sm, 4px);
+    /* The soft surface pair, not `--mm-color-danger` — that one is tuned to sit behind text. */
+    background-color: var(--mm-color-danger-surface, #f8d7da);
+    color: var(--mm-color-on-danger-surface, #58151c);
+}
+
+.auth__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-4, 16px);
+}
+
+.auth__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--mm-space-4, 16px);
+}
+
+@media (max-width: 480px) {
+    .auth__form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.auth-switch {
+    margin: var(--mm-space-5, 20px) 0 0;
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.auth-switch__link {
+    color: var(--mm-color-accent, #3498db);
+    font-weight: var(--mm-font-weight-medium, 500);
+}

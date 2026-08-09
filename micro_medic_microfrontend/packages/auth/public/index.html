@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Auth MFE — standalone</title>
+    <!--
+      remoteEntry.js is NOT loaded here. This page is the standalone dev harness: webpack's
+      own bundle is injected by HtmlWebpackPlugin, and pulling in remoteEntry.js as well
+      would evaluate the container a second time.
+    -->
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; }
+      .harness {
+        display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+        min-height: 48px; padding: 8px 16px; box-sizing: border-box;
+        background: #0f3460; color: #fff; font-size: 13px;
+      }
+      .harness button { font: inherit; }
+      /*
+        The app measures its own height against `--mm-header-height`; the harness bar plays the
+        part of the shell's app bar so the vertical split fills the rest of the viewport.
+      */
+      :root { --mm-header-height: 64px; }
+    </style>
+  </head>
+  <body>
+    <div class="harness">
+      <span id="auth-state">Not authenticated</span>
+      <!-- No shell here, so the harness drives the routes this MFE owns. -->
+      <button type="button" data-auth-route="/login">/login</button>
+      <button type="button" data-auth-route="/register">/register</button>
+      <button id="auth-sim-logout" type="button">Simulate logout</button>
+      <span id="auth-last-event"></span>
+    </div>
+    <div id="auth-root"></div>
+  </body>
+</html>

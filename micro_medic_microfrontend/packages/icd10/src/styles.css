@@ -1,0 +1,115 @@
+/*
+ * ICD-10 MFE styles.
+ *
+ * Namespaced `icd10__*` (BEM, matching the `cal-block__element` convention in the calendar
+ * package) because these rules are document-level: this micro-frontend renders into the light
+ * DOM, so an unprefixed `.list` or `.search` would collide with any other remote on the page.
+ *
+ * Every value reads a `--mm-*` token with a literal fallback, so the component degrades to
+ * sane defaults if the shell has not loaded `tokens.css` — and picks up the real theme when it
+ * has. Custom properties are also the only styling channel that pierces shadow DOM, which is
+ * why the design system exposes them rather than classes.
+ */
+
+.icd10 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-3, 12px);
+    padding: var(--mm-space-4, 16px);
+    background: var(--mm-color-surface, #fff);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-md, 8px);
+    font-family: var(--mm-font-family, system-ui, sans-serif);
+    color: var(--mm-color-text, #212529);
+}
+
+.icd10__heading {
+    margin: 0;
+    font-size: var(--mm-font-size-lg, 18px);
+    font-weight: var(--mm-font-weight-bold, 600);
+}
+
+.icd10__search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
+    font: inherit;
+    color: inherit;
+    background: var(--mm-color-bg, #f8f9fa);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-sm, 4px);
+    transition: border-color var(--mm-transition-fast, 150ms) var(--mm-transition-timing, ease);
+}
+
+.icd10__search:focus-visible {
+    outline: 2px solid var(--mm-color-focus-ring, #4c9aff);
+    outline-offset: 1px;
+    border-color: var(--mm-color-primary, #0d6efd);
+}
+
+.icd10__status {
+    margin: 0;
+    min-height: 1.25em;
+    font-size: var(--mm-font-size-sm, 14px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.icd10__list {
+    /* Capped and scrollable: the seeded catalogue is ~71,700 codes, so this pane must never
+       be what drives page height. */
+    max-height: 22rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+}
+
+.icd10__option {
+    display: flex;
+    gap: var(--mm-space-3, 12px);
+    align-items: baseline;
+    width: 100%;
+    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--mm-radius-sm, 4px);
+    cursor: pointer;
+    transition: background var(--mm-transition-fast, 150ms) var(--mm-transition-timing, ease);
+}
+
+.icd10__option:hover {
+    background: var(--mm-color-bg, #f8f9fa);
+}
+
+.icd10__option:focus-visible {
+    outline: 2px solid var(--mm-color-focus-ring, #4c9aff);
+    outline-offset: -2px;
+}
+
+/* The selected diagnosis — the one this MFE last published on the event bus. */
+.icd10__option[aria-current='true'] {
+    background: var(--mm-color-info-surface, #cfe2ff);
+    border-color: var(--mm-color-info-border, #9ec5fe);
+    color: var(--mm-color-on-info-surface, #052c65);
+}
+
+.icd10__code {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--mm-font-weight-medium, 500);
+    color: var(--mm-color-primary, #0d6efd);
+}
+
+.icd10__option[aria-current='true'] .icd10__code {
+    color: inherit;
+}
+
+.icd10__desc {
+    font-size: var(--mm-font-size-sm, 14px);
+}

@@ -1,4 +1,4 @@
-import { ScheduledAppointmentDto } from "@micro-medic/shared-types";
+import { type ScheduledAppointmentDto } from "@micro-medic/shared-types";
 import { MmButton, MmModal } from "@micro-medic/design-system-react";
 import { useAppointmentMutations } from "../hooks/useAppointmentMutations";
 import { useEffect, useState } from "react";

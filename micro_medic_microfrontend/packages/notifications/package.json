@@ -1,0 +1,28 @@
+{
+  "name": "notifications",
+  "version": "1.0.0",
+  "private": true,
+  "//": "The application-wide toast layer. Presentation lives in the design system (`mm-toast-region`); this package is the wiring — it subscribes to NOTIFICATION_SHOW on the event bus and turns each payload into a toast. Split out of `nav` deliberately: the chrome is suppressed on /login and /register while a failed-login toast must still appear, so the two have different route contracts, different consumers and different reasons to change.",
+  "dependencies": {
+    "@micro-medic/design-system": "1.0.0",
+    "@micro-medic/shared-store": "1.0.0",
+    "@micro-medic/shared-types": "1.0.0"
+  },
+  "//framework": "No framework and no `single-spa`. A toast region has no routes, no forms and no queries — it is one element reacting to one event stream — and it is mounted on every route, so any runtime it pulled in would be paid for on first paint by every visitor. The single-spa adapter is `src/lifecycles.ts`.",
+  "devDependencies": {
+    "css-loader": "7.1.4",
+    "html-webpack-plugin": "^5.6.7",
+    "serve": "^14.0.1",
+    "style-loader": "4.0.0",
+    "ts-loader": "9.6.2",
+    "typescript": "^6.0.3",
+    "webpack": "5.108.4",
+    "webpack-cli": "7.2.1"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "start": "webpack --watch",
+    "build": "webpack --mode production",
+    "serve": "serve dist -p 3007"
+  }
+}

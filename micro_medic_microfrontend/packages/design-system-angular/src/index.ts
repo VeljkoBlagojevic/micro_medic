@@ -21,8 +21,11 @@ import { MmEmptyStateDirective } from './lib/mm-empty-state.directive';
 import { MmErrorStateDirective } from './lib/mm-error-state.directive';
 import { MmInputDirective } from './lib/mm-input.directive';
 import { MmModalDirective } from './lib/mm-modal.directive';
+import { MmSelectDirective } from './lib/mm-select.directive';
 import { MmSpinnerDirective } from './lib/mm-spinner.directive';
 import { MmTableDirective } from './lib/mm-table.directive';
+import { MmToastDirective } from './lib/mm-toast.directive';
+import { MmToastRegionDirective } from './lib/mm-toast-region.directive';
 
 export { MmElementDirective } from './lib/custom-element.base';
 export { booleanInput, numberInput } from './lib/coercion';
@@ -33,8 +36,11 @@ export { MmEmptyStateDirective } from './lib/mm-empty-state.directive';
 export { MmErrorStateDirective } from './lib/mm-error-state.directive';
 export { MmInputDirective, type MmInputEvent } from './lib/mm-input.directive';
 export { MmModalDirective, type ModalSize } from './lib/mm-modal.directive';
+export { MmSelectDirective } from './lib/mm-select.directive';
 export { MmSpinnerDirective } from './lib/mm-spinner.directive';
 export { MmTableDirective, type MmRowClickEvent } from './lib/mm-table.directive';
+export { MmToastDirective } from './lib/mm-toast.directive';
+export { MmToastRegionDirective } from './lib/mm-toast-region.directive';
 
 /**
  * Every directive in the library, for a one-line `imports:` in a standalone component:
@@ -53,8 +59,11 @@ export const MM_DESIGN_SYSTEM = [
     MmErrorStateDirective,
     MmInputDirective,
     MmModalDirective,
+    MmSelectDirective,
     MmSpinnerDirective,
     MmTableDirective,
+    MmToastDirective,
+    MmToastRegionDirective,
 ] as const;
 
 /** Re-exported so consumers get the element and prop types without a second dependency. */
@@ -68,9 +77,15 @@ export type {
     MmErrorState,
     MmInput,
     MmModal,
+    MmSelect,
+    MmSelectOption,
     MmSpinner,
     MmTable,
     MmTableColumn,
     MmTableRow,
+    MmToast,
+    MmToastRegion,
     SpinnerSize,
+    ToastRecord,
+    ToastType,
 } from '@micro-medic/design-system';
