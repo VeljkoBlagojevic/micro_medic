@@ -44,9 +44,10 @@ export class MmSpinner extends LitElement {
                 animation: spin 0.8s linear infinite;
             }
             /*
-             * Sizes are driven by the reflected host attribute. Previously a `.spinner` base
-             * rule and a `.spinner.sm` rule both set width/height at equal specificity, so
-             * the outcome depended on declaration order rather than the `size` property.
+             * Sizes are driven by the reflected host attribute rather than a class on the
+             * spinner itself: sizing via .spinner plus .spinner.sm puts two width/height
+             * declarations at equal specificity, where declaration order decides the winner
+             * instead of the size property.
              */
             :host([size='sm']) .spinner {
                 width: 16px;

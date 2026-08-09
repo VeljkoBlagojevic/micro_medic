@@ -28,6 +28,35 @@
     --mm-color-info: #3498db;
     --mm-color-on-info: #ffffff;
 
+    /*
+     * Soft status surfaces — a tinted background plus a readable foreground, for banners and
+     * badges. A banner cannot reuse `--mm-color-warning` as its background: that value is
+     * tuned to sit *behind* `--mm-color-on-warning`, and is far too saturated for a block of
+     * body text.
+     */
+    --mm-color-warning-surface: #fff3cd;
+    --mm-color-warning-border: #ffe69c;
+    --mm-color-on-warning-surface: #664d03;
+    --mm-color-danger-surface: #f8d7da;
+    --mm-color-danger-border: #f1aeb5;
+    --mm-color-on-danger-surface: #58151c;
+    --mm-color-success-surface: #d1e7dd;
+    --mm-color-success-border: #a3cfbb;
+    --mm-color-on-success-surface: #0a3622;
+    --mm-color-info-surface: #cff4fc;
+    --mm-color-info-border: #9eeaf9;
+    --mm-color-on-info-surface: #055160;
+
+    /*
+     * Appointment status colours. The calendar is the only consumer today, but these belong
+     * here rather than in a hardcoded map inside that MFE: appointment status is a
+     * domain-wide concept, and any MFE showing an appointment must colour it identically.
+     */
+    --mm-color-status-scheduled: #3a7bd5;
+    --mm-color-status-completed: #6c757d;
+    --mm-color-status-cancelled: #dc3545;
+    --mm-color-on-status: #ffffff;
+
     /* Neutrals */
     --mm-color-neutral-100: #f8f9fa;
     --mm-color-neutral-200: #e9ecef;
@@ -62,6 +91,8 @@
     --mm-font-weight-medium: 500;
     --mm-font-weight-bold: 600;
     --mm-line-height: 1.5;
+    /* Decorative glyph in the empty/error states — larger than any text size on the scale. */
+    --mm-font-size-icon: 40px;
 
     /* Spacing — a 4px scale. `space-N` is `N * 4px`. */
     --mm-space-1: 4px;
@@ -90,6 +121,22 @@
     /* Layout */
     --mm-layout-max-width: 1200px;
     --mm-header-height: 60px;
+    /* Dialog widths, per `mm-modal`'s `size`. */
+    --mm-modal-width-sm: 360px;
+    --mm-modal-width-md: 560px;
+    --mm-modal-width-lg: 860px;
+
+    /*
+     * Stacking order. Shared deliberately: micro-frontends are built and deployed
+     * independently, so each one inventing its own z-index is how a modal ends up behind
+     * another team's sticky header. Anything that overlays must use a token from this scale.
+     */
+    --mm-z-index-dropdown: 100;
+    --mm-z-index-sticky: 200;
+    --mm-z-index-modal: 1000;
+    --mm-z-index-toast: 1100;
+    /* `mm-modal` reads this name; kept as an alias so the component API stays stable. */
+    --mm-modal-z-index: var(--mm-z-index-modal);
 }
 
 @media (prefers-reduced-motion: reduce) {

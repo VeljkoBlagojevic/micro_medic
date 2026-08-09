@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "../../packages",
+        // Angular decorators. The other packages in this monorepo do not need these, so they
+        // are set here rather than in the base config.
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": false
+    },
+    "angularCompilerOptions": {
+        "strictTemplates": true,
+        "strictInjectionParameters": true
+    },
+    "include": ["./src"]
+}

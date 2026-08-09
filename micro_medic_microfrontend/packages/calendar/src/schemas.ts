@@ -42,17 +42,24 @@ const withinMaxDuration = ({ start, end }: TimeRange) => {
     return endTime - startTime <= MAX_DURATION_MS;
 };
 
+/*
+ * Each `refine` needs an explicit `path`, or the issue lands at the object root and
+ * react-hook-form has no field to attach the message to.
+ *
+ * No `as const` on `path`: zod 4 types it as a mutable `PropertyKey[]`, so a readonly tuple is
+ * not assignable.
+ */
 const START_IN_FUTURE = {
     message: "Start time must be in the future",
-    path: ["start"] as const,
+    path: ["start"],
 };
 const END_AFTER_START = {
     message: "End time must be after the start time",
-    path: ["end"] as const,
+    path: ["end"],
 };
 const MAX_DURATION = {
     message: "An appointment cannot be longer than 2 hours",
-    path: ["end"] as const,
+    path: ["end"],
 };
 
 export const bookingSchema = z

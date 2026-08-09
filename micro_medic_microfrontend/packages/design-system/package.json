@@ -8,7 +8,9 @@
     "exports": {
         ".": "./src/index.ts",
         "./tokens.css": "./src/tokens.css",
-        "./src/tokens.css": "./src/tokens.css"
+        "./global.css": "./src/global.css",
+        "./src/tokens.css": "./src/tokens.css",
+        "./src/global.css": "./src/global.css"
     },
     "sideEffects": [
         "./src/index.ts",

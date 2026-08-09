@@ -41,9 +41,9 @@ export const CalendarView = ({
         (event: CalendarEvent) => ({
             style: {
                 backgroundColor: getStatusColor(event.status),
-                borderRadius: '4px',
+                borderRadius: 'var(--mm-radius-sm, 4px)',
                 border: '0',
-                color: '#fff',
+                color: 'var(--mm-color-on-status, #fff)',
                 display: 'block',
             },
         }),

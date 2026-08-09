@@ -27,7 +27,7 @@ export class MmErrorState extends LitElement {
                 text-align: center;
             }
             .icon {
-                font-size: 40px;
+                font-size: var(--mm-font-size-icon, 40px);
                 line-height: 1;
                 margin-bottom: var(--mm-space-3, 12px);
             }

@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!--
+      Remote containers, loaded eagerly because each remote uses `library: { type: 'var' }` —
+      the global must exist before single-spa imports from it. One tag per port in the topology:
+      3001 home (self), 3002 icd10, 3003 nav, 3004 examination, 3005 shared-store,
+      3009 calendar. Adding a remote means adding it here too.
+    -->
     <script src="http://localhost:3001/remoteEntry.js"></script>
     <script src="http://localhost:3002/remoteEntry.js"></script>
     <script src="http://localhost:3003/remoteEntry.js"></script>
     <script src="http://localhost:3004/remoteEntry.js"></script>
     <script src="http://localhost:3005/remoteEntry.js"></script>
-    <script src="http://localhost:3008/remoteEntry.js"></script>
     <script src="http://localhost:3009/remoteEntry.js"></script>
+    <!--
+      Legacy: MUI CSS is still used by the plain-JS packages (`nav`, `examination`). It stays
+      until those are ported to the design system. The `--mm-*` theme is imported from
+      `src/index.js` instead of linked here, so style-loader injects it after this stylesheet
+      and the design system wins at equal specificity.
+    -->
     <link href="//cdn.muicss.com/mui-0.10.1/css/mui.min.css" rel="stylesheet" type="text/css" />
     <script src="//cdn.muicss.com/mui-0.10.1/js/mui.min.js"></script>
   </head>
   <body>
     <div class="mui-container">
       <div id="single-spa-application:header"></div>
-      <div id="single-spa-application:login"></div>
       <div class="examination-area">
         <div id="single-spa-application:icd10"></div>
         <div>

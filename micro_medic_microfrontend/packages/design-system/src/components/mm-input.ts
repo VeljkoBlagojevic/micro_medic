@@ -96,7 +96,7 @@ export class MmInput extends LitElement {
                 background-color: var(--mm-color-disabled-bg, #e9ecef);
                 cursor: not-allowed;
             }
-            /* `aria-invalid` drives the error styling, so the two can never disagree. */
+            /* aria-invalid drives the error styling, so the two can never disagree. */
             input[aria-invalid='true'],
             textarea[aria-invalid='true'] {
                 border-color: var(--mm-color-danger, #dc3545);

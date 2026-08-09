@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { MmInput as MmInputElement } from '@micro-medic/design-system';
 import { MmInput } from './components';
 import { valueOf, type MmInputEvent } from './types';
 
@@ -32,7 +33,11 @@ export interface MmFieldProps {
     className?: string;
 }
 
-export const MmField = React.forwardRef<HTMLElement, MmFieldProps>(function MmField(
+/**
+ * The ref is the `<mm-input>` element itself, not a bare `HTMLElement`, so callers can reach
+ * its public API (`focus()`, `checkValidity()`) without casting.
+ */
+export const MmField = React.forwardRef<MmInputElement, MmFieldProps>(function MmField(
     {
         name,
         value,

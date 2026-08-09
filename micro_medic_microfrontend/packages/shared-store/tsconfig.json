@@ -2,7 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "rootDir": "./src"
+        // `../../packages`, not `./src`, matching every other package here: the `paths` aliases
+        // in tsconfig.base.json resolve `@micro-medic/*` to sibling *sources*, so those files
+        // join the program and must fall under rootDir (otherwise TS6059).
+        "rootDir": "../../packages"
     },
     "include": ["./src"]
 }

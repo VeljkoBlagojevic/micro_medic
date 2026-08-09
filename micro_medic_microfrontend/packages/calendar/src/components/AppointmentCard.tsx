@@ -24,8 +24,17 @@ export const AppointmentCard = ({
     const showReschedule = actionable && canReschedule;
     const showCancel = actionable && canCancel;
 
+    // Interpolating the fields directly produced "details for undefined undefined" whenever the
+    // DTO arrives without a patient, which is exactly when a label matters most.
+    const patientName = appointment.patient
+      ? `${appointment.patient.firstname} ${appointment.patient.lastname}`
+      : 'Unknown patient';
+    const doctorName = appointment.doctor
+      ? `${appointment.doctor.firstname} ${appointment.doctor.lastname}`
+      : 'Unknown doctor';
+
     return (
-      <aside className="cal-detail" aria-label={`Appointment details for ${appointment.patient?.firstname} ${appointment.patient?.lastname}`}>
+      <aside className="cal-detail" aria-label={`Appointment details for ${patientName}`}>
         <header className="cal-detail__head">
           <span
             className="cal-detail__status"
@@ -49,17 +58,9 @@ export const AppointmentCard = ({
             {formatAppointmentRange(appointment.start, appointment.end)}
           </dd>
           <dt>Patient</dt>
-          <dd>
-            {appointment.patient
-              ? `${appointment.patient.firstname} ${appointment.patient.lastname}`
-              : 'Unknown Patient'}
-          </dd>
+          <dd>{patientName}</dd>
           <dt>Doctor</dt>
-          <dd>
-            {appointment.doctor
-              ? `${appointment.doctor.firstname} ${appointment.doctor.lastname}`
-              : 'Unknown Doctor'}
-          </dd>
+          <dd>{doctorName}</dd>
         </dl>
 
         {(showReschedule || showCancel) && (
@@ -69,8 +70,10 @@ export const AppointmentCard = ({
                 Reschedule
               </MmButton>
             )}
+            {/* `danger`, not `secondary`: cancelling is destructive and was visually
+                indistinguishable from Reschedule. The design system already has the variant. */}
             {showCancel && (
-              <MmButton variant="secondary" onClick={() => onCancel(appointment)}>
+              <MmButton variant="danger" onClick={() => onCancel(appointment)}>
                 Cancel
               </MmButton>
             )}

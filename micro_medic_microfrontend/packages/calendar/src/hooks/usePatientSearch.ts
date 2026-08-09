@@ -3,7 +3,8 @@ import { patientService } from "../services/patient.service";
 import { PatientOption } from "../types";
 import { debounce } from "../utils";
 
-const MIN_CHARACTERS = 2;
+/** Exported so the UI can describe the threshold without hardcoding the same number. */
+export const MIN_SEARCH_CHARACTERS = 2;
 const DEBOUNCE_DELAY = 300;
 
 interface PatientSearchResult {
@@ -37,6 +38,9 @@ export function usePatientSearch(): PatientSearchResult {
                 } catch (err) {
                     if (seq === seqRef.current) {
                         setError(err as Error);
+                        // Drop the previous matches: leaving them on screen next to an error
+                        // message invites clicking a result the failed query did not return.
+                        setResults([]);
                     }
                 } finally {
                     if (seq === seqRef.current) {
@@ -49,7 +53,7 @@ export function usePatientSearch(): PatientSearchResult {
 
     useEffect(() => {
         const trimmedQuery = query.trim();
-        if (trimmedQuery.length < MIN_CHARACTERS) {
+        if (trimmedQuery.length < MIN_SEARCH_CHARACTERS) {
             runSearch.cancel();
             // Bump the sequence so any in-flight requests are ignored
             seqRef.current++;

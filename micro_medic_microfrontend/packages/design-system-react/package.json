@@ -12,7 +12,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@lit/react": "^1.0.9",
+        "@lit/react": "^1.0.8",
         "@micro-medic/design-system": "1.0.0"
     },
     "peerDependencies": {

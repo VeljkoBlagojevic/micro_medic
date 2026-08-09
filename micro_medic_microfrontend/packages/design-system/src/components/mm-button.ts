@@ -35,9 +35,9 @@ export class MmButton extends LitElement {
                 display: inline-block;
             }
             /*
-             * Attribute selectors must match the lowercased attribute name; `[fullWidth]`
-             * never matched because HTML attributes are case-insensitive and Lit reflects
-             * the property as `full-width`.
+             * Attribute selectors must match the lowercased attribute name: a [fullWidth]
+             * selector never matches, because HTML attributes are case-insensitive and Lit
+             * reflects the property as full-width.
              */
             :host([full-width]) {
                 display: block;
@@ -94,7 +94,7 @@ export class MmButton extends LitElement {
                 background-color: var(--mm-color-secondary, #6c757d);
                 color: var(--mm-color-on-secondary, #fff);
             }
-            /* `tertiary` was declared in the type union but had no styles — it rendered unstyled. */
+            /* Every ButtonVariant needs a rule here, or it renders unstyled. */
             .variant-tertiary {
                 background-color: transparent;
                 color: var(--mm-color-primary, #0f3460);

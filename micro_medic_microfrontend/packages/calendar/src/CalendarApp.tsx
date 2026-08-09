@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { MmButton, MmEmptyState, MmErrorState, MmSpinner } from '@micro-medic/design-system-react';
-import { Role, type ScheduledAppointmentDto } from '@micro-medic/shared-types';
+import { eventBus } from '@micro-medic/shared-store';
+import { EventTypes, Role, type ScheduledAppointmentDto } from '@micro-medic/shared-types';
 import {
     AppointmentCard,
     BookingModal,
@@ -25,20 +26,31 @@ type Dialog =
     | { kind: 'cancel'; appointment: ScheduledAppointmentDto };
 
 export const CalendarApp = () => {
-    const { user, isAuthenticated } = useAuthState();
-    const { events, isLoading, isError, error, isFetching, refetch } = useCalendar();
+    // `role` is `user?.role` derived by the store — read it from one place rather than both.
+    const { role, isAuthenticated } = useAuthState();
+    // The viewer's role decides whose name titles each event — a patient wants to see the
+    // doctor, a doctor wants to see the patient.
+    const { events, isLoading, isError, error, isFetching, refetch } = useCalendar(role);
     const { view, date, onView, onNavigate } = useCalendarView();
 
-    const [selected, setSelected] = useState<ScheduledAppointmentDto | null>(null);
+    // Only the *id* is held in state; the DTO is read back out of the freshly-fetched events.
+    // Storing the DTO itself left the detail pane showing a stale snapshot after a mutation —
+    // cancel an appointment and it still read "Scheduled" with both action buttons live.
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const selected = events.find((event) => event.id === selectedId)?.resource ?? null;
+
     const [dialog, setDialog] = useState<Dialog>({ kind: 'none' });
 
-    const isDoctor = user?.role === Role.DOCTOR;
-    const isPatient = user?.role === Role.PATIENT;
+    const isDoctor = role === Role.DOCTOR;
+    const isPatient = role === Role.PATIENT;
 
     const closeDialog = useCallback(() => setDialog({ kind: 'none' }), []);
 
     const onSelectEvent = useCallback((event: CalendarEvent) => {
-        setSelected(event.resource);
+        setSelectedId(event.id);
+        // Announce the selection so sibling micro-frontends can react — this is the one
+        // outbound event the calendar owns, and `examination` is its intended consumer.
+        eventBus.emit(EventTypes.CALENDAR_APPOINTMENT_SELECTED, { appointment: event.resource });
     }, []);
 
     if (!isAuthenticated) {
@@ -107,7 +119,7 @@ export const CalendarApp = () => {
                                 canCancel={isDoctor || isPatient}
                                 onReschedule={(appointment) => setDialog({ kind: 'reschedule', appointment })}
                                 onCancel={(appointment) => setDialog({ kind: 'cancel', appointment })}
-                                onClose={() => setSelected(null)}
+                                onClose={() => setSelectedId(null)}
                             />
                         )}
                     </div>

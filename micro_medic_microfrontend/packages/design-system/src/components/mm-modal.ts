@@ -52,15 +52,15 @@ export class MmModal extends LitElement {
                 border-radius: var(--mm-radius-md, 8px);
                 box-shadow: var(--mm-shadow-lg, 0 10px 20px rgba(0, 0, 0, 0.19));
             }
-            /* Sizes were declared in the type but never applied — every modal was 500px. */
+            /* Every size in the union needs a rule, or that modal falls back to full width. */
             :host([size='sm']) .dialog {
-                max-width: 360px;
+                max-width: var(--mm-modal-width-sm, 360px);
             }
             :host([size='md']) .dialog {
-                max-width: 560px;
+                max-width: var(--mm-modal-width-md, 560px);
             }
             :host([size='lg']) .dialog {
-                max-width: 860px;
+                max-width: var(--mm-modal-width-lg, 860px);
             }
             .header {
                 display: flex;

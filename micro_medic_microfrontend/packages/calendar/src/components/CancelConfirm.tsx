@@ -2,7 +2,7 @@ import { ScheduledAppointmentDto } from "@micro-medic/shared-types";
 import { MmButton, MmModal } from "@micro-medic/design-system-react";
 import { useAppointmentMutations } from "../hooks/useAppointmentMutations";
 import { useEffect, useState } from "react";
-import { bookingErrorMessage } from "../utils";
+import { bookingErrorMessage, formatAppointmentRange } from "../utils";
 import { ConflictBanner } from "./ConflictBanner";
 
 interface CancelConfirmProps {
@@ -37,8 +37,19 @@ export function CancelConfirm({ appointment, onClose }: CancelConfirmProps) {
         >
             <ConflictBanner message={error} />
             {appointment && (
+                // Either party may cancel, so the copy names both rather than assuming the
+                // viewer is the patient ("your appointment with Dr. X" reads wrong to a doctor).
                 <p className='cal-form__hint'>
-                    Are you sure you want to cancel your appointment with Dr. {appointment.doctor?.lastname ?? 'Unknown'} on {new Date(appointment.start).toLocaleString()}?
+                    Cancel the appointment between{' '}
+                    {appointment.patient
+                        ? `${appointment.patient.firstname} ${appointment.patient.lastname}`
+                        : 'an unknown patient'}
+                    {' and '}
+                    {appointment.doctor
+                        ? `Dr. ${appointment.doctor.firstname} ${appointment.doctor.lastname}`
+                        : 'an unknown doctor'}
+                    {', '}
+                    {formatAppointmentRange(appointment.start, appointment.end)}? This cannot be undone.
                 </p>
             )}
 

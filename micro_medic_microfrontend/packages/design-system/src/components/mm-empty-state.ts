@@ -28,7 +28,7 @@ export class MmEmptyState extends LitElement {
                 color: var(--mm-color-text-muted, #6c757d);
             }
             .icon {
-                font-size: 40px;
+                font-size: var(--mm-font-size-icon, 40px);
                 line-height: 1;
                 margin-bottom: var(--mm-space-3, 12px);
             }

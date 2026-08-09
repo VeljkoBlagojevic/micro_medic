@@ -59,7 +59,7 @@ export class MmTable extends LitElement {
                 background-color: var(--mm-color-neutral-100, #f8f9fa);
                 font-weight: var(--mm-font-weight-bold, 600);
             }
-            /* Only body rows should highlight — the old `tr:hover` also lit up the header. */
+            /* Scoped to tbody: a bare tr:hover would also highlight the header row. */
             tbody tr:hover {
                 background-color: var(--mm-color-neutral-100, #f8f9fa);
             }

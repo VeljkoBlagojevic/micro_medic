@@ -82,7 +82,7 @@
 .cal-detail__status {
     padding: var(--mm-space-1, 4px) var(--mm-space-2, 8px);
     border-radius: var(--mm-radius-sm, 4px);
-    color: #fff;
+    color: var(--mm-color-on-status, #fff);
     font-size: var(--mm-font-size-sm, 12px);
     font-weight: var(--mm-font-weight-medium, 500);
 }
@@ -139,32 +139,54 @@
     color: var(--mm-color-text-muted, #6c757d);
 }
 
-/* Conflict banner — class name matches ConflictBanner.tsx. */
-.conflict-banner {
+/*
+ * Conflict banner. Colours come from the shared warning-surface tokens rather than local
+ * hex, so a theme change in `tokens.css` reaches this banner too.
+ */
+.cal-conflict-banner {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--mm-space-2, 8px);
     padding: var(--mm-space-3, 12px);
-    background-color: #fff3cd;
-    border: 1px solid #ffeaa7;
+    background-color: var(--mm-color-warning-surface, #fff3cd);
+    border: 1px solid var(--mm-color-warning-border, #ffe69c);
     border-radius: var(--mm-radius-sm, 4px);
-    color: #856404;
+    color: var(--mm-color-on-warning-surface, #664d03);
     font-size: var(--mm-font-size-sm, 12px);
 }
 
-/* Patient search */
+.cal-conflict-banner__icon {
+    flex-shrink: 0;
+    line-height: var(--mm-line-height, 1.5);
+}
+
+.cal-conflict-banner__message {
+    min-width: 0;
+}
+
+/*
+ * Patient search.
+ *
+ * `cal-field` is the wrapper shown once a patient is chosen; it mirrors the label spacing
+ * `mm-input` applies internally, so the selected-patient chip lines up with the real form
+ * fields above and below it.
+ */
+.cal-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+}
+
+.cal-field__label {
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
 .cal-patient-search {
     position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--mm-space-2, 8px);
-}
-
-.cal-field-label {
-    display: block;
-    margin-bottom: var(--mm-space-1, 4px);
-    font-size: var(--mm-font-size-sm, 12px);
-    font-weight: var(--mm-font-weight-medium, 500);
 }
 
 .cal-chip {
@@ -178,13 +200,13 @@
     border-radius: var(--mm-radius-sm, 4px);
 }
 
-.cal-chip-subtext {
+.cal-chip__subtext {
     display: block;
     font-size: var(--mm-font-size-sm, 12px);
     color: var(--mm-color-text-muted, #6c757d);
 }
 
-.cal-chip-remove {
+.cal-chip__remove {
     background: none;
     border: none;
     font-size: var(--mm-font-size-lg, 16px);
@@ -193,7 +215,11 @@
     color: var(--mm-color-text-muted, #6c757d);
 }
 
-.cal-search-results {
+.cal-chip__remove:hover {
+    color: var(--mm-color-text, #212529);
+}
+
+.cal-results {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -202,13 +228,15 @@
     background: var(--mm-color-surface, #fff);
     border: 1px solid var(--mm-color-border, #dee2e6);
     border-radius: var(--mm-radius-sm, 4px);
+    /* Above surrounding form fields, below any modal. */
+    z-index: var(--mm-z-index-dropdown, 100);
 }
 
-.cal-search-results li + li {
+.cal-results li + li {
     border-top: 1px solid var(--mm-color-border, #dee2e6);
 }
 
-.cal-search-results button {
+.cal-results__option {
     display: block;
     width: 100%;
     padding: var(--mm-space-2, 8px);
@@ -219,12 +247,12 @@
     cursor: pointer;
 }
 
-.cal-search-results button:hover,
-.cal-search-results button:focus-visible {
+.cal-results__option:hover,
+.cal-results__option:focus-visible {
     background: var(--mm-color-neutral-100, #f8f9fa);
 }
 
-.cal-search-result-sublabel {
+.cal-results__sublabel {
     display: block;
     font-size: var(--mm-font-size-sm, 12px);
     color: var(--mm-color-text-muted, #6c757d);

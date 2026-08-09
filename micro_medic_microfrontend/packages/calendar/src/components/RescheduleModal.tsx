@@ -9,6 +9,7 @@ import {
     bookingErrorMessage,
     dateTimeLocalToLocalDateTime,
     dateTimeLocalToLocalDate,
+    formatAppointmentRange,
     parseLocalDateTime,
 } from "../utils";
 import { ConflictBanner } from "./ConflictBanner";
@@ -74,8 +75,20 @@ export function RescheduleModal({ appointment, onClose }: RescheduleModalProps) 
             <form onSubmit={submit} className="cal-form">
                 <ConflictBanner message={conflictError} />
                 {appointment && (
+                    // Names both parties rather than assuming the viewer is the patient:
+                    // rescheduling is doctor-only, so "your appointment with Dr. X" was
+                    // addressing the wrong person. `formatAppointmentRange` is used instead of
+                    // `new Date(...).toLocaleString()` so the wording matches the detail pane.
                     <p className='cal-form__hint'>
-                        Rescheduling your appointment with Dr. {appointment.doctor?.lastname ?? 'Unknown'} on {new Date(appointment.start).toLocaleString()}.
+                        {appointment.patient
+                            ? `${appointment.patient.firstname} ${appointment.patient.lastname}`
+                            : 'Unknown patient'}
+                        {' with '}
+                        {appointment.doctor
+                            ? `Dr. ${appointment.doctor.firstname} ${appointment.doctor.lastname}`
+                            : 'an unknown doctor'}
+                        {' — currently '}
+                        {formatAppointmentRange(appointment.start, appointment.end)}.
                     </p>
                 )}
                 <MmFormField control={control} name="start" label="New Start Time" type="datetime-local" required />

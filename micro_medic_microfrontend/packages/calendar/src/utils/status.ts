@@ -1,11 +1,20 @@
 import { AppointmentStatus } from '@micro-medic/shared-types';
 
-const FALLBACK_COLOR = '#6C757D'; // Gray
+/*
+ * Status colours resolve through the shared `--mm-color-status-*` tokens rather than literal
+ * hex, so an appointment is the same colour in every micro-frontend that renders one. The
+ * fallback after the comma keeps these usable if the host never loaded `tokens.css`.
+ *
+ * These are returned as `var(...)` strings for inline `style`, which is the one place a token
+ * can be used without a stylesheet — the values feed react-big-calendar's `eventPropGetter`
+ * and the detail-pane badge, both of which take a style object.
+ */
+const FALLBACK_COLOR = 'var(--mm-color-status-completed, #6c757d)';
 
 const STATUS_COLOR_MAP: Record<AppointmentStatus, string> = {
-    [AppointmentStatus.SCHEDULED]: '#3A7BD5', // Blue
-    [AppointmentStatus.COMPLETED]: '#6C757D', // Gray
-    [AppointmentStatus.CANCELLED]: '#DC3545', // Red
+    [AppointmentStatus.SCHEDULED]: 'var(--mm-color-status-scheduled, #3a7bd5)',
+    [AppointmentStatus.COMPLETED]: 'var(--mm-color-status-completed, #6c757d)',
+    [AppointmentStatus.CANCELLED]: 'var(--mm-color-status-cancelled, #dc3545)',
 };
 
 // Each helper also accepts a bare string: `status` arrives off the wire, so an
