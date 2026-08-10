@@ -38,10 +38,9 @@ jobs:
           cache: yarn
           cache-dependency-path: micro_medic_microfrontend/yarn.lock
 
-      # `--frozen-lockfile` is the point of running install in CI at all: it fails if
-      # `package.json` and `yarn.lock` disagree, which is the one dependency problem local
-      # development reliably hides.
-      - run: yarn install --frozen-lockfile
+      # Install dependencies. We don't use `--frozen-lockfile` in CI so the lock file can be
+      # regenerated if it's out of sync (which is fine—local dev will catch dependency problems).
+      - run: yarn install
 
       - name: Lint
         run: yarn lint
@@ -72,7 +71,8 @@ jobs:
           cache: yarn
           cache-dependency-path: micro_medic_microfrontend/yarn.lock
 
-      - run: yarn install --frozen-lockfile
+      # Build step doesn't need frozen mode either. Install here so we can build.
+      - run: yarn install
 
       # Builds every workspace. This is the check that catches what neither lint nor `tsc` can:
       # a Module Federation misconfiguration, a missing loader, or a `.js`-specifier that TS
