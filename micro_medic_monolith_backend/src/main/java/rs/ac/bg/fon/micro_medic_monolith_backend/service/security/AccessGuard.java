@@ -24,8 +24,12 @@ public class AccessGuard {
     public void requirePatientAccess(Long patientId) {
         User current = userService.getCurrentUser();
         boolean isSelf = current instanceof Patient && current.getId().equals(patientId);
+        // `&&`, not `&`. The bitwise operator does not short-circuit, so the repository call ran for
+        // every caller including patients and admins — a wasted query on every read, and the reason
+        // the guard's core rule reads as "a doctor may read a patient only if they treat them"
+        // everywhere else. Same operator in the same position as the `&&` in requireAppointmentParticipant.
         boolean isTreatingDoctor = current instanceof Doctor
-                & scheduledAppointmentRepository.existsByDoctorIdAndPatientId(current.getId(), patientId);
+                && scheduledAppointmentRepository.existsByDoctorIdAndPatientId(current.getId(), patientId);
 
         if (isSelf || isTreatingDoctor || isAdmin(current)) {
             record(MedicalAccessLog.AccessedResourceType.PATIENT, patientId, patientId, current);
@@ -50,8 +54,28 @@ public class AccessGuard {
     public void requireExaminationAccess(Long examinationId) {
         Examination examination = examinationRepository.findById(examinationId).orElseThrow(() -> new UnauthorizedActionException("Examination not found with ID: " + examinationId));
         ScheduledAppointment appointment = examination.getScheduledAppointment();
-        Long patientId = appointment == null || appointment.getPatient() == null ? null : appointment.getPatient().getId();
-        record(MedicalAccessLog.AccessedResourceType.EXAMINATION, examinationId, patientId, userService.getCurrentUser());
+        User current = userService.getCurrentUser();
+
+        /*
+         * Authorise, then record. This method previously only recorded: it wrote a
+         * `MedicalAccessLog` row and returned, so any authenticated user could read any
+         * examination — and the audit trail dutifully logged the unauthorised read as if it were
+         * fine. An audit of a check that never happened is worse than no audit, because it reads
+         * as evidence the access was allowed.
+         *
+         * The admin bypass is taken here rather than left to `requireAppointmentParticipant`,
+         * which throws on a null appointment *before* it reaches its own `isAdmin` check. That null
+         * case is reachable: `Examination.scheduledAppointment` is nullable and
+         * `ExaminationService.examine` accepts a request without one. For everyone else the
+         * participant rule is the same one the other four require* methods apply, and denying is
+         * the right answer for an appointment-less examination — it has no patient and no doctor,
+         * so there is nobody with a claim to it. Mirrors the shape of `requireReportAccess`.
+         */
+        if (!isAdmin(current)) {
+            requireAppointmentParticipant(appointment, "examination");
+        }
+
+        record(MedicalAccessLog.AccessedResourceType.EXAMINATION, examinationId, patientIdOf(appointment), current);
     }
 
     @Transactional
@@ -87,7 +111,11 @@ public class AccessGuard {
 
         User current = userService.getCurrentUser();
         Long patientId = appointment.getPatient().getId();
-        long doctorId = appointment.getDoctor() == null ? null : appointment.getDoctor().getId();
+        // `Long`, not `long`: an appointment with no doctor is representable, and unboxing the null
+        // branch of the ternary into a primitive throws NullPointerException instead of the
+        // UnauthorizedActionException this method exists to throw — a 500 where a 403 belongs.
+        // `equals` on the boxed value handles null correctly (it is simply not a match).
+        Long doctorId = appointment.getDoctor() == null ? null : appointment.getDoctor().getId();
         boolean isOwningPatient = current instanceof Patient && current.getId().equals(patientId);
         boolean isOwningDoctor = current instanceof Doctor && current.getId().equals(doctorId);
         boolean isTreatingDoctor = current instanceof Doctor && scheduledAppointmentRepository.existsByDoctorIdAndPatientId(current.getId(), patientId);

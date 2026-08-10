@@ -1,3 +1,8 @@
+// One binding per `mm-*` element, all eleven. `MmToast`/`MmToastRegion` have no consumer today —
+// toasts belong to the `notifications` MFE, which is a custom element and needs no binding — but
+// they are exported for the same reason the rest are: this package's contract is "every element,
+// bound", and a binding reachable only through a deep import into `./components` is one a consumer
+// would reasonably conclude does not exist.
 export {
     MmButton,
     MmCard,
@@ -8,6 +13,8 @@ export {
     MmSelect,
     MmSpinner,
     MmTable,
+    MmToast,
+    MmToastRegion,
 } from './components';
 
 export { MmField } from './MmField';

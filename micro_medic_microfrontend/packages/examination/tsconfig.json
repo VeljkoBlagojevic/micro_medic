@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "../../packages",
+        // Angular decorators. Mirrors `design-system-angular/tsconfig.json` — the directives
+        // this package binds against are compiled as part of the same program (they are
+        // consumed as raw `.ts` through the `paths` map), so the two configs must agree.
+        //
+        // `useDefineForClassFields: false` is the load-bearing one: under the ES2022 class-field
+        // semantics that `target: es2024` would otherwise imply, a declared-but-unassigned
+        // `@Input() label?: string` emits a real field initialised to `undefined`, which
+        // overwrites whatever the Angular compiler wrote and breaks input binding.
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": false
+    },
+    "angularCompilerOptions": {
+        // The reason the Angular bindings exist at all: with `strictTemplates` on, a misspelled
+        // or wrongly-typed `mm-*` binding fails the build instead of silently doing nothing at
+        // runtime. Turning this off would forfeit the whole point of `design-system-angular`.
+        "strictTemplates": true,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "typeCheckHostBindings": true
+    },
+    "include": ["./src"]
+}

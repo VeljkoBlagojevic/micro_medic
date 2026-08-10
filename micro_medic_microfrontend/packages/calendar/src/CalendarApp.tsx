@@ -10,6 +10,7 @@ import {
     RescheduleModal,
 } from './components';
 import { useCalendar } from './hooks/useCalendar';
+import { useExaminationSync } from './hooks/useExaminationSync';
 import { useAuthState, useCalendarView } from './state';
 import { loadErrorMessage } from './utils';
 import type { CalendarEvent } from './types';
@@ -32,6 +33,10 @@ export const CalendarApp = () => {
     // doctor, a doctor wants to see the patient.
     const { events, isLoading, isError, error, isFetching, refetch } = useCalendar(role);
     const { view, date, onView, onNavigate } = useCalendarView();
+
+    // Inbound half of the split with `examination`: refetch when a sibling MFE records an
+    // examination, which completes one of these appointments server-side.
+    useExaminationSync();
 
     // Only the *id* is held in state; the DTO is read back out of the freshly-fetched events.
     // Storing the DTO itself left the detail pane showing a stale snapshot after a mutation —
@@ -112,9 +117,10 @@ export const CalendarApp = () => {
                         {selected && (
                             <AppointmentCard
                                 appointment={selected}
-                                // A doctor reschedules; either party may cancel. `CalendarService.cancel`
-                                // currently checks `requireSelfDoctor` first, so a patient's cancel is
-                                // rejected by the backend — see the known-defects list in CLAUDE.md.
+                                // A doctor reschedules; either party may cancel. That matches
+                                // `CalendarService.cancel`, which authorises with
+                                // `requireAppointmentAccess` (either participant) rather than
+                                // `requireSelfDoctor` — so a patient's cancel is accepted.
                                 canReschedule={isDoctor}
                                 canCancel={isDoctor || isPatient}
                                 onReschedule={(appointment) => setDialog({ kind: 'reschedule', appointment })}

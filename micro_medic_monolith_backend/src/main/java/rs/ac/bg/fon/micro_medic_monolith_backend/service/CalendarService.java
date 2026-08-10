@@ -93,8 +93,22 @@ public class CalendarService {
 
     @Transactional
     public ScheduledAppointment cancel(Long appointmentId) {
+        // Either participant may cancel, so authorise against the appointment as a whole rather
+        // than requiring the caller to be the doctor. First, as in `reschedule` and
+        // `ExaminationService.examine`: the validations below describe the appointment (whether it
+        // has started, who is on it), and answering them for a caller with no claim to it is an
+        // oracle over other people's schedules.
+        accessGuard.requireAppointmentAccess(appointmentId);
+
         ScheduledAppointment appointment = scheduledAppointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Scheduled appointment not found with ID: " + appointmentId));
+
+        // Only a SCHEDULED appointment can be cancelled. Without this, cancelling a COMPLETED one
+        // would silently discard the examination's outcome from the calendar's point of view, and
+        // cancelling twice would write a second audit row for a state change that did not happen.
+        if (appointment.getStatus() != ScheduledAppointment.Status.SCHEDULED) {
+            throw new IllegalArgumentException("Only a scheduled appointment can be cancelled; this one is " + appointment.getStatus() + ".");
+        }
 
         if (appointment.getStart().isBefore(java.time.LocalDateTime.now())) {
             throw new IllegalArgumentException("Cannot cancel an appointment that has already started or passed.");
@@ -108,9 +122,18 @@ public class CalendarService {
             throw new IllegalArgumentException("Scheduled appointment does not have an associated patient.");
         }
 
-        // Either participant may cancel, so authorise against the appointment as a whole
-        // rather than requiring the caller to be the doctor.
-        accessGuard.requireAppointmentAccess(appointmentId);
+        /*
+         * The line the whole method exists for, and it was missing.
+         *
+         * Everything above validates and authorises; `save` then persisted the entity *unchanged*,
+         * so `PUT /api/calendar/{id}/cancel` returned 200 with `status: "SCHEDULED"` and the
+         * appointment stayed bookable. The calendar's cancel dialog closed on success and the row
+         * came back still scheduled — a silent no-op on the one path a patient has for calling off
+         * a visit. Note this is a status transition, not a delete: `ScheduledAppointment` is a
+         * soft-delete entity and `CANCELLED` is a domain state that `existsOverlapping` filters on,
+         * which is what frees the slot for rebooking.
+         */
+        appointment.setStatus(ScheduledAppointment.Status.CANCELLED);
 
         log.info("Cancelling appointment: {} by user: {}", appointment, userService.getCurrentUser().getId());
         return scheduledAppointmentRepository.save(appointment);
@@ -121,6 +144,14 @@ public class CalendarService {
         accessGuard.requireAppointmentAccess(appointmentId);
         ScheduledAppointment appointment = scheduledAppointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Scheduled appointment not found with ID: " + appointmentId));
+
+        // Same precondition as `cancel`, and the same reason: `existsOverlapping` only counts
+        // SCHEDULED rows, so moving a CANCELLED or COMPLETED appointment would place it at a time
+        // the overlap check never consulted — and reviving a completed one detaches it from the
+        // examination already recorded against it.
+        if (appointment.getStatus() != ScheduledAppointment.Status.SCHEDULED) {
+            throw new IllegalArgumentException("Only a scheduled appointment can be rescheduled; this one is " + appointment.getStatus() + ".");
+        }
 
         if (newStart.isBefore(java.time.LocalDateTime.now())) {
             throw new IllegalArgumentException("New start time cannot be in the past.");

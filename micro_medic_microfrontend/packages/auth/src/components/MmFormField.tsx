@@ -20,6 +20,19 @@ interface MmFormFieldProps<T extends FieldValues> {
     required?: boolean;
     disabled?: boolean;
     autoComplete?: string;
+    /**
+     * Report the value as a number rather than a string — the same flag [MmSelectFormField]
+     * carries, for the same reason.
+     *
+     * `type="number"` only constrains what the *browser* accepts; the element's `value`
+     * property, and therefore the `mm-input` detail, is still a string. Without this,
+     * `specializationId` reached `z.number()` as `"3"` and the field showed zod's "expected
+     * number, received string" — so the degraded branch of the doctor registration form (the one
+     * shown when the department list fails to load) could not be submitted at all. An empty box
+     * becomes `undefined` rather than `NaN`, so the schema's "Select a specialization" `.refine`
+     * is what speaks instead of a type error.
+     */
+    numeric?: boolean;
 }
 
 export function MmFormField<T extends FieldValues>({
@@ -32,6 +45,7 @@ export function MmFormField<T extends FieldValues>({
     required = false,
     disabled = false,
     autoComplete,
+    numeric = false,
 }: MmFormFieldProps<T>) {
     const {
         field,
@@ -44,7 +58,13 @@ export function MmFormField<T extends FieldValues>({
             // A react-hook-form value can be `undefined` before the first change; the Lit
             // element's `value` property is typed `string`, so normalise here.
             value={field.value == null ? '' : String(field.value)}
-            onValueChange={field.onChange}
+            onValueChange={(value) => {
+                if (!numeric) {
+                    field.onChange(value);
+                    return;
+                }
+                field.onChange(value === '' ? undefined : Number(value));
+            }}
             onBlur={field.onBlur}
             label={label}
             type={type}

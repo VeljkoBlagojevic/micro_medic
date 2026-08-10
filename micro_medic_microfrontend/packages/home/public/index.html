@@ -16,10 +16,10 @@
     <script src="http://localhost:3007/remoteEntry.js"></script>
     <script src="http://localhost:3009/remoteEntry.js"></script>
     <!--
-      Legacy: MUI CSS is still used by the plain-JS packages (`nav`, `examination`). It stays
-      until those are ported to the design system. The `--mm-*` theme is imported from
-      `src/index.js` instead of linked here, so style-loader injects it after this stylesheet
-      and the design system wins at equal specificity.
+      Legacy: MUI CSS is used only by this shell now — `nav`, `examination` and `icd10` have all been
+      ported to the design system, so it stays until the shell's own markup is. The `--mm-*` theme is
+      imported from `src/index.js` instead of linked here, so style-loader injects it after this
+      stylesheet and the design system wins at equal specificity.
     -->
     <link href="//cdn.muicss.com/mui-0.10.1/css/mui.min.css" rel="stylesheet" type="text/css" />
     <script src="//cdn.muicss.com/mui-0.10.1/js/mui.min.js"></script>
@@ -30,7 +30,7 @@
       `#single-spa-application:NAME`, and appends its own div to `<body>` for any application
       without one — which is how a remote ends up outside the layout entirely.
 
-      `auth` is deliberately outside `.mui-container`: it is a vertical split that owns the whole
+      `auth` is deliberately outside `.mm-container`: it is a vertical split that owns the whole
       viewport, and the shell's chrome is switched off on its routes (`exceptRoutes` in
       `src/routes.js`).
     -->
@@ -51,16 +51,28 @@
       -->
       <main id="mm-main" tabindex="-1">
         <!--
-          The horizontal split, active on `/examination`: the ICD-10 catalogue beside the
-          examination form. Two independently deployed micro-frontends composed onto one screen,
-          talking only over the event bus (`ICD10_DISEASE_SELECTED`) — neither imports the other.
+          The horizontal split, active on `/examination`: the Angular examination form across three
+          quarters of the screen with the Vue 3 ICD-10 catalogue in the remaining quarter. Two
+          independently deployed micro-frontends — different frameworks, different ports, no shared
+          build — composed onto one screen and talking only over the event bus
+          (`ICD10_DISEASE_SELECTED`). Neither imports the other, and neither *can*: Angular cannot
+          import a Vue component, which is what makes the browser the only possible integration point
+          here rather than merely the chosen one.
 
-          `.mm-split` is a design-system layout utility, not a shell-local class: composing
-          fragments is the shell's job, but the vocabulary it does it with is shared.
+          `.mm-split` and its `--primary` modifier are design-system layout utilities, not
+          shell-local classes: composing fragments is the shell's job, but the vocabulary it does it
+          with is shared. The 3:1 ratio lives there, in one place, rather than in either remote —
+          a fragment renders into its own mount point and cannot see the screen it shares, so
+          whichever one shipped the ratio would be imposing a layout on a sibling it cannot observe.
+
+          Order is the composition. `.mm-split--primary` makes the *first* child the wide column, so
+          examination precedes icd10 here — which also puts them in that order for reading and for
+          Tab, matching what the doctor does: fill in the form, reach for the catalogue when the
+          diagnosis is needed.
         -->
-        <div class="mm-split mm-region">
-          <div id="single-spa-application:icd10"></div>
+        <div class="mm-split mm-split--primary mm-region">
           <div id="single-spa-application:examination"></div>
+          <div id="single-spa-application:icd10"></div>
         </div>
 
         <div id="single-spa-application:calendar" class="mm-region"></div>

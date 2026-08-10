@@ -6,8 +6,10 @@ import { authStore, type AuthState } from '@micro-medic/shared-store';
  *
  * Duplicated from `calendar`'s copy on purpose: an MFE-to-MFE import would couple two
  * independently deployable packages, and `shared-store` cannot own it without taking on a
- * React dependency that its Svelte and plain-JS consumers would then inherit. Twelve lines is
- * the right price for that.
+ * React dependency that its Angular, Vue and custom-element consumers would then inherit. Twelve
+ * lines is the right price for that — `icd10` pays it too, in `composables/useAuthState.ts`, and
+ * the fact that each framework's bridge is ~12 lines is itself the argument for keeping the store
+ * framework-free.
  */
 export function useAuthState(): AuthState {
     const [authState, setAuthState] = useState<AuthState>(() => authStore.getState());

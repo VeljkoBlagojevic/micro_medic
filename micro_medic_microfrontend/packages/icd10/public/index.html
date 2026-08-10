@@ -1,9 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="http://localhost:3001/remoteEntry.js"></script>
-    <script src="http://localhost:3005/remoteEntry.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ICD-10 MFE — standalone</title>
+    <!--
+      remoteEntry.js is NOT loaded here. This page is the standalone dev harness: webpack's own bundle
+      is injected by HtmlWebpackPlugin, and pulling in remoteEntry.js as well would evaluate the
+      container a second time. (The previous version of this file loaded the *shell's* container from
+      :3001 and the shared store's from :3005, which meant the harness could not run without both.
+      `examination`'s harness records fixing exactly the same defect.)
+    -->
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; }
+      .harness {
+        display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+        min-height: 48px; padding: 8px 16px; box-sizing: border-box;
+        background: #0f3460; color: #fff; font-size: 13px;
+      }
+      .harness button { font: inherit; }
+      /*
+        The 3/4–1/4 split the shell composes, reproduced so this pane is developed at the width it
+        actually ships at. A list built full-bleed and then dropped into a quarter of a column is a
+        list whose layout was never really tested — and this one holds two-line rows of ICD-10
+        descriptions, which is precisely the content that behaves differently when narrow.
+
+        Harness CSS, not the shell's: `.mm-split--primary` in the design system is the real rule. The
+        ratio is restated here rather than imported precisely so this page cannot become a second
+        place that *defines* the layout.
+      */
+      .harness-split {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+        padding: 16px;
+      }
+      .harness-examination {
+        padding: 12px;
+        border: 1px dashed #94a3b8;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #475569;
+      }
+    </style>
   </head>
   <body>
+    <div class="harness">
+      <span>ICD-10 MFE (standalone, Vue 3)</span>
+      <span id="icd10-auth"></span>
+      <button type="button" id="icd10-sign-out">Sign out</button>
+      <span id="icd10-last-event"></span>
+    </div>
+
+    <div class="harness-split">
+      <!--
+        The wide pane stands in for the `examination` remote, which is not running here. It is inert on
+        purpose: this harness is about what *this* MFE publishes, and the log in the bar above is the
+        real receiver — it listens on the same shared bus singleton the Angular form would.
+      -->
+      <aside class="harness-examination">
+        <strong>Examination form stand-in</strong>
+        <p>
+          The real remote is Angular, on :3004. It receives every selection made here as
+          <code>ICD10_DISEASE_SELECTED</code> — watch the event log in the bar above.
+        </p>
+      </aside>
+
+      <!-- The narrow pane: this micro-frontend, at the 1/4 width the shell gives it. -->
+      <div id="icd10-root"></div>
+    </div>
   </body>
 </html>

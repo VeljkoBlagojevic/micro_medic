@@ -88,11 +88,15 @@ export function RegisterForm({ submitting, onSubmit }: RegisterFormProps) {
                 (failed ? (
                     // Degraded path: the department list could not be fetched, so fall back to
                     // the raw id rather than blocking registration behind an empty select.
+                    // `numeric` for the same reason the select below carries it — `type="number"`
+                    // constrains the browser's input, not the value's type, and
+                    // `specializationId` is a `z.number()`.
                     <MmFormField
                         control={control}
                         name="specializationId"
                         label="Specialization department id"
                         type="number"
+                        numeric
                         hint="Department list unavailable — enter the numeric id."
                         required
                         disabled={submitting}

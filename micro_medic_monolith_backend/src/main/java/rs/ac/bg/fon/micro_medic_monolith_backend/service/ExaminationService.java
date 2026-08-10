@@ -40,6 +40,23 @@ public class ExaminationService {
 
         ScheduledAppointment appointment = null;
         if (request.scheduledAppointmentId() != null) {
+            /*
+             * Row-level ownership, and the audit row that goes with it.
+             *
+             * `@PreAuthorize` above establishes only that the caller is *a* doctor, not that they
+             * are the doctor on this appointment — without this call any doctor could record an
+             * examination against any patient, and the write would go unaudited because audit
+             * logging in this application is explicit and has no interceptor behind it. Every read
+             * path in this class already guards; the write that creates the medical record is the
+             * one that most needs to.
+             *
+             * Before `findById`, deliberately: the guard's own lookup throws
+             * UnauthorizedActionException (403) for an appointment that does not exist, and
+             * answering "no such appointment" to a caller with no claim to it is an enumeration
+             * oracle over other doctors' schedules.
+             */
+            accessGuard.requireAppointmentAccess(request.scheduledAppointmentId());
+
             appointment = scheduledAppointmentRepository.findById(request.scheduledAppointmentId())
                     .orElseThrow(() -> new IllegalArgumentException("Scheduled appointment not found with ID: " + request.scheduledAppointmentId()));
 

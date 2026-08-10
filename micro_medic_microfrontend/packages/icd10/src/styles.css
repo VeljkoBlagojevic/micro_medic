@@ -1,14 +1,29 @@
 /*
  * ICD-10 MFE styles.
  *
- * Namespaced `icd10__*` (BEM, matching the `cal-block__element` convention in the calendar
- * package) because these rules are document-level: this micro-frontend renders into the light
- * DOM, so an unprefixed `.list` or `.search` would collide with any other remote on the page.
+ * Namespaced `icd10__*` (BEM, matching the `cal-block__element` convention in the calendar package
+ * and `exam-*` in examination) because these rules are document-level: this micro-frontend renders
+ * into the light DOM, so an unprefixed `.list` or `.search` would collide with any other remote on
+ * the page.
  *
- * Every value reads a `--mm-*` token with a literal fallback, so the component degrades to
- * sane defaults if the shell has not loaded `tokens.css` — and picks up the real theme when it
- * has. Custom properties are also the only styling channel that pierces shadow DOM, which is
- * why the design system exposes them rather than classes.
+ * Every value reads a `--mm-*` token with a literal fallback, so the pane degrades to sane defaults
+ * if the shell has not loaded `tokens.css` — and picks up the real theme when it has. Custom
+ * properties are also the only styling channel that pierces shadow DOM, which is why the design
+ * system exposes them rather than classes.
+ *
+ * Nothing here can reach an `mm-*` component's internals: they render into shadow roots, so a
+ * selector like `.icd10 mm-input input` is unreachable *by construction*, not merely unused. What
+ * crosses the boundary is a `--mm-*` property or an exported `part`. These rules lay out the spaces
+ * *between* components.
+ *
+ * What this file must never contain: a reset, or the `--mm-*` token definitions. Those are
+ * document-wide and the shell owns them — two remotes each shipping a reset is the classic
+ * micro-frontend CSS collision, and whichever loads second silently wins.
+ *
+ * No `scoped` styles in the SFCs either, deliberately. Vue's `scoped` attribute selectors would work,
+ * but a single namespaced stylesheet keeps this package's CSS in the same shape as every other MFE
+ * in the repo — one file, one prefix, greppable from outside — and the discipline that actually
+ * prevents collisions here is the prefix, not the mechanism.
  */
 
 .icd10 {
@@ -23,30 +38,35 @@
     color: var(--mm-color-text, #212529);
 }
 
+.icd10__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+}
+
 .icd10__heading {
     margin: 0;
     font-size: var(--mm-font-size-lg, 18px);
     font-weight: var(--mm-font-weight-bold, 600);
 }
 
+.icd10__hint {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 14px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
 .icd10__search {
-    width: 100%;
-    box-sizing: border-box;
-    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
-    font: inherit;
-    color: inherit;
-    background: var(--mm-color-bg, #f8f9fa);
-    border: 1px solid var(--mm-color-border, #dee2e6);
-    border-radius: var(--mm-radius-sm, 4px);
-    transition: border-color var(--mm-transition-fast, 150ms) var(--mm-transition-timing, ease);
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
 }
 
-.icd10__search:focus-visible {
-    outline: 2px solid var(--mm-color-focus-ring, #4c9aff);
-    outline-offset: 1px;
-    border-color: var(--mm-color-primary, #0d6efd);
-}
-
+/*
+ * `min-height` rather than a conditional margin: the status line is empty while browsing unfiltered
+ * and populated while searching, and without a reserved line the whole list jumps up and down by one
+ * line-height on the first keystroke of every search.
+ */
 .icd10__status {
     margin: 0;
     min-height: 1.25em;
@@ -54,9 +74,30 @@
     color: var(--mm-color-text-muted, #6c757d);
 }
 
+/* A text button, not an `mm-button`: "Clear search" is a minor correction to the field above it, and
+   a button-weight control here would compete with the list for attention in a quarter-width pane. */
+.icd10__clear {
+    align-self: flex-start;
+    padding: 0;
+    font: inherit;
+    font-size: var(--mm-font-size-sm, 14px);
+    color: var(--mm-color-primary, #0d6efd);
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.icd10__clear:focus-visible {
+    outline: 2px solid var(--mm-color-focus-ring, #4c9aff);
+    outline-offset: 2px;
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
 .icd10__list {
-    /* Capped and scrollable: the seeded catalogue is ~71,700 codes, so this pane must never
-       be what drives page height. */
+    /* Capped and scrollable: the seeded catalogue is ~71,700 codes, so this pane must never be what
+       drives page height. It shares a screen with a form the doctor is filling in, and a sibling
+       fragment that stretches the document makes that form scroll away. */
     max-height: 22rem;
     overflow-y: auto;
     margin: 0;
@@ -67,10 +108,18 @@
     gap: var(--mm-space-1, 4px);
 }
 
+/* A refresh that already has rows dims them instead of replacing them with a spinner. Opacity only —
+   the rows stay interactive, because a doctor who spotted the code they want should not have to wait
+   for a request they no longer care about. */
+.icd10__list--refreshing {
+    opacity: 0.6;
+    transition: opacity var(--mm-transition-fast, 150ms) var(--mm-transition-timing, ease);
+}
+
 .icd10__option {
     display: flex;
-    gap: var(--mm-space-3, 12px);
-    align-items: baseline;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
     width: 100%;
     padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
     font: inherit;
@@ -92,7 +141,8 @@
     outline-offset: -2px;
 }
 
-/* The selected diagnosis — the one this MFE last published on the event bus. */
+/* The selected diagnosis — the one this MFE last published on the event bus. Driven by
+   `aria-current`, so the visual state and the announced state cannot disagree. */
 .icd10__option[aria-current='true'] {
     background: var(--mm-color-info-surface, #cfe2ff);
     border-color: var(--mm-color-info-border, #9ec5fe);
@@ -100,7 +150,6 @@
 }
 
 .icd10__code {
-    flex: none;
     font-variant-numeric: tabular-nums;
     font-weight: var(--mm-font-weight-medium, 500);
     color: var(--mm-color-primary, #0d6efd);
@@ -112,4 +161,76 @@
 
 .icd10__desc {
     font-size: var(--mm-font-size-sm, 14px);
+}
+
+/*
+ * The search-term highlight. `<mark>` is the correct element — it means "relevant to the user's
+ * current activity", which is precisely what a search hit is — but its UA default is black on yellow,
+ * which ignores the theme and fails contrast against the selected row's blue surface. Restyled to
+ * `currentColor` on a tinted background so it works in both states.
+ */
+.icd10__match {
+    padding: 0 1px;
+    color: inherit;
+    background: var(--mm-color-warning-surface, #fff3cd);
+    border-radius: 2px;
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.icd10__option[aria-current='true'] .icd10__match {
+    /* On the selected row the tint would be invisible against the info surface; an underline carries
+       the same information without a second background colour. */
+    background: transparent;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+.icd10__selected {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--mm-space-2, 8px);
+    padding: var(--mm-space-3, 12px);
+    background: var(--mm-color-info-surface, #cfe2ff);
+    border: 1px solid var(--mm-color-info-border, #9ec5fe);
+    border-radius: var(--mm-radius-sm, 4px);
+    color: var(--mm-color-on-info-surface, #052c65);
+}
+
+.icd10__selected-heading {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 14px);
+    font-weight: var(--mm-font-weight-bold, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.icd10__selected-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+    margin: 0;
+}
+
+.icd10__selected .icd10__code {
+    color: inherit;
+}
+
+.icd10__pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mm-space-2, 8px);
+    flex-wrap: wrap;
+}
+
+.icd10__pager-position {
+    font-size: var(--mm-font-size-sm, 14px);
+    color: var(--mm-color-text-muted, #6c757d);
+    text-align: center;
+}
+
+.icd10__pager-total {
+    display: block;
+    font-variant-numeric: tabular-nums;
 }

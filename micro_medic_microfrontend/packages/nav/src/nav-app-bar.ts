@@ -18,8 +18,8 @@ import { HOME_HREF, LOGIN_HREF, MAIN_LANDMARK_ID, isCurrent, visibleLinks } from
  *
  * A native custom element with no *framework* behind it, which is the point of this package: the
  * chrome is mounted on **every** route, so whatever runtime it needs is a runtime the whole
- * application pays for on first paint. React, Angular and Svelte each earn their weight in a
- * feature MFE with forms, queries and derived state; a bar with two links and one button does not
+ * application pays for on first paint. React and Angular each earn their weight in a feature MFE
+ * with forms, queries and derived state; a bar with two links and one button does not
  * have enough state to spend a framework on. What it does instead is show that the integration
  * contract — single-spa lifecycles, the shared store, the event bus, the design system — is
  * genuinely framework-agnostic, because here there is no framework to hide behind.

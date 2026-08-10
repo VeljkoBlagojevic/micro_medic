@@ -128,8 +128,9 @@ hr {
 
 /*
  * Deliberately a small, closed set: layout primitives and a11y helpers only. Anything
- * component-shaped belongs in a Lit component instead, so that React, Angular and Svelte
- * consumers all get it — a utility class only helps whoever remembers to type it.
+ * component-shaped belongs in a Lit component instead, so that every consumer gets it — React,
+ * Angular, Vue and the custom-element MFEs alike. A utility class only helps whoever remembers to
+ * type it, and there is no way to type it in four frameworks at once.
  *
  * The layout ones (`.mm-container`, `.mm-region`, `.mm-split`) are for the *shell*: composing
  * fragments into a page is its job, and these are the vocabulary it does it with.
@@ -230,9 +231,35 @@ hr {
     align-items: start;
 }
 
-/* One column below this width: two fragments in ~300px each is unusable. */
+/**
+ * An *unequal* split: a primary fragment beside a narrow supporting one.
+ *
+ * `/examination` is the case it exists for. The examination form is where the doctor works — a
+ * long anamnesis, a therapy description, a table of prescriptions — while the ICD-10 catalogue
+ * beside it is a search box and a result list. Giving them a column each would starve the form
+ * and waste three-quarters of the catalogue's width on nothing.
+ *
+ * A modifier rather than a second utility, so the base `.mm-split` keeps owning the gap, the
+ * `align-items` and the `minmax(0, …)` overflow guard. Only the ratio changes, and DOM order is
+ * what decides which fragment is wide — the shell composes by ordering its mount points, not by
+ * naming the remotes here.
+ */
+.mm-split--primary {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+}
+
+/*
+ * One column below this width: two fragments in ~300px each is unusable, and for
+ * `.mm-split--primary` the narrow one would be ~150px — narrower than the search field inside it.
+ *
+ * The modifier has to be restated here, not just inherited. Its `grid-template-columns` and the
+ * one below have identical specificity, so the later rule wins in source order — but only for a
+ * selector that actually matches. Without this line the 3:1 ratio would survive the breakpoint
+ * and the collapse would silently not happen.
+ */
 @media (max-width: 900px) {
-    .mm-split {
+    .mm-split,
+    .mm-split--primary {
         grid-template-columns: minmax(0, 1fr);
     }
 }

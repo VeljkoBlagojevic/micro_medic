@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "../../packages",
+        /*
+         * `preserve`, overriding the base config's `react-jsx`.
+         *
+         * This package writes no JSX at all, but the base value is set for the React packages and
+         * would make the compiler resolve `React.createElement`'s types — which are not installed
+         * here. The setting is inert for Vue templates either way: `vue-loader` compiles them to
+         * render functions before any of this applies.
+         */
+        "jsx": "preserve"
+    },
+    /*
+     * `.vue` has to be listed explicitly. `include` matches by extension, so `./src` alone reaches
+     * the TypeScript and skips every component — and a pattern that matches nothing is not an
+     * error, it is a template nobody checks. That is the same trap as `examination` running `tsc`
+     * instead of `ngc`, arriving through a different door.
+     */
+    "include": ["./src/**/*.ts", "./src/**/*.d.ts", "./src/**/*.vue"]
+}

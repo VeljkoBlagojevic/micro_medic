@@ -13,7 +13,7 @@ export type { DesignSystemParcelProps } from './parcel';
 /*
  * The two ways a custom element takes part in the composition: as a single-spa *application*
  * (`createCustomElementLifecycles`, used by `nav` and `notifications`) or as a *parcel* mounted by
- * another MFE (`mountDesignSystemParcel`, the escape hatch for the plain-JS and Svelte packages).
+ * another MFE (`mountDesignSystemParcel`, the escape hatch for an MFE with no binding package).
  */
 export { createCustomElementLifecycles } from './lifecycles';
 export type { CustomElementLifecycles, CustomElementMountProps } from './lifecycles';

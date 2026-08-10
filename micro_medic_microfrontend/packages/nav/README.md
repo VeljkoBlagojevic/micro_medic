@@ -103,8 +103,9 @@ Nothing here is queried; everything is a reaction to something the package does 
 - **`src/lifecycles.ts` is gone**; the adapter lives in the design system as
   `createCustomElementLifecycles`, shared with `notifications`. A custom element's
   `connectedCallback`/`disconnectedCallback` already *are* single-spa's contract, so the adapter only
-  appends and removes a node. `single-spa-html` (which `icd10` uses on purpose, so the repo shows
-  both routes) would mount by assigning `innerHTML` and ships no types.
+  appends and removes a node. The alternative, `single-spa-html`, mounts by assigning `innerHTML` and
+  ships no types; nothing in the repo uses it any more (`icd10` did, before it became a Vue app with
+  hand-written lifecycles of its own).
 
 ## Running it
 

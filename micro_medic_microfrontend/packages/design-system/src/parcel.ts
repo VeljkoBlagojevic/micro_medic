@@ -40,9 +40,10 @@ function applyAttributes(element: HTMLElement, attrs: DesignSystemParcelProps['a
 }
 
 /**
- * Builds a single-spa parcel that mounts one design-system element. This is the framework-
- * agnostic escape hatch — it lets the plain-JS and Svelte micro-frontends use the design
- * system without a framework-specific wrapper.
+ * Builds a single-spa parcel that mounts one design-system element. This is the framework-agnostic
+ * escape hatch: it lets an MFE with no binding package — the plain-JS shell, or any future remote in
+ * a framework nobody has written a wrapper for — render one `mm-*` element inside a tree it does not
+ * otherwise control, with no framework-specific code on either side.
  */
 export function mountDesignSystemParcel() {
     return {

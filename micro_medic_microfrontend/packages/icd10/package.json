@@ -1,20 +1,37 @@
 {
   "name": "icd10",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "axios": "^1.19.0",
-    "css-loader": "^7.1.4",
-    "html-webpack-plugin": "^5.6.7",
-    "serve": "^14.0.1",
-    "single-spa-html": "^1.1.2",
-    "style-loader": "^4.0.0",
-    "webpack": "5.74.0",
-    "webpack-cli": "^4.10.0"
-  },
   "scripts": {
+    "typecheck": "vue-tsc --noEmit",
     "start": "webpack --watch",
     "build": "webpack --mode production",
     "serve": "serve dist -p 3002"
+  },
+  "comments": {
+    "typecheck": "`vue-tsc`, not `tsc --noEmit` — for the same reason `examination` runs `ngc`: tsc compiles the TypeScript and never looks at a template, so a misspelled `mm-*` prop would go unchecked. vue-tsc checks SFC templates against the `GlobalComponents` declarations in src/types/design-system.d.ts.",
+    "no-design-system-vue": "There is deliberately no `@micro-medic/design-system-vue`. Vue 3 sets non-primitive values as DOM properties on unknown elements and binds `@mm-input` with addEventListener, so the `mm-*` elements need no binding layer — only the one-line `isCustomElement` predicate in webpack.config.js. That absence is the point: design-system-react exists because React has no prop for a custom event, and design-system-angular exists so strictTemplates can check bindings without CUSTOM_ELEMENTS_SCHEMA. Neither defect applies here.",
+    "vue-tsc-peer": "Watch vue-tsc's `typescript` peer range on install, the same trap as typescript-eslint: this repo is on TS 6, and a vue-tsc release whose peer range predates it will refuse to resolve."
+  },
+  "dependencies": {
+    "@micro-medic/api-client": "1.0.0",
+    "@micro-medic/design-system": "1.0.0",
+    "@micro-medic/shared-store": "1.0.0",
+    "@micro-medic/shared-types": "1.0.0",
+    "axios": "^1.18.1",
+    "lit": "^3.3.3",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "css-loader": "7.1.4",
+    "html-webpack-plugin": "^5.6.7",
+    "serve": "^14.0.1",
+    "style-loader": "4.0.0",
+    "ts-loader": "9.6.2",
+    "typescript": "^6.0.3",
+    "vue-loader": "^17.4.2",
+    "vue-tsc": "^3.1.1",
+    "webpack": "5.108.4",
+    "webpack-cli": "7.2.1"
   }
 }

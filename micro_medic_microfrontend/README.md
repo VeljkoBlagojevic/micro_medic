@@ -92,9 +92,17 @@ Two composition patterns are deliberately demonstrated:
 - **Vertical split** — one MFE owns the viewport for a route. `auth` (`layout: 'full'`) mounts
   outside `.mui-container` with the chrome suppressed via `exceptRoutes`, so the login screen is
   full-bleed.
-- **Horizontal split** — several MFEs share one screen. `/examination` composes `icd10` (the
-  disease catalogue) beside `examination` (the form). They communicate only over the event bus
-  (`ICD10_DISEASE_SELECTED`); neither imports the other, and either can be redeployed alone.
+- **Horizontal split** — several MFEs share one screen. `/examination` composes `examination` (the
+  form, three quarters of the width) beside `icd10` (the disease catalogue, the remaining quarter).
+  They communicate only over the event bus (`ICD10_DISEASE_SELECTED`); neither imports the other,
+  and either can be redeployed alone. They are also in different frameworks — Angular 22 and Vue 3 —
+  which is what makes "the composition boundary is the browser, not a build step" something you can
+  check rather than something the thesis merely asserts.
+
+  The 3:1 geometry is the **shell's**, not either remote's: `.mm-split--primary` in `global.css`,
+  applied around the two mount points in `home/public/index.html`. A fragment renders into its own
+  mount point and cannot see the screen it shares, so a remote claiming a share of the width would
+  be imposing a layout on a sibling it cannot observe.
 
 A third shape shows up in the table as the entries with `routes: ['*']`: the always-mounted
 fragments. `nav`'s header and footer take an `exceptRoutes` so the chrome is off on `/login`;
@@ -119,17 +127,22 @@ per call, so it works without a reload.
 
 ## Design system
 
-Implemented **once, in Lit**, with a thin binding layer per framework — never reimplemented per
-framework. React consumers import `@micro-medic/design-system-react`, Angular consumers
-`@micro-medic/design-system-angular`, and the plain-JS/Svelte MFEs use the tags directly — as do
-`nav` and `notifications`, since a custom element consuming another custom element needs no
-binding layer at all. That is precisely what the two binding packages exist to compensate for.
+Implemented **once, in Lit**, and never reimplemented per framework. What differs per framework is
+only how much glue it takes to consume the same elements — and with four frameworks in the repo,
+that turns out to be a **spectrum rather than a per-framework tax**:
 
-The bindings are not ceremony. React (through 19) stringifies unknown JSX props onto attributes,
-so `rows={[…]}` becomes `"[object Object]"` and `open={false}` becomes a truthy `"false"`, and it
-offers no prop for a custom event. Angular needs a directive per tag so the template can be
-type-checked without `CUSTOM_ELEMENTS_SCHEMA`, which would disable checking for every unknown tag
-in the component.
+| Consumer | Glue needed | Why |
+|---|---|---|
+| `nav`, `notifications` (custom elements) | **none** | a custom element consuming another needs no adapter |
+| `icd10` (Vue 3) | **one predicate + a `.d.ts`** | Vue sets non-primitive bindings as properties and `@mm-input` via `addEventListener`; it only needs `isCustomElement` in the build so the compiler emits the tag, and a `GlobalComponents` interface so `vue-tsc` checks the bindings |
+| `calendar`, `auth` (React 19) | **`design-system-react`** | JSX offers no prop for a custom event, so `mm-close` otherwise needs a `useRef` + `addEventListener` per element. (React ≤18 also stringified unknown props onto attributes — `open={false}` → a truthy `"false"` — but 19 assigns to a matching instance property first, so that half is historical) |
+| `examination` (Angular 22) | **`design-system-angular`** | a directive per tag, so the template type-checks without `CUSTOM_ELEMENTS_SCHEMA`, which would disable checking for every unknown tag in the component |
+
+Read down that table and the two binding packages stop looking like architecture and start looking
+like what they are: **compensation for specific framework defects.** Vue is the control case — it
+needs essentially nothing, which is why there is deliberately no `design-system-vue`. The Vue types
+live in `icd10` rather than in `design-system`, since a `GlobalComponents` interface in the shared
+package would make all five consumers depend on Vue's types to get at a Lit element.
 
 **CSS scope is the rule that matters.** Components render into a shadow root, so a document-level
 selector cannot reach their internals — it is unreachable by construction, not merely unused. The
@@ -174,13 +187,12 @@ one `contextLoads()` test verify the whole Flyway chain against the entity model
   every contributor's installs.
 - **No tests.** `api-client` and `shared-store` declare `"test": "jest"`, but there is no jest
   config and no test files. Test infrastructure is deferred.
-- Legacy packages (`home`, `icd10`, `examination`) are plain JS on single-spa v5 / React 18, and
-  call the backend directly with hand-built auth headers rather than through `api-client`. Their
-  store imports and API paths have been corrected (they previously used a `store/store` specifier
-  matching neither the remote's name nor its exports, and a stale `/api/v1/...` prefix), but they
-  are still the old pattern — port toward the TypeScript packages rather than extending them.
-  `nav` has already been ported and is no longer among them.
-- **Multiple frameworks coexisting is intentional.** React, Svelte, Lit and plain custom elements
-  in one application is the thing federation is meant to make possible, and demonstrating it is a
-  goal here, not debt. Complete features: `calendar`, `auth`, `nav`, `notifications`; the rest are
-  placeholders.
+- **`home` (the shell) is the last legacy package** — plain JS on single-spa v5, calling nothing
+  through `api-client`. It is three small files with no UI of its own, which is why it has not been
+  a priority; port it toward the TypeScript packages rather than extending it. `nav`, `examination`
+  and `icd10` have all been ported and are no longer among them.
+- **Multiple frameworks coexisting is intentional.** React 19, Angular 22, Vue 3, Lit and plain
+  custom elements in one application is the thing federation is meant to make possible, and
+  demonstrating it is a goal here, not debt. Every feature MFE is implemented: `calendar` (React),
+  `auth` (React), `examination` (Angular), `icd10` (Vue), `nav` and `notifications` (custom
+  elements).

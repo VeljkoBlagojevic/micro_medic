@@ -32,7 +32,7 @@ export const routes = [
         // The only app that must mount without a token — it is how one is obtained.
         public: true,
         // Vertical split: auth owns the whole viewport, app bar included, so it is mounted
-        // outside `.mui-container`.
+        // outside `.mm-container`.
         layout: 'full',
     },
     /*
@@ -69,20 +69,28 @@ export const routes = [
         routes: ['/calendar'],
     },
     /*
-     * `icd10` and `examination` share `/examination`: the disease catalogue on one half of the
-     * screen, the examination form on the other. That is a **horizontal split** — two
-     * independently deployed MFEs composed side by side on a single screen, communicating only
-     * through the event bus (`ICD10_DISEASE_SELECTED`). Neither imports the other, and either can
-     * be redeployed without the other noticing.
+     * `examination` and `icd10` share `/examination`: the examination form across three quarters of
+     * the screen, the ICD-10 disease catalogue in the remaining quarter. That is a **horizontal
+     * split** — two independently deployed MFEs composed side by side on a single screen,
+     * communicating only through the event bus (`ICD10_DISEASE_SELECTED`). Neither imports the
+     * other, and either can be redeployed without the other noticing.
+     *
+     * They are also written in different frameworks — `examination` is Angular with signals and no
+     * `zone.js`, `icd10` is Vue 3 with the Composition API — which is the sharpest demonstration in
+     * the repo that the composition boundary is the *browser*, not a build step. Two frameworks that
+     * cannot import each other's components, on one screen, agreeing on one custom event.
+     *
+     * The 3:1 geometry is not here. This table decides *whether* a fragment is mounted; where it
+     * lands is `.mm-split--primary` around the two mount points in `public/index.html`.
      */
-    {
-        name: 'icd10',
-        load: () => import('icd10/ICD10'),
-        routes: ['/examination'],
-    },
     {
         name: 'examination',
         load: () => import('examination/Examination'),
+        routes: ['/examination'],
+    },
+    {
+        name: 'icd10',
+        load: () => import('icd10/ICD10'),
         routes: ['/examination'],
     },
     {

@@ -23,6 +23,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import vueParser from 'vue-eslint-parser';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
@@ -32,9 +33,6 @@ export default tseslint.config(
             '**/dist/**',
             '**/node_modules/**',
             '**/coverage/**',
-            // Svelte needs its own parser to be linted at all; adding one for a single legacy
-            // component would pull a plugin whose only job is to lint code we intend to replace.
-            '**/*.svelte',
         ],
     },
 
@@ -154,9 +152,9 @@ export default tseslint.config(
         /*
          * `.tsx` only. This block used to include `packages/nav/src/**\/*.js` and
          * `packages/home/src/**\/*.js` for legacy JSX in plain-JS files; there is none left — `nav`
-         * is TypeScript custom elements now, the shell is three files of plain JS with no markup in
-         * them, and `icd10` builds its DOM from template strings. A `files` pattern matching nothing
-         * is not an error, so this would have gone unnoticed indefinitely.
+         * is TypeScript custom elements now, `icd10` is Vue SFCs (handled by the block below), and
+         * the shell is three files of plain JS with no markup in them. A `files` pattern matching
+         * nothing is not an error, so this would have gone unnoticed indefinitely.
          */
         files: ['**/*.tsx'],
         plugins: { react, 'react-hooks': reactHooks },
@@ -190,6 +188,49 @@ export default tseslint.config(
             // Unescaped entities in JSX text are a real source of mojibake, but the messages in
             // this app contain apostrophes; the transform escapes them correctly.
             'react/no-unescaped-entities': 'off',
+        },
+    },
+
+    // ------------------------------------------------------------------ Vue
+    /*
+     * `.vue` files need a parser that can find the `<script>` block at all — espree sees an SFC as a
+     * syntax error on line 1. `vue-eslint-parser` splits the file and delegates the script to
+     * `parserOptions.parser`, which is how the TypeScript rules below reach a `<script setup lang="ts">`.
+     *
+     * Without this block the `icd10` components would be *silently* unlinted: ESLint has no default
+     * handler for `.vue`, so the files are simply not matched, and a pattern matching nothing is not an
+     * error. That is the same trap `examination` has with `tsc` vs `ngc` and this package has with
+     * `tsc` vs `vue-tsc` — three tools, one failure mode, which is worth stating out loud.
+     *
+     * `eslint-plugin-vue` is deliberately not added. Its value is template-correctness rules
+     * (`v-for` keys, unused components, invalid `v-model`), and `vue-tsc` already checks the template
+     * expressions and the `mm-*` bindings against `GlobalComponents` — which is the part that would
+     * otherwise fail silently at runtime. A second plugin whose flat-config presets need their own
+     * parser wiring is not worth the overlap for one package.
+     */
+    {
+        files: ['**/*.vue'],
+        languageOptions: {
+            parser: vueParser,
+            parserOptions: {
+                parser: tseslint.parser,
+                extraFileExtensions: ['.vue'],
+                sourceType: 'module',
+                /*
+                 * No `projectService` here, unlike the TypeScript block above. Type-aware linting of
+                 * an SFC needs the TypeScript plugin's Vue integration to resolve a `.vue` import,
+                 * and without it every `import X from './Y.vue'` reports as untyped — a wall of
+                 * false positives for no benefit. The checking that actually matters for a template
+                 * is `vue-tsc`'s (`yarn workspace icd10 typecheck`); this block covers the
+                 * syntactic rules.
+                 */
+            },
+        },
+        rules: {
+            // Same reasoning as the TypeScript block: redundant under TS, and a source of false
+            // positives on type-only globals.
+            'no-undef': 'off',
+            'no-unused-vars': 'off',
         },
     },
 

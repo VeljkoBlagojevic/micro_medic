@@ -1,14 +1,15 @@
 # @micro-medic/design-system
 
 Framework-agnostic Lit web components. This is the **single implementation** of every visual
-component in the app; each framework gets a thin binding layer on top rather than its own
-reimplementation.
+component in the app — never reimplemented per framework. What each consumer adds on top is however
+much glue its framework actually needs, which across the four frameworks here ranges from a whole
+package down to nothing at all (see "How much glue each framework needs" below).
 
 ```
 design-system              (Lit)  ← the components live here, once
 ├── design-system-react    (@lit/react wrappers)
 ├── design-system-angular  (a @Directive per tag)
-├── parcel.ts              (single-spa parcel, for the plain-JS / Svelte MFEs)
+├── parcel.ts              (single-spa parcel, for an MFE with no binding package)
 └── lifecycles.ts          (single-spa application, for custom-element MFEs)
 ```
 
@@ -19,6 +20,9 @@ design-system              (Lit)  ← the components live here, once
 ```tsx
 import { MmButton, MmModal } from '@micro-medic/design-system-react';
 ```
+
+**Angular** — same, from `@micro-medic/design-system-angular`; `MM_DESIGN_SYSTEM` imports every
+directive at once.
 
 **Anything else** — import the package for its registration side effect and use the tags:
 
@@ -34,6 +38,23 @@ import '@micro-medic/design-system/src/tokens.css';   // once per page, in the s
 `tokens.css` sets the `--mm-*` custom properties on `:root`. Custom properties pierce shadow
 DOM, so it is the whole theming API. Components carry hardcoded fallbacks, so a missing
 `tokens.css` degrades rather than breaks.
+
+## How much glue each framework needs
+
+The two binding packages are not a per-framework tax; they are **compensation for two specific
+framework defects**, and the repo has the consumers to show it:
+
+| Consumer | Glue | The defect being compensated for |
+|---|---|---|
+| `nav`, `notifications` (custom elements) | none | — a custom element consuming another needs no adapter |
+| `icd10` (Vue 3) | one build predicate + a `.d.ts` | none, really. Vue sets non-primitive bindings as properties and `@mm-input` via `addEventListener`. It needs `isCustomElement` so the compiler emits the tag, and a `GlobalComponents` interface so `vue-tsc` checks the bindings |
+| `calendar`, `auth` (React 19) | `design-system-react` | JSX has no prop for a custom event, so `mm-close` needs a `useRef` + `addEventListener` per element. (React ≤18 also stringified unknown props onto attributes — `open={false}` → a truthy `"false"` — but 19 assigns to a matching instance property first, so that half is historical) |
+| `examination` (Angular 22) | `design-system-angular` | accepting an unknown tag needs `CUSTOM_ELEMENTS_SCHEMA`, which switches template type-checking off for *every* unknown tag in the component |
+
+Vue is the control case, which is why there is deliberately **no `design-system-vue`**. Its typings
+live in `icd10` rather than here: a `GlobalComponents` interface in this package would make all five
+consumers depend on Vue's types to use a Lit element, and `lit` being the only dependency is what lets
+four frameworks share this package at all.
 
 ## Components
 
@@ -63,7 +84,7 @@ Both are exported here, because both are about custom elements in single-spa rat
 one micro-frontend:
 
 - **`mountDesignSystemParcel`** (`parcel.ts`) — a single-spa *parcel*: one `mm-*` element rendered
-  inside an app that is already mounted. The escape hatch for the plain-JS and Svelte MFEs.
+  inside an app that is already mounted. The escape hatch for an MFE with no binding package.
 - **`createCustomElementLifecycles(tag)`** (`lifecycles.ts`) — a single-spa *application* whose
   entire UI is one custom element. `nav` uses it for `<nav-app-bar>`/`<nav-footer>`,
   `notifications` for `<notification-center>`. A custom element's
@@ -96,5 +117,7 @@ one micro-frontend:
    end with `defineElement('mm-thing', MmThing)` and an `HTMLElementTagNameMap` entry.
 2. Export it from `src/components/index.ts`.
 3. Add a binding in `design-system-react/src/components.ts`, mapping any custom events to
-   React-style prop names, and a directive in `design-system-angular/src/lib/`.
+   React-style prop names, and a directive in `design-system-angular/src/lib/`. Nothing to do for
+   Vue or the custom-element MFEs — but if `icd10` renders the new tag, add it to that package's
+   `src/types/design-system.d.ts` so `vue-tsc` can check the bindings.
 4. Add the row to the table above.

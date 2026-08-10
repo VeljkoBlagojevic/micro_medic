@@ -20,16 +20,22 @@ Importing this package registers the custom elements as a side effect, so there 
 
 ## Why a wrapper is needed
 
-React (through v19) does not treat custom elements as first-class:
+Two reasons, and only one of them still bites on React 19:
 
-1. **Props become attributes.** React stringifies unknown JSX props onto the element, so
-   `rows={[{…}]}` arrives as `"[object Object]"` and `open={false}` becomes the *string*
-   `"false"` — which is truthy as an attribute, so the modal would never close.
-2. **Custom events are unreachable.** There is no `onMm-close` prop, so `mm-close` can only be
-   observed with an imperative `addEventListener`.
+1. **Custom events are unreachable — and this is the reason that survives.** JSX has no
+   `onMm-close` prop and React 19 added none, so `mm-close` can otherwise only be observed with an
+   imperative `useRef` + `addEventListener` per element, per event.
+2. **Props became attributes.** Before 19, React stringified an unknown JSX prop onto the element:
+   `rows={[{…}]}` arrived as `"[object Object]"` and `open={false}` as the *string* `"false"`,
+   truthy as an attribute, so the modal never closed. **React 19 fixed this** — it now assigns to a
+   matching property on the element instance when one exists and only falls back to an attribute
+   otherwise, and Lit declares its reactive properties on the instance. Both consumers here
+   (`calendar`, `auth`) are on 19, so this half is historical. Do not delete the note: it is why the
+   three hand-rolled adapters existed, and a package pinned to React 18 would hit it again.
 
-`@lit/react`'s `createComponent` fixes both: it assigns declared reactive fields as
-**properties** and maps DOM event names to React-style callback props.
+`@lit/react`'s `createComponent` covers both: it assigns declared reactive fields as **properties**
+and maps DOM event names to React-style callback props. Point 1 alone justifies it — a binding layer
+that existed only for point 2 would now be deletable.
 
 This replaces three hand-rolled `useRef` + `useEffect` adapters that previously lived in the
 `calendar` package. Those had to re-implement property assignment per prop, and drifted — one

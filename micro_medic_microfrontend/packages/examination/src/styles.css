@@ -1,0 +1,574 @@
+/*
+ * Examination MFE styles.
+ *
+ * Naming: `exam-block__element`, the same BEM convention `calendar/src/styles.css` uses
+ * (`cal-block__element`). Every class here is prefixed `exam-`, which is what keeps two
+ * independently deployed micro-frontends from colliding in a shared document — there is no scoping
+ * mechanism at work, only a namespace both sides agree to respect.
+ *
+ * Two rules this file follows deliberately:
+ *
+ *  1. **Tokens, never literals.** Every value is `var(--mm-token, fallback)`. The fallback is not
+ *     decoration: this stylesheet ships with the MFE while `tokens.css` is loaded once by the
+ *     shell, so a remote that renders before the theme arrives — or in the standalone harness —
+ *     degrades to sensible defaults rather than to unstyled markup.
+ *
+ *  2. **Nothing here can reach an `mm-*` component's internals.** They render into shadow roots, so
+ *     a selector like `.exam-form mm-input .field` is unreachable *by construction*, not merely
+ *     ineffective. What crosses the boundary is a `--mm-*` custom property or an exported `part`,
+ *     and nothing below tries anything else. The rules here lay out the *spaces between* components.
+ *
+ * No layout ratio lives in this file either. This MFE occupies 3/4 of `/examination` and the
+ * ICD-10 catalogue the other 1/4, but that is `.mm-split--primary` in the shell: a fragment cannot
+ * see the screen it shares, so it must not claim a share of it.
+ */
+
+/* ---------------------------------------------------------------------------
+ * Root and phase panes
+ * ------------------------------------------------------------------------- */
+
+.exam {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-4, 16px);
+}
+
+.exam__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--mm-space-3, 12px);
+    flex-wrap: wrap;
+}
+
+.exam__title {
+    margin: 0;
+    font-size: var(--mm-font-size-xl, 20px);
+    font-weight: var(--mm-font-weight-bold, 600);
+}
+
+.exam__byline {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+/*
+ * The context pane above the form, not beside it.
+ *
+ * Beside would be the obvious choice and it is wrong here: this MFE already *is* the wide column of
+ * a 3/4–1/4 split, so subdividing it again would leave the anamnesis textarea in roughly a third of
+ * the viewport. Stacking keeps the form at the full width it was given.
+ */
+.exam__panes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-4, 16px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Appointment picker
+ * ------------------------------------------------------------------------- */
+
+.exam-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-3, 12px);
+}
+
+.exam-picker__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+}
+
+.exam-picker__heading {
+    margin: 0;
+    font-size: var(--mm-font-size-lg, 16px);
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.exam-picker__hint {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    /* Long explanatory prose is unreadable across a wide column. */
+    max-width: 60ch;
+}
+
+.exam-picker__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ---------------------------------------------------------------------------
+ * Patient context and history
+ * ------------------------------------------------------------------------- */
+
+/*
+ * A definition list laid out as label/value pairs.
+ *
+ * `dl` with a grid rather than a table: this is a set of terms and their definitions, which is
+ * exactly what `dl` means, and the semantics are what a screen reader announces. The grid is only
+ * how it is drawn.
+ */
+.exam-context__list {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: var(--mm-space-2, 8px) var(--mm-space-4, 16px);
+    margin: 0;
+}
+
+.exam-context__term {
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.exam-context__value {
+    margin: 0;
+    /* A long email must wrap rather than widen the grid column past its share. */
+    overflow-wrap: anywhere;
+}
+
+/* Mirrors the status colours `calendar` uses, so one appointment reads the same in both MFEs. */
+.exam-context__status {
+    display: inline-block;
+    margin-inline-start: var(--mm-space-2, 8px);
+    padding: 0 var(--mm-space-2, 8px);
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-on-status, #fff);
+    background-color: var(--mm-color-status-scheduled, #0d6efd);
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
+.exam-context__status--done {
+    background-color: var(--mm-color-status-completed, #198754);
+}
+
+.exam-context__history {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-2, 8px);
+}
+
+.exam-context__subheading,
+.exam-summary__subheading {
+    margin: 0;
+    font-size: var(--mm-font-size-base, 14px);
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.exam-context__empty,
+.exam-context__more {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+.exam-context__error {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-danger, #dc3545);
+}
+
+.exam-context__timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-2, 8px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.exam-context__entry {
+    display: grid;
+    grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    gap: var(--mm-space-3, 12px);
+    padding-block: var(--mm-space-2, 8px);
+    border-top: 1px solid var(--mm-color-border, #dee2e6);
+}
+
+.exam-context__entry:first-child {
+    border-top: 0;
+}
+
+.exam-context__when {
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.exam-context__diagnosis {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+    .exam-context__entry {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--mm-space-1, 4px);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ * The form
+ * ------------------------------------------------------------------------- */
+
+.exam-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-4, 16px);
+}
+
+/* Holds the start-time field, which must not stretch to the full width of a wide column. */
+.exam-form__row {
+    display: grid;
+    grid-template-columns: minmax(0, 20rem);
+}
+
+.exam-form__actions {
+    display: flex;
+    gap: var(--mm-space-3, 12px);
+    align-items: center;
+    padding-top: var(--mm-space-3, 12px);
+    border-top: 1px solid var(--mm-color-border, #dee2e6);
+}
+
+/*
+ * Submit failure. The surface tokens rather than bare red text: this message can be several lines
+ * of server detail, and a coloured block reads as one unit where coloured prose reads as shouting.
+ */
+.exam-form__error {
+    margin: 0;
+    padding: var(--mm-space-3, 12px);
+    color: var(--mm-color-on-danger-surface, #842029);
+    background-color: var(--mm-color-danger-surface, #f8d7da);
+    border: 1px solid var(--mm-color-danger-border, #f5c2c7);
+    border-radius: var(--mm-radius-md, 6px);
+}
+
+/*
+ * "Why the submit did nothing." Warning rather than danger, and the distinction is meaningful: an
+ * incomplete form is not an error, it is an instruction — most often "the diagnosis is in the pane
+ * beside this one", which nothing in this form could otherwise say.
+ */
+.exam-form__blocked {
+    margin: 0;
+    padding: var(--mm-space-3, 12px);
+    color: var(--mm-color-on-warning-surface, #664d03);
+    background-color: var(--mm-color-warning-surface, #fff3cd);
+    border: 1px solid var(--mm-color-warning-border, #ffe69c);
+    border-radius: var(--mm-radius-md, 6px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Diagnosis panel — the receiving end of the split
+ * ------------------------------------------------------------------------- */
+
+/*
+ * Deliberately styled as a *field*, matching the `mm-input`s around it, even though nothing in it is
+ * an input. The diagnosis is a required value of this form that happens to be collected by another
+ * micro-frontend; making it look like a field is how that stays legible to the doctor, who has no
+ * reason to know or care where the value came from.
+ */
+.exam-diagnosis {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-2, 8px);
+    padding: var(--mm-space-3, 12px);
+    background-color: var(--mm-color-surface, #fff);
+    border: 1px solid var(--mm-color-border, #dee2e6);
+    border-radius: var(--mm-radius-md, 6px);
+}
+
+/* Dashed while empty: the standard visual language for "something goes here", not "broken". */
+.exam-diagnosis--empty {
+    border-style: dashed;
+    border-color: var(--mm-color-border-strong, #adb5bd);
+}
+
+.exam-diagnosis__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mm-space-2, 8px);
+}
+
+.exam-diagnosis__heading {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.exam-diagnosis__required {
+    color: var(--mm-color-danger, #dc3545);
+}
+
+/*
+ * The `aria-live` region: either the selected diagnosis or the prompt that replaces it.
+ *
+ * `min-height` reserves the taller of the two, so the panel does not resize when the selection
+ * arrives from the ICD-10 pane. That matters more here than in an ordinary field, because the change
+ * is triggered from *outside* this micro-frontend — the doctor's pointer is over the other pane, and
+ * a form that reflows underneath it is how a click lands on the wrong row.
+ */
+.exam-diagnosis__body {
+    min-height: 1.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.exam-diagnosis__selected {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--mm-space-2, 8px);
+    margin: 0;
+}
+
+.exam-diagnosis__code {
+    padding: 0 var(--mm-space-2, 8px);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: var(--mm-font-weight-bold, 600);
+    color: var(--mm-color-on-info-surface, #055160);
+    background-color: var(--mm-color-info-surface, #cff4fc);
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
+.exam-diagnosis__description {
+    overflow-wrap: anywhere;
+}
+
+.exam-diagnosis__prompt {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+.exam-diagnosis__error {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-danger, #dc3545);
+}
+
+/* ---------------------------------------------------------------------------
+ * Prescriptions
+ * ------------------------------------------------------------------------- */
+
+.exam-rx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-2, 8px);
+}
+
+.exam-rx__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mm-space-3, 12px);
+}
+
+.exam-rx__heading {
+    margin: 0;
+    font-size: var(--mm-font-size-base, 14px);
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.exam-rx__count {
+    font-weight: var(--mm-font-weight-normal, 400);
+}
+
+.exam-rx__hint {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Prescription dialog
+ * ------------------------------------------------------------------------- */
+
+.exam-rx-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-4, 16px);
+}
+
+.exam-rx-dialog__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-3, 12px);
+    padding-top: var(--mm-space-3, 12px);
+    border-top: 1px solid var(--mm-color-border, #dee2e6);
+}
+
+.exam-rx-dialog__chosen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--mm-space-2, 8px);
+    margin: 0;
+}
+
+.exam-rx-dialog__chosen-label {
+    font-size: var(--mm-font-size-sm, 12px);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.exam-rx-dialog__warning {
+    margin: 0;
+    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-on-warning-surface, #664d03);
+    background-color: var(--mm-color-warning-surface, #fff3cd);
+    border-radius: var(--mm-radius-sm, 4px);
+}
+
+.exam-rx-dialog__actions,
+.exam-summary__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--mm-space-3, 12px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Medicine search
+ * ------------------------------------------------------------------------- */
+
+.exam-medsearch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-2, 8px);
+}
+
+.exam-medsearch__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+    /*
+     * Capped and scrollable rather than paged. The request already asks for a single page of eight
+     * (`PAGE_SIZE`), so this is a guard against a tall dialog rather than the pagination itself —
+     * a modal that grows past the viewport traps its own footer buttons off-screen.
+     */
+    max-height: 18rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.exam-medsearch__item {
+    display: flex;
+}
+
+/*
+ * A real `<button>`, not a styled `<li>` with a click handler.
+ *
+ * This is the one interactive element in the package that is *not* an `mm-*` component: it is a
+ * result row, and there is no design-system component for one. Being a button is what brings
+ * keyboard focus, Enter/Space activation and the correct role for free — all of which would have to
+ * be reimplemented, badly, on a div.
+ */
+.exam-medsearch__option {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--mm-space-2, 8px);
+    width: 100%;
+    padding: var(--mm-space-2, 8px) var(--mm-space-3, 12px);
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--mm-radius-sm, 4px);
+    transition: background-color var(--mm-transition-fast, 120ms) var(--mm-transition-timing, ease);
+}
+
+.exam-medsearch__option:hover {
+    background-color: var(--mm-color-neutral-100, #f8f9fa);
+}
+
+/* Explicit focus ring: `outline: none` is never an option on a keyboard-reachable control. */
+.exam-medsearch__option:focus-visible {
+    outline: 2px solid var(--mm-color-focus-ring, #0d6efd);
+    outline-offset: 2px;
+}
+
+/* The current selection, marked with `aria-current` — the styling follows the semantics. */
+.exam-medsearch__option[aria-current='true'] {
+    background-color: var(--mm-color-info-surface, #cff4fc);
+    border-color: var(--mm-color-info-border, #9eeaf9);
+}
+
+.exam-medsearch__name {
+    font-weight: var(--mm-font-weight-medium, 500);
+}
+
+.exam-medsearch__form {
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+.exam-medsearch__error {
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+    color: var(--mm-color-danger, #dc3545);
+}
+
+.exam-medsearch__prompt,
+.exam-medsearch__refreshing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mm-space-2, 8px);
+    margin: 0;
+    font-size: var(--mm-font-size-sm, 12px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Summary
+ * ------------------------------------------------------------------------- */
+
+.exam-summary__lead {
+    margin: 0 0 var(--mm-space-3, 12px);
+}
+
+.exam-summary__list {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: var(--mm-space-2, 8px) var(--mm-space-4, 16px);
+    margin: 0 0 var(--mm-space-4, 16px);
+}
+
+.exam-summary__term {
+    font-size: var(--mm-font-size-sm, 12px);
+    font-weight: var(--mm-font-weight-medium, 500);
+    color: var(--mm-color-text-muted, #6c757d);
+}
+
+.exam-summary__value {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.exam-summary__value code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: var(--mm-font-weight-bold, 600);
+}
+
+.exam-summary__instructions {
+    margin: var(--mm-space-2, 8px) 0;
+    /* Therapy instructions are typed as free text; newlines the doctor entered are meaningful. */
+    white-space: pre-wrap;
+}
+
+.exam-summary__medicines {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mm-space-1, 4px);
+    margin: 0;
+    padding-inline-start: var(--mm-space-5, 24px);
+}
+
+.exam-summary__error {
+    margin: var(--mm-space-3, 12px) 0 0;
+    color: var(--mm-color-danger, #dc3545);
+}

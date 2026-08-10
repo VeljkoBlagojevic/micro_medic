@@ -39,9 +39,10 @@ module.exports = {
         examination: 'examination',
         calendar: 'calendar',
         auth: 'auth',
-        // The shell imports the store directly (to gate routes on authentication), and
-        // `icd10`/`examination` declare it as a remote of their own. Keys are import
-        // specifiers; values are the globals each remote's `library.name` defines.
+        // The shell imports the store to gate routes on authentication, and as plain JS with no
+        // ts-loader this remote is the only way it can: every other package resolves
+        // `@micro-medic/shared-store` from source through the `paths` map instead. Keys are
+        // import specifiers; values are the globals each remote's `library.name` defines.
         shared_store: 'shared_store'
       },
       /*
