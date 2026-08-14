@@ -3,6 +3,7 @@ package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class MedicineService {
     private final MedicineRepository repository;
 
     @CacheEvict(value = "medicines", allEntries = true)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public void populateMedicines() {
         ObjectMapper objectMapper = new ObjectMapper();

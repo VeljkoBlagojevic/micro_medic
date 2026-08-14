@@ -185,9 +185,11 @@ one `contextLoads()` test verify the whole Flyway chain against the entity model
   `react-big-calendar` pulls. Fix it in your own machine-local config; the root `.gitignore`
   excludes `.npmrc`/`.yarnrc` on purpose, since a checked-in override would silently redirect
   every contributor's installs.
-- **No tests.** `api-client` and `shared-store` declare `"test": "jest"`, but there is no jest
-  config and no test files. Test infrastructure is deferred.
-- **`home` (the shell) is the last legacy package** — plain JS on single-spa v5, calling nothing
+- **No tests.** No package declares a `test` script. `api-client` and `shared-store` used to
+  declare `"test": "jest"` with no jest config, no test files and — in `shared-store`'s case — no
+  jest dependency, so the script could only ever fail; both have been removed. Test
+  infrastructure is deferred, and lint + typecheck + build are the automated checks today.
+- **`home` (the shell) is the last legacy package** — plain JS on single-spa 6, calling nothing
   through `api-client`. It is three small files with no UI of its own, which is why it has not been
   a priority; port it toward the TypeScript packages rather than extending it. `nav`, `examination`
   and `icd10` have all been ported and are no longer among them.

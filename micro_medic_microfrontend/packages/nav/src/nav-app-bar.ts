@@ -165,13 +165,11 @@ export class NavAppBar extends ReactiveElement {
          * `pushState` + a synthetic `popstate`, rather than importing `navigateToUrl` from
          * `single-spa`.
          *
-         * Not to avoid a dependency for its own sake: the shell is on single-spa 5 while
-         * `calendar` and `auth` are on 6, so the version is deliberately *not* federated as a
-         * singleton (see `home/webpack.config.js`). A remote that imports it bundles a second
-         * copy, and each copy patches `window.history` — the mechanism works, but the chrome is
-         * the one MFE that can avoid taking part. These two lines are precisely what
-         * `navigateToUrl` does for a same-origin path, and the shell's router hears the event
-         * either way, whichever single-spa copy is patching history.
+         * `single-spa` is a shared singleton across `home`, `auth` and `calendar` (see
+         * `home/webpack.config.js`), but `nav` imports no framework runtime at all — see the
+         * package-level note in `package.json` — so it does not pull the dependency in for two
+         * lines. These two lines are precisely what `navigateToUrl` does for a same-origin path,
+         * and the shell's router hears the event regardless of which package fired `pushState`.
          */
         event.preventDefault();
         if (link.pathname === window.location.pathname && link.search === window.location.search) {

@@ -10,7 +10,7 @@ import rs.ac.bg.fon.micro_medic_monolith_backend.dto.DtoMapper;
 import rs.ac.bg.fon.micro_medic_monolith_backend.service.DoctorService;
 
 @RestController
-@RequestMapping("/api/doctor")
+@RequestMapping("/api/doctors")
 @RequiredArgsConstructor
 public class DoctorController {
 

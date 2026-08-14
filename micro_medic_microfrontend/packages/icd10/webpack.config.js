@@ -34,16 +34,14 @@ module.exports = {
   },
 
   output: {
-    publicPath: 'http://localhost:3002/'
+    // `auto`, not a literal origin: derived from `document.currentScript.src` when
+    // remoteEntry.js executes, so the container works on whatever host serves it.
+    publicPath: 'auto'
   },
 
-  devServer: {
-    port: 3002,
-    historyApiFallback: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
-  },
+  // No `devServer` here on purpose: `start` is `webpack --watch` plus `serve dist -p 3002`, so
+  // webpack-dev-server never runs and its settings were read by nothing. Only `calendar` and
+  // `shared-store` use `webpack serve`, and they are the only two that configure a devServer.
 
   resolve: {
     extensions: ['.ts', '.vue', '.js', '.json'],
@@ -164,10 +162,10 @@ module.exports = {
         vue: { singleton: true, requiredVersion: '^3.5.22' },
 
         /*
-         * `single-spa` is deliberately absent. The shell is on v5 and the modern MFEs are on v6,
-         * and this package imports it nowhere: its lifecycles are hand-written (see `src/ICD10.ts`),
-         * because `createApp().mount()`/`unmount()` is already the promise-free pair single-spa
-         * asks for.
+         * `single-spa` is absent entirely — this package imports it nowhere. Its lifecycles are
+         * hand-written (see `src/ICD10.ts`), because `createApp().mount()`/`unmount()` is already
+         * the promise-returning pair single-spa asks for, so there is no adapter to share a
+         * dependency with in the first place.
          */
         lit: { singleton: true, requiredVersion: '^3.3.3' },
         axios: { singleton: true },

@@ -13,9 +13,7 @@ import './styles.css';
  *
  * There is no `single-spa-vue` here and no `import 'single-spa'` either, matching what `examination`
  * does for Angular and for the same two reasons. single-spa's contract is three functions returning
- * promises, and `createApp().mount()` / `app.unmount()` already is that pair. Skipping the adapter
- * also keeps this remote clear of the repo's version split — the shell is on single-spa 5 while the
- * modern MFEs are on 6, and a package that imports neither cannot be caught between them.
+ * promises, and `createApp().mount()` / `app.unmount()` already is that pair.
  *
  * `app.mount(hostElement)` takes its host as an element, never a selector. That is the property that
  * matters in a shared document: a selector would be resolved against the whole page, so two mounts —

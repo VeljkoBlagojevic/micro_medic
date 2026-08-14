@@ -45,6 +45,8 @@ public class SecurityConfiguration {
 
                     authorize.requestMatchers(HttpMethod.POST, "/api/calendar/**").hasAuthority(Role.DOCTOR.getAuthority());
                     authorize.requestMatchers(HttpMethod.POST, "/api/examinations/**").hasAuthority(Role.DOCTOR.getAuthority());
+                    authorize.requestMatchers("/actuator/health", "/actuator/health/**").permitAll();
+                    authorize.requestMatchers("/actuator", "/actuator/**").hasAuthority(Role.ADMIN.getAuthority());
 
                     authorize.anyRequest().authenticated();
                 })

@@ -12,8 +12,10 @@
  * because it is the counterpart of `mountDesignSystemParcel`: together they are this package's
  * answer to "how does a custom element take part in the composition", one as an application and one
  * as a parcel. Note that it imports nothing from `single-spa`: the lifecycle contract is three
- * promise-returning functions, and typing the props structurally is what lets this be used by the
- * shell's single-spa 5 and the feature MFEs' 6 alike (see the note about not sharing single-spa in
+ * promise-returning functions, and typing the props structurally rather than importing single-spa's
+ * own type is what keeps this adapter decoupled from whichever single-spa major is actually
+ * running — a structural type cannot go stale against a version bump the way an import can, even
+ * though `home`, `auth` and `calendar` all share one version of it today (see
  * `home/webpack.config.js`).
  *
  * `single-spa-html` (which `icd10` uses) would also work, and this deliberately does not use it:
@@ -33,8 +35,8 @@
  * The subset of single-spa's props this adapter reads.
  *
  * Declared here rather than imported from `single-spa`: the only thing needed is the shape of a few
- * optional fields, and a structural type cannot go stale across the v5/v6 split the way an import
- * can.
+ * optional fields, and a structural type cannot go stale against whichever single-spa major is
+ * actually running the way an import can.
  */
 export interface CustomElementMountProps {
     /** Set by single-spa to the registered application name. */

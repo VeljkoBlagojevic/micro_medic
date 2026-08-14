@@ -13,7 +13,9 @@ module.exports = {
   },
 
   output: {
-    publicPath: 'http://localhost:3006/'
+    // `auto`, not a literal origin: derived from `document.currentScript.src` when
+    // remoteEntry.js executes, so the container works on whatever host serves it.
+    publicPath: 'auto'
   },
 
   resolve: {

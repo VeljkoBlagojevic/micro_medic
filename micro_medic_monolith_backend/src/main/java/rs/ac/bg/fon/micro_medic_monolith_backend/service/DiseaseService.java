@@ -6,6 +6,7 @@ import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class DiseaseService {
     private final DiseaseRepository diseaseRepository;
 
     @CacheEvict(value = "diseases", allEntries = true)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public void populateDiseases() {
         ObjectMapper objectMapper = new ObjectMapper();

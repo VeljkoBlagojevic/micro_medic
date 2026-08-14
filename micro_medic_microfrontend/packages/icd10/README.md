@@ -89,9 +89,8 @@ forgets which row is highlighted. That asymmetry is deliberate and visible rathe
 
 `src/ICD10.ts` exports `bootstrap`/`mount`/`unmount` with no `single-spa-vue` and no
 `import 'single-spa'`. single-spa's contract is three functions returning promises, and
-`createApp().mount()` / `app.unmount()` already is that pair. Skipping the adapter also keeps this
-remote clear of the repo's version split — the shell is on single-spa 5 while the modern MFEs are on
-6, and a package that imports neither cannot be caught between them.
+`createApp().mount()` / `app.unmount()` already is that pair — there is no adapter to share a
+dependency with in the first place.
 
 `app.mount(hostElement)` takes an **element**, never a selector. A selector would be resolved against
 the whole document, so two mounts — or one remount racing an incomplete teardown — could attach to an

@@ -8,7 +8,12 @@ module.exports = {
   mode: 'development',
   devtool: 'source-map',
   optimization: { minimize: false },
-  output: { publicPath: 'http://localhost:3001/' },
+  // `auto` rather than a literal origin: webpack derives the public path from
+  // `document.currentScript.src` when the entry executes, so a bundle reports whichever origin
+  // actually served it. A hardcoded `http://localhost:3001/` is correct on exactly one machine and
+  // silently wrong everywhere else - every asset request and every lazily loaded chunk goes to
+  // localhost, so the app half-loads from a colleague's laptop or any deployed host.
+  output: { publicPath: 'auto' },
   resolve: { extensions: ['.jsx', '.js', '.json'] },
 
   module: {
@@ -22,8 +27,7 @@ module.exports = {
       {
         test: /\.css$/i,
         use: [require.resolve('style-loader'), require.resolve('css-loader')]
-      },
-      { test: /\.md$/, loader: 'raw-loader' }
+      }
     ]
   },
 
@@ -46,19 +50,23 @@ module.exports = {
         shared_store: 'shared_store'
       },
       /*
-       * The shell shares nothing into the federation scope, which is a compromise worth naming.
+       * `single-spa` is now shared as a singleton. It used to be declared `shared: {}` here
+       * while the shell sat on single-spa 5 and `calendar`/`auth` were already on 6 — sharing it
+       * then would have published the shell's v5 into the scope and silently downgraded both
+       * React remotes at runtime. That was always meant to be temporary: `home`'s own usage
+       * (`registerApplication`, `start`, `navigateToUrl`) is stable across the v5/v6 boundary, so
+       * once the shell moved to 6.0.3 there was no reason left to keep three separate copies of
+       * a library that patches `window.history` in one document.
        *
-       * It and every React remote import `single-spa`, so in principle that should be a
-       * singleton here — two copies each patch `window.history`. It is not, because the shell is
-       * still on single-spa 5 (with `nav`'s single-spa-react 4) while `calendar` and `auth` are
-       * on 6: declaring it shared would hand every remote the shell's v5 at runtime, silently
-       * downgrading them. The versions have to converge first.
-       *
-       * It works today because both copies patch `pushState` and each fires its own routing
-       * event, so `navigateToUrl` from a remote still reaches the shell's router. Fragile, not
-       * broken — see "State of the code" in CLAUDE.md.
+       * Only three packages depend on `single-spa` at all — this shell, `auth` and `calendar`.
+       * `nav` and `notifications` take their lifecycles from the design system's
+       * `createCustomElementLifecycles`, and `examination` and `icd10` hand-write
+       * `bootstrap`/`mount`/`unmount`, so none of the four is exposed to this singleton either
+       * way.
        */
-      shared: {}
+      shared: {
+        'single-spa': { singleton: true }
+      }
     }),
     new HtmlWebpackPlugin({template: './public/index.html'}),
   ]

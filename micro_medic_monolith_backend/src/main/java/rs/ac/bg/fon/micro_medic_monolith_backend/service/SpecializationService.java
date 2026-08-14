@@ -2,6 +2,7 @@ package rs.ac.bg.fon.micro_medic_monolith_backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class SpecializationService {
     private final SpecializationDepartmentRepository repository;
 
     @CacheEvict(value = "specializations", allEntries = true)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public void populateSpecializations() {
         ObjectMapper objectMapper = new ObjectMapper();

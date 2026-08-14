@@ -89,8 +89,8 @@ one micro-frontend:
   entire UI is one custom element. `nav` uses it for `<nav-app-bar>`/`<nav-footer>`,
   `notifications` for `<notification-center>`. A custom element's
   `connectedCallback`/`disconnectedCallback` already *are* single-spa's contract, so the adapter
-  only appends and removes a node; it imports nothing from `single-spa`, so the same function
-  works for the v5 and v6 halves of this repo.
+  only appends and removes a node; it imports nothing from `single-spa`, so the same function works
+  regardless of which single-spa major a consumer happens to be on.
 
 `defineElement` is exported for the same reason — an MFE that defines its own elements (`nav`,
 `notifications`) should use the same guarded registration rather than duplicate it.

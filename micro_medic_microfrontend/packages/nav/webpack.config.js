@@ -16,7 +16,9 @@ module.exports = {
   },
 
   output: {
-    publicPath: 'http://localhost:3003/'
+    // `auto`, not a literal origin: derived from `document.currentScript.src` when
+    // remoteEntry.js executes, so the container works on whatever host serves it.
+    publicPath: 'auto'
   },
 
   resolve: {
@@ -97,12 +99,9 @@ module.exports = {
        * remote observes exactly the same auth state and event bus as `calendar` and `auth` even
        * though it does not negotiate them through the shared scope.
        *
-       * `single-spa` is absent too, and deliberately: the shell is on v5 while `calendar` and
-       * `auth` are on v6, so it is not federated as a singleton (see `home/webpack.config.js`) and
-       * every remote importing it bundles a second copy that patches `window.history`. This
-       * package imports it nowhere — `src/lifecycles.ts` implements the lifecycle contract
-       * directly and `nav-app-bar.ts` navigates with `pushState` — so it is the one MFE that does
-       * not take part in that.
+       * `single-spa` is absent too: this package imports it nowhere — `src/lifecycles.ts`
+       * implements the lifecycle contract directly and `nav-app-bar.ts` navigates with
+       * `pushState`, so there is no dependency to add in the first place, singleton or not.
        */
       shared: {
         lit: { singleton: true, requiredVersion: '^3.3.3' },

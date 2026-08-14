@@ -11,6 +11,9 @@ on:
   # Manual runs, for checking a branch without pushing to it.
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 defaults:
   run:
     # Every step runs from the monorepo root; there is no build file above it.

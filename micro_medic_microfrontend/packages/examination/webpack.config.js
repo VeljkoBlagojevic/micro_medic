@@ -22,7 +22,9 @@ module.exports = {
   },
 
   output: {
-    publicPath: 'http://localhost:3004/'
+    // `auto`, not a literal origin: derived from `document.currentScript.src` when
+    // remoteEntry.js executes, so the container works on whatever host serves it.
+    publicPath: 'auto'
   },
 
   resolve: {
@@ -91,10 +93,10 @@ module.exports = {
         rxjs: { singleton: true, requiredVersion: '^7.8.2' },
 
         /*
-         * `single-spa` is deliberately absent. The shell is on v5 and the modern MFEs are on v6,
-         * and this package imports it nowhere: its lifecycles are hand-written (see
-         * `src/Examination.ts`), because `bootstrapApplication` already returns exactly the
-         * promise-returning mount/unmount pair single-spa asks for.
+         * `single-spa` is absent entirely — this package imports it nowhere. Its lifecycles are
+         * hand-written (see `src/Examination.ts`'s `createApplication` + `createComponent`),
+         * which already returns exactly the promise-returning mount/unmount pair single-spa asks
+         * for, so there is no adapter to share a dependency with in the first place.
          */
         lit: { singleton: true, requiredVersion: '^3.3.3' },
         axios: { singleton: true },

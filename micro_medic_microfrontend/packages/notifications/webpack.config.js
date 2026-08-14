@@ -16,7 +16,9 @@ module.exports = {
   },
 
   output: {
-    publicPath: 'http://localhost:3007/'
+    // `auto`, not a literal origin: derived from `document.currentScript.src` when
+    // remoteEntry.js executes, so the container works on whatever host serves it.
+    publicPath: 'auto'
   },
 
   resolve: {
@@ -82,10 +84,10 @@ module.exports = {
        * hear `NOTIFICATION_SHOW` from `calendar`, `auth` and `examination` without sharing a module
        * graph with any of them.
        *
-       * `single-spa` is absent too: the shell is on v5 while `calendar` and `auth` are on v6, so it is
-       * deliberately not federated as a singleton (see `home/webpack.config.js`). This package
-       * imports it nowhere — the lifecycle contract is implemented directly in the design system's
-       * `createCustomElementLifecycles`.
+       * `single-spa` is absent too: this package imports it nowhere — the lifecycle contract is
+       * implemented directly in the design system's `createCustomElementLifecycles`, which needs
+       * nothing from `single-spa` itself (see its header comment in
+       * `design-system/src/lifecycles.ts`).
        */
       shared: {
         lit: { singleton: true, requiredVersion: '^3.3.3' },

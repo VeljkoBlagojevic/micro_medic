@@ -70,9 +70,7 @@ operation being noticed automatically.
 
 `src/Examination.ts` exports `bootstrap`/`mount`/`unmount` with no `single-spa-angular` and no
 `import 'single-spa'`. single-spa's contract is three functions returning promises, which Angular's
-own bootstrap already provides. Skipping the adapter also keeps this remote clear of the repo's
-version split — the shell is on single-spa 5 while the modern MFEs are on 6, and a package that
-imports neither cannot be caught between them.
+own bootstrap already provides — there is no dependency to add, let alone share.
 
 It uses `createApplication` + `createComponent`, **not** `bootstrapApplication`, and the difference
 matters: `bootstrapApplication` finds its host by running the root component's selector against the

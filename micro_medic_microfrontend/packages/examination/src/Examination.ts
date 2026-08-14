@@ -14,9 +14,7 @@ import { ExaminationApp } from './ExaminationApp.js';
  *
  * There is no `single-spa-angular` here, and no `import 'single-spa'` either. Both would be a
  * dependency this package does not need: single-spa's contract is three functions returning
- * promises, and Angular's own bootstrap already gives us exactly that. Skipping the adapter also
- * keeps this remote clear of the repo's v5/v6 split — the shell is on single-spa 5 while the modern
- * MFEs are on 6, and a package that imports neither cannot be caught between them.
+ * promises, and Angular's own bootstrap already gives us exactly that.
  *
  * `createApplication` + `createComponent` rather than `bootstrapApplication`, and the difference is
  * the reason: `bootstrapApplication` finds its host by running the root component's selector against

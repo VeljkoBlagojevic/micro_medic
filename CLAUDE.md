@@ -9,7 +9,22 @@ Two independent projects, no root build file:
 - `micro_medic_monolith_backend/` — Spring Boot 4.1.0 / Java 25 monolith (MySQL + Flyway, JWT auth). Serves `http://localhost:8080`.
 - `micro_medic_microfrontend/` — Yarn workspaces monorepo of single-spa micro-frontends wired together with webpack Module Federation.
 
-Root also holds `.github/workflows/` (CI for both projects), a `.gitignore`, and thesis artifacts (`*.docx`, `ERDiagram.png`, `PMOV.drawio`) — this is an academic project (FON, University of Belgrade), a master's thesis on micro-frontend architecture.
+Root also holds `.github/workflows/` (CI for both projects), a `.gitignore`, and the thesis artifacts — this is an academic project (FON, University of Belgrade), a master's thesis on micro-frontend architecture.
+
+### The thesis documents are part of the deliverable
+
+Both are **Serbian, in Cyrillic script** (`Развој веб апликације применом Microfrontend архитектуре`). Write Cyrillic Serbian when touching their prose — not Latin transliteration, and not English.
+
+| File | What it is | Size |
+|---|---|---|
+| `VeljkoBlagojevicMaster_v2.docx` | the **master's thesis** — the live document | ~360 paras, ~121k chars, 44 images |
+| `Documentation.docx` | an **earlier course paper** (*Изабрана поглавља из информационих система*, Belgrade 2024) it grew out of | ~214 paras, ~76k chars, 16 images |
+| `PMOV.drawio` | diagram **source** — diagrams.net XML, so it is editable as text | — |
+| `ERDiagram.png` | the ER diagram as a 717×631 raster; **no source file for it at root** | — |
+
+The thesis adds the chapters the course paper lacks (`Софтверске архитектуре`, `Микросервисна архитектура`, `Закључак`, `Литература`); the two otherwise **overlap heavily**, sharing a near-identical `Студијски пример` case-study section. Edit the thesis unless asked otherwise, and expect the same claim to exist in both.
+
+**That case study documents this codebase** — `Имплементација клијентског слоја система` walks the shell, the cross-MFE communication and the individual micro-frontends. So an architectural change here can falsify the prose: when changing composition, the event bus, or the package topology, check whether those sections still describe what the code does. This cuts both ways — the docx is the argument the code exists to support, so a change that is an improvement in the abstract but weakens what the thesis demonstrates is the wrong trade (see the framing note below).
 
 **That framing decides trade-offs.** The deliverable is a codebase that *demonstrates* micro-frontend practice, so anything illustrating a principle — the deliberate multi-framework mix, the vertical/horizontal split examples, the shared z-index scale, the one-Lit-implementation-many-bindings design system — is a feature to preserve and document, not duplication to consolidate. Explanatory comments carrying the *why* are part of the artifact. When something must be traded off, favour the version that teaches the architecture over the version that is merely shorter.
 
@@ -25,11 +40,11 @@ Root also holds `.github/workflows/` (CI for both projects), a `.gitignore`, and
 ./mvnw test -Dtest=ClassName#methodName   # single test
 ```
 
-Requires a reachable MySQL at `localhost:3306/micro_medic_monolith_backend`. Env vars: `MYSQL_ROOT_USERNAME`, `MYSQL_ROOT_PASSWORD`, `JWT_SECRET` (Base64, ≥32 bytes), optionally `JWT_EXPIRATION_MS`, `CORS_ALLOWED_ORIGINS`, `SPRING_PROFILES_ACTIVE`.
+Requires a reachable MySQL at `localhost:3306/micro_medic_monolith_backend`. Env vars: `MYSQL_ROOT_USERNAME`, `MYSQL_ROOT_PASSWORD`, `JWT_SECRET` (Base64, ≥32 bytes), optionally `MYSQL_URL` (the whole JDBC URL), `JWT_EXPIRATION_MS`, `CORS_ALLOWED_ORIGINS`, `RATE_LIMIT_TRUST_FORWARDED_FOR`, `SPRING_PROFILES_ACTIVE`. The `dev` profile's CORS default is the eight federation ports and nothing else; it used to enumerate 74 origins, most of them port ranges no package in the monorepo serves.
 
 `./mvnw test` will not pass without a provisioned DB — the only test is a `@SpringBootTest` `contextLoads()` and there is no `src/test/resources`, so it boots the `dev` profile against real MySQL under `ddl-auto=validate`. That makes it more useful than its name suggests: it is effectively a migration test (see "Schema changes require a migration"), and `.github/workflows/backend.yml` runs it against a MySQL 8.4 service container for exactly that reason.
 
-`<java.version>25</java.version>`, which is ahead of most locally installed JDKs — CI sets up JDK 25, so it may be the first place a Java-25-only construct actually gets compiled.
+`<java.version>25</java.version>`, which is ahead of most locally installed JDKs — CI sets up JDK 25, so it may be the first place a Java-25-only construct actually gets compiled. **In this environment it is the only place**: the JDK on `PATH` is Temurin **17**, so every Maven goal that compiles fails here with an invalid-release error regardless of the database. Don't read that failure as a code problem, and don't "fix" it by lowering `java.version`. The frontend toolchain does match CI — Node **22** (`frontend.yml` pins the major deliberately) and Yarn **1.22**, which is why Yarn ignores `.npmrc` in the registry note below.
 
 ### Frontend (`micro_medic_microfrontend/`)
 
@@ -45,6 +60,8 @@ yarn workspace calendar typecheck      # tsc --noEmit for one package
 npx ngc -p packages/design-system-angular/tsconfig.json --outDir /tmp/ngc   # Angular templates/host bindings
 yarn format       # prettier --write . — see the caveat below before running this
 ```
+
+**`yarn start` serves two different ways, and only one is uniform.** Six packages (`home`, `nav`, `notifications`, `icd10`, `examination`, `auth`) run `webpack --watch` plus a `serve dist -p <port>` static server, so both halves of the `concurrently` matter. `calendar` and `shared-store` instead run `webpack serve` (webpack-dev-server on 3009/3005 from `devServer.port`) and declare **no `serve` script at all** — `wsrun --parallel serve` simply skips them, which is correct, not a missing script. Consequences worth knowing before debugging a blank remote: those two are the only ones with HMR, and the only ones that serve nothing if their `start` died, since there is no `dist` being statically served as a fallback. `icd10` is now explicitly the third case: it has **no `devServer` block**, because its `start` is `--watch` and webpack-dev-server never runs there. It used to declare a `devServer.port` nothing read.
 
 On Windows + Git Bash the `npx`/`node_modules/.bin` shims for `eslint` and `ngc` fail (the bash shim gets parsed as JS, and it swallows the exit code). Invoke the entry points directly instead:
 
@@ -67,11 +84,47 @@ CI lives in `.github/workflows/`: `frontend.yml` (lint + typecheck, then build a
 
 `yarn install` may fail behind a corporate npm proxy. The real cause is a **registry mismatch**, not an unavailable package: npm may be pointed at an internal Artifactory mirror by `~/.npmrc` while Yarn reads `registry.yarnpkg.com` from `~/.yarnrc` (Yarn 1 does not read `.npmrc`), and some mirrors 403 the `lodash` tarballs `react-big-calendar` pulls. Fix it in machine-local config only — the root `.gitignore` excludes `.npmrc`/`.yarnrc` deliberately, because a checked-in registry override silently redirects every contributor's installs. Do not create one without the user's explicit consent.
 
+### Thesis documents (root `.docx`)
+
+A `.docx` is a zip of OOXML, so it is **readable and editable in place** — no conversion to `.md`/`.txt` is needed, and converting would throw away the styles, the 44 embedded images and the generated table of contents. Read the text out with `unzip` + Python (both verified present here; there is no pandoc):
+
+```sh
+unzip -o -q VeljkoBlagojevicMaster_v2.docx word/document.xml -d /tmp/dx
+cd /tmp/dx && PYTHONIOENCODING=utf-8 python -c "
+import re
+x = open('word/document.xml', encoding='utf-8').read()
+for p in re.findall(r'<w:p[ >].*?</w:p>', x, re.S):
+    style = re.search(r'w:val=\"(Heading\d|Title)\"', p)
+    text = ''.join(re.findall(r'<w:t[^>]*>(.*?)</w:t>', p, re.S)).strip()
+    if text: print(f'[{style.group(1)}] ' if style else '', text, sep='')
+"
+```
+
+Two things that will bite:
+
+- **`PYTHONIOENCODING=utf-8` is required.** The Windows console defaults to cp1252, which cannot encode Cyrillic, so printing extracted text dies with `UnicodeEncodeError` before showing a single line.
+- **A paragraph's text is split across runs**, and Word breaks a run mid-word on a spellcheck or revision boundary. Concatenate every `<w:t>` in the paragraph (as above) rather than matching one; the naive one-`<w:t>` regex silently truncates, and a search-and-replace over a phrase that straddles two runs matches nothing. Verify an edit by re-extracting, and prefer editing whole paragraphs over patching substrings.
+
+To write changes back, **rewrite the archive with Python's `zipfile`, preserving entry order** — there is no `zip` CLI on this machine, and `[Content_Types].xml` must stay the first entry or Word rejects the file. Copy every entry across and substitute only the one you edited, so the rest survive byte-for-byte — 58 of the thesis's 59 entries (styles, numbering, theme, the 44 images, rels), 27 of the course paper's 28:
+
+```sh
+PYTHONIOENCODING=utf-8 python -c "
+import zipfile
+src, edited = 'VeljkoBlagojevicMaster_v2.docx', open('/tmp/dx/word/document.xml','rb').read()
+zin = zipfile.ZipFile(src)
+with zipfile.ZipFile('out.docx', 'w', zipfile.ZIP_DEFLATED) as zout:
+    for item in zin.infolist():                      # infolist() order == archive order
+        zout.writestr(item, edited if item.filename == 'word/document.xml' else zin.read(item.filename))
+"
+```
+
+**Commit before overwriting one.** Both `.docx` are tracked in git (they are in the `Initial commit`), so a botched rezip is recoverable with `git checkout -- <file>` — but only if the working tree was clean first. A `.docx` is a binary blob to git: it cannot be merged and its diff is useless, so commit each edit as its own small, described commit rather than batching several rewrites into one.
+
 ## Backend architecture
 
 ### Authorization is a three-layer concern — and it lives in services, not controllers
 
-1. **URL matchers** in `config/auth/SecurityConfiguration.java` — coarse. `permitAll` on `POST /api/auth/{registerDoctor,registerPatient,login}` and `GET /api/{medicine,diseases,specializationDepartments}/**`; `POST /api/calendar/**` and `POST /api/examinations/**` require `ROLE_DOCTOR`; everything else `authenticated()`. Stateless, CSRF off, `@EnableMethodSecurity` on.
+1. **URL matchers** in `config/auth/SecurityConfiguration.java` — coarse. `permitAll` on `POST /api/auth/{registerDoctor,registerPatient,login}` and `GET /api/{medicine,diseases,specializationDepartments}/**`; `POST /api/calendar/**` and `POST /api/examinations/**` require `ROLE_DOCTOR`; everything else `authenticated()`. `/actuator/health` is `permitAll` for container probes (`show-details=when-authorized` keeps its internals back) while the rest of `/actuator/**` needs `ROLE_ADMIN` — `anyRequest().authenticated()` is not a guard for operational endpoints, and `management.endpoints.web.exposure.include` is now `health,info` rather than also exposing the *writable* `loggers` and the request-replaying `httptrace`. Stateless, CSRF off, `@EnableMethodSecurity` on.
 2. **`@PreAuthorize` on service methods** — never on controllers. E.g. `CalendarService.createAppointment`, `ExaminationService.examine`, `AuditService.getAllAccessLogs`, `PatientService.listPatients`.
 3. **`service/security/AccessGuard.java`** — row-level ownership. Its `require*` methods throw `UnauthorizedActionException` (→403) **and write a `MedicalAccessLog` row as a side effect**. Core rule: a doctor may read a patient only if `scheduledAppointmentRepository.existsByDoctorIdAndPatientId(...)`; a patient may read only their own data. Called from `CalendarService`, `ExaminationService`, `PatientService`, `PatientSummaryService`, `ReportService`, `StatsService`.
 
@@ -92,7 +145,7 @@ Object graph: `Doctor`+`Patient` → `ScheduledAppointment` → (1:1) `Examinati
 ### Conventions to follow
 
 - **DTOs are `record`s**; mapping is fully centralized in `dto/DtoMapper.java` as static methods (no MapStruct). Services return entities; controllers map with `DtoMapper::toXDto`, typically inside `Page.map(...)`. Exception: the `dto/auth/RegisterRequest` hierarchy is a Lombok `@Data` class tree with getters.
-- **Error shape** is `exception/ApiError` (status, message, fieldErrors, timestamp) produced by `exception/GlobalExceptionHandler`. `dto/ApiResponse` exists but no controller uses it — don't reach for it.
+- **Error shape** is `exception/ApiError` (status, message, fieldErrors, timestamp) produced by `exception/GlobalExceptionHandler`. That handler also carries explicit handlers for Spring MVC's own exceptions (`HttpMessageNotReadableException`, `MethodArgumentTypeMismatchException`, `MissingServletRequestParameterException`, `HttpRequestMethodNotSupportedException`, `HttpMediaTypeNotSupportedException`, `NoResourceFoundException`) and it must keep them: an `@ExceptionHandler(Exception.class)` in a `@RestControllerAdvice` outranks Spring's own `DefaultHandlerExceptionResolver`, so without them malformed JSON and a non-numeric path variable were answered `500 An unexpected error occurred` and logged at ERROR — a client mistake reported as a server fault. The class deliberately does **not** extend `ResponseEntityExceptionHandler`: that answers in RFC 7807 `ProblemDetail` rather than `ApiError` (two error shapes in one API), and its inherited handler already maps `MethodArgumentNotValidException`, which would collide with the one here and fail the context at startup. New handlers use a fixed message, never `ex.getMessage()` — Jackson's parse errors carry class names and source excerpts. `dto/ApiResponse` is deleted; it was referenced by nothing.
 - **Filtering** uses `repository/specification/*`: `final` classes of static factories that **return `null` when the argument is null/blank**, composed with `Specification.allOf(a, b, c)` (Spring Data 4 idiom) and `findAll(spec, pageable)`. Simple text search instead uses `@Query` JPQL `search(query, pageable)` methods.
 - **Paging**: controllers take `@PageableDefault(size = 10) Pageable` and return `Page<XDto>`.
 - **Lombok**: `@RequiredArgsConstructor` + `private final` on all beans — no `@Autowired` anywhere. Entities use `@Data` + `@Builder`, with `@EqualsAndHashCode(callSuper = true)` on `Auditable`/`User` subclasses.
@@ -109,21 +162,21 @@ Because the backend CI job boots this profile against an empty MySQL container, 
 
 ### Reference data seeding is manual
 
-`icd10_codes.json` (~8.6 MB), `medicines.json`, `specialization_departments.json` in `src/main/resources` are loaded only by `POST /api/seeder/{disease,medicine,specialization}` (`SeederController` is `@Profile("dev")` and requires auth). Nothing loads at startup. `ValueSet-ndhm-medicine-codes.json` is unused.
+`icd10_codes.json` (~8.6 MB), `medicines.json`, `specialization_departments.json` in `src/main/resources` are loaded only by `POST /api/seeder/{disease,medicine,specialization}` (`SeederController` is `@Profile("dev")`). Nothing loads at startup. The three service methods carry `@PreAuthorize("hasAuthority('ROLE_ADMIN')")` — `@Profile` is a deployment guard, not an authorization one, and without it any authenticated patient could trigger the 8.6 MB parse and the bulk insert. The unused `ValueSet-ndhm-medicine-codes.json` is deleted.
 
 ### Rate limiting and caching
 
-`config/RateLimitingFilter` (bucket4j) limits **only `/api/auth**`** — 20 requests/minute per `getRemoteAddr()`, in-memory, returns a bare `{"error": ...}` 429 rather than `ApiError`. Caching is `spring.cache.type=simple` with cache names `diseases`, `medicines`, `specializations` — reference data only, no TTL, no patient data.
+`config/RateLimitingFilter` (bucket4j) limits **only `/api/auth**`** — 20 requests/minute per client, in-memory, answering 429 with `ApiError` plus a `Retry-After` derived from bucket4j's `ConsumptionProbe`. Two details are load-bearing. **Eviction drops only buckets back at full capacity**, because those are the only ones free to drop: a full bucket is indistinguishable from one that never existed, so removing it cannot relax anyone's limit. It replaced a `buckets.clear()`, which was a rate-limit bypass rather than a memory bound — an attacker cycling 10,000 addresses flushed the table and with it every real user's failed-login count. If nothing is evictable the request is **refused**, not admitted untracked. **`X-Forwarded-For` is ignored unless `app.rate-limit.trust-forwarded-for` is on**, since the header is client-supplied and honouring it on a directly exposed server hands every request a fresh bucket; left off, everything behind a proxy shares one bucket, which is the safe direction to be wrong in. Caching is `spring.cache.type=simple` with cache names `diseases`, `medicines`, `specializations` — reference data only, no TTL, no patient data.
 
 ## Frontend architecture
 
 ### Module Federation topology
 
-Each package is a federated remote with `library: { type: 'var' }` and a hardcoded `output.publicPath` of its own port:
+Each package is a federated remote with `library: { type: 'var' }` and `output.publicPath: 'auto'` — webpack derives the path from `document.currentScript.src` when `remoteEntry.js` executes, so a container reports whichever origin served it. Each used to hardcode `http://localhost:<port>/`, which is right on one machine and silently sends every chunk request to localhost from anywhere else. The ports below are still real: they are where each package's `serve`/`devServer` listens and what the shell's `<script>` tags name.
 
 | Port | Package | MF name | exposes | stack |
 |---|---|---|---|---|
-| 3001 | `home` (shell) | `home` | — | plain JS, single-spa v5 |
+| 3001 | `home` (shell) | `home` | — | plain JS, single-spa 6 |
 | 3002 | `icd10` | `icd10` | `./ICD10` | Vue 3 |
 | 3003 | `nav` | `nav` | `./Header`, `./Footer` | custom elements |
 | 3004 | `examination` | `examination` | `./Examination` | Angular 22 |
@@ -133,6 +186,14 @@ Each package is a federated remote with `library: { type: 'var' }` and a hardcod
 | 3009 | `calendar` | `calendar` | `./Calendar` | React 19 |
 
 Port 3008 is free. A new remote needs three edits, all in `home`: `webpack.config.js` `remotes`, a `<script>` tag in `public/index.html`, and an entry in `src/routes.js`. Add a `<div id="single-spa-application:NAME">` to `public/index.html` too if it should render in a specific place — single-spa appends its own div to `<body>` otherwise, which is how a remote ends up outside the `.mui-container` layout. Removing a remote means undoing all of these; a stale `login` remote and a dead port-3008 tag lingered because they were only half-removed.
+
+### single-spa is a shared singleton across `home`, `auth` and `calendar`
+
+`home` now pins `single-spa: 6.0.3`, the same exact version `auth` and `calendar` already shared with each other, and `home/webpack.config.js`'s `ModuleFederationPlugin` declares `'single-spa': { singleton: true }` — one copy of the router across the whole document instead of three.
+
+This used to be impossible: the shell sat on `single-spa: ^5.1.0` while `auth`/`calendar` were on `6.0.3`, so sharing it from the shell would have published the v5 copy into the scope and silently downgraded both React remotes at runtime. `single-spa` patches `window.history`, so running two majors of it in one document was the real risk, worked around by *not* sharing rather than by converging. The workaround is gone now that the versions match — there was no reason left to keep three copies of a library whose whole job is to own global browser state, and `home`'s own usage (`registerApplication`, `start`, `navigateToUrl`) is stable across the v5→v6 boundary, so the bump carried no migration cost.
+
+Four packages still hold themselves clear of `single-spa` entirely, for an unrelated reason: `nav` and `notifications` get their lifecycles from `design-system`'s `createCustomElementLifecycles`, and `examination` and `icd10` hand-write `bootstrap`/`mount`/`unmount`. **None of the four imports `single-spa` at all** — the only three packages that depend on it are `home`, `auth` and `calendar`, and all three now resolve to the same instance.
 
 ### The shell routes; remotes do not
 
@@ -229,7 +290,7 @@ Angular 22 standalone components, signals, `OnPush` everywhere, **zoneless**, AO
 
 - **No `zone.js`, and it must stay that way.** `zone.js` monkey-patches `setTimeout`, `Promise` and `addEventListener` *globally*. In a single-page app that is an implementation detail; in a shared document it means one remote silently changing the runtime under React 19, Vue 3, Lit and two custom-element MFEs — including the Vue remote it shares `/examination` with. `provideZonelessChangeDetection()` is in `examinationProviders`, which `Examination.ts` and `standalone.ts` both use, so the harness cannot diverge from the federated build.
 - **AOT via `@ngtools/webpack`** (`AngularWebpackPlugin` + `AngularWebpackLoaderPath`), not `ts-loader` as in `calendar`/`auth`. `ts-loader` never looks at a template, so `[oepn]="true"` on an `<mm-modal>` would build clean and do nothing — forfeiting the whole argument for `design-system-angular`. Consequence: `typecheck` is `ngc`, and `@angular/compiler`/`compiler-cli` are **devDependencies** (listing them as runtime deps ships the compiler to every visitor).
-- **Lifecycles are hand-written** — `bootstrap`/`mount`/`unmount` with no `single-spa-angular` and no `import 'single-spa'`, which keeps the package clear of the repo's v5/v6 split. It uses `createApplication` + `createComponent({ environmentInjector, hostElement })` + `attachView`, **not** `bootstrapApplication`, whose host is resolved by running the root selector against the whole document.
+- **Lifecycles are hand-written** — `bootstrap`/`mount`/`unmount` with no `single-spa-angular` and no `import 'single-spa'`, which keeps the package clear of the shared `single-spa` singleton entirely. It uses `createApplication` + `createComponent({ environmentInjector, hostElement })` + `attachView`, **not** `bootstrapApplication`, whose host is resolved by running the root selector against the whole document.
 - **`computed()` cannot wrap reactive-forms state.** `AbstractControl.errors`/`touched` are not signals in this `@angular/forms`, so a `computed` around `firstErrorMessage` evaluates once and reports the same answer forever. The per-field error getters are therefore plain arrow *methods* called from the template. Both files that do this say so; don't "optimise" them into `computed`.
 - **`ExaminationDraftStore` owns what the form cannot.** The appointment (`CALENDAR_APPOINTMENT_SELECTED`) and the diagnosis (`ICD10_DISEASE_SELECTED`) arrive from remotes that cannot name a symbol in this package, so an injector-scoped store has to receive them; the anamnesis, start time and therapy stay in the `FormGroup` that already owns their `touched`/`errors`. `phase()` derives `selecting-appointment | editing | submitting | recorded` and `ExaminationApp` is an `@switch` over it. `isLocked()` is the guard that matters: `form.disable()` locks form controls, but the diagnosis "Clear" button and the prescription dialog are not form controls — they mutate the store directly — so both the store's commands and the `[readonly]` bindings check it.
 
@@ -267,11 +328,11 @@ The two always-mounted fragments. Both are TypeScript custom elements with **no 
 
 This is a thesis-stage codebase mid-migration. **Re-verify against the source rather than trusting this list** — it goes stale as work lands.
 
-- **`home` is the last legacy package**, and its being so is deliberate. The shell is plain JS on single-spa v5, `webpack --watch` + `serve dist`, and MUI CSS from a CDN. (It no longer transpiles: the babel-loader rule is gone, since five `registerApplication` calls and a CSS import need nothing webpack cannot parse natively. The `@babel/*` dependencies it still declares are vestigial — see the build bullet below.) Every other package is TS 6 strict on React 19, Angular 22, Vue 3 or no framework at all. **Multi-framework is a goal, not debt**: demonstrating that federation makes it possible is the point of the project, so do *not* consolidate the frameworks. What *is* debt is hand-rolled HTTP/auth code, which is why porting `icd10` to Vue was a net win — it removed the last `const API_BASE = 'http://localhost:8080'` and hand-built `Authorization` header in a feature MFE while *adding* a framework to the demonstration.
+- **`home` is the last legacy package**, and its being so is deliberate. The shell is plain JS on single-spa 6, `webpack --watch` + `serve dist`. (It no longer transpiles: the babel-loader rule is gone, since five `registerApplication` calls and a CSS import need nothing webpack cannot parse natively, and the `@babel/*` declarations went with it. The MUI CDN `<link>`/`<script>` are gone too — zero `mui` usages remained anywhere in the monorepo, so both tags were dead weight on first paint of every screen. Its `package.json` now declares only `single-spa` and the design system as `dependencies`, with the build tooling in `devDependencies`, and its `webpack`/`webpack-cli` versions match every other package's rather than trailing behind at 5.74.0/^4.10.0.) Every other package is TS 6 strict on React 19, Angular 22, Vue 3 or no framework at all. **Multi-framework is a goal, not debt**: demonstrating that federation makes it possible is the point of the project, so do *not* consolidate the frameworks. What *is* debt is hand-rolled HTTP/auth code, which is why porting `icd10` to Vue was a net win — it removed the last `const API_BASE = 'http://localhost:8080'` and hand-built `Authorization` header in a feature MFE while *adding* a framework to the demonstration.
 - **Every feature MFE is implemented**: `calendar` (React 19), `auth` (React 19), `examination` (Angular 22), `icd10` (Vue 3), `nav` and `notifications` (plain custom elements). The foundation packages (`api-client`, `shared-store`, `shared-types`, all three design-system packages) are done. `design-system-angular`'s only consumer is `examination`; **there is deliberately no `design-system-vue`** — see the spectrum table under "Design system".
 - **`examination` is Angular 22, zoneless, AOT-compiled** (port 3004, exposes `./Examination`) — see `packages/examination/README.md`. It was rewritten from Svelte 3, which is gone from the repo entirely (`package-lock.json` and the two README mentions of "the plain-JS/Svelte MFEs" are the only traces left). Notable for the rest of the monorepo: its `typecheck` runs **`ngc`** rather than `tsc --noEmit`, because `tsc` checks no templates (`icd10` runs `vue-tsc` for the same reason); it deliberately has **no `zone.js`**, since that patches `setTimeout`/`Promise`/`addEventListener` globally and would change the runtime under React 19, Vue 3, Lit and the two custom-element MFEs; and its single-spa lifecycles are hand-written over `createApplication` + `createComponent({ hostElement })`, with no `single-spa-angular` and no `import 'single-spa'`.
 - **`icd10` is Vue 3, Composition API, SFCs** (port 3002, exposes `./ICD10`) — see `packages/icd10/README.md`. It was the last plain-JS feature MFE. The thesis-relevant result is the one above: Vue needs *no* binding package, which reframes `design-system-react`/`-angular` as compensation for framework defects rather than a per-framework tax.
-- **All eight webpack packages build, and `eslint .` is clean.** The Babel clash that once broke `home`/`icd10` is fixed by the `resolutions: { "@babel/core": "^7.29.7" }` pin — babel-loader resolves `@babel/core` from the hoisted root, and `@babel/preset-react` 7 throws on 8.x. **No webpack config uses babel-loader any more**: `home` dropped it with its JSX, `nav` became TypeScript custom elements, `icd10` became Vue. The pin is therefore vestigial, and survives only because `home/package.json` still *declares* `@babel/core`, `@babel/preset-react` and `babel-loader` — a lift should drop all three in the same change, and no earlier, since the failure is an install-time peer assertion that only an install can clear. If a build fails with `Requires Babel "^7.0.0-0", but was loaded with "8.x"`, the on-disk tree has drifted from the lockfile; re-run `yarn install` rather than editing the pin. `calendar` and `auth` build with asset-size warnings, which is expected.
+- **All eight webpack packages build, and `eslint .` is clean.** **Nothing depends on Babel any more, and the `resolutions` pin is gone.** No webpack config uses babel-loader (`home` dropped it with its JSX, `nav` became TypeScript custom elements, `icd10` became Vue), so `home`'s `@babel/core`, `@babel/preset-react` and `babel-loader` declarations and the root `resolutions: { "@babel/core": "^7.29.7" }` were removed **in the same change** — that order is the whole point, since the failure the pin prevented (`Requires Babel "^7.0.0-0", but was loaded with "8.x"`) is an install-time peer assertion, and lifting the pin while a package still declared `@babel/preset-react` would have reintroduced it on the next install. **This is the one change here an install has not verified**, there being no `node_modules`: if that error appears, something still declares `@babel/preset-react` — find and drop it rather than restoring the pin. `home`'s `raw-loader` and its `{ test: /\.md$/ }` rule went in the same pass, nothing in `home/src` importing a Markdown file, and `copy-webpack-plugin` was declared and never required. `calendar` and `auth` build with asset-size warnings, which is expected.
 - **There is currently no `node_modules` at all** in `micro_medic_microfrontend/`, so nothing can be linted, typechecked or built until `yarn install` succeeds — see the registry-mismatch note under "Frontend". Treat any claim in this file about build or lint status as last-verified-by-reading, not last-verified-by-running. (When the tree is populated, `node_modules/@micro-medic/` has historically been missing symlinks for `design-system-angular` and `notifications`, with a stale `node_modules/search` left from `nav`'s old package name; nothing breaks, because resolution goes through the `paths` map in `tsconfig.base.json`.)
 - **`calendar` is wired end to end.** `CalendarApp.tsx` composes `components/` with the `state/`/`hooks/` modules; `Calendar.tsx` builds its own `QueryClient` at module scope. Event titles are role-aware (`utils/map-events.ts` takes the viewer's `Role` and labels each event with the *counterpart*), the detail pane derives its DTO from the query cache by id so it cannot show a stale snapshot after a mutation, and selecting an event emits `CALENDAR_APPOINTMENT_SELECTED`.
 - **`auth` is the login/register MFE** (port 3006, exposes `./Auth`), the vertical-split example. It is the only `public: true` feature route, and the only thing that populates `authStore` — previously nothing did, so a token could only arrive by hand-writing `localStorage`.
@@ -290,5 +351,4 @@ This is a thesis-stage codebase mid-migration. **Re-verify against the source ra
   - **`AccessGuard.requirePatientAccess` used `&` instead of `&&`**, so the `existsByDoctorIdAndPatientId` query ran for every caller including patients and admins.
 
   Still open:
-  - `DoctorController` is mapped at `/api/doctor` (singular) while every sibling collection controller is plural (`/api/patients`, `/api/medicines`, `/api/reports`).
   - `spring.flyway.validate-migration-naming=true` is now set, and it earns its place: `V6` shipped as `V6_fix_...` with a single underscore, which Flyway *silently skips* — no error, no log line, and `ddl-auto=validate` still passed because the entities matched the pre-V6 schema. A misnamed migration must fail the boot, not the database. Watch for this whenever adding a migration.
