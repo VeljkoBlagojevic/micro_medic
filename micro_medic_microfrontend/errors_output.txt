@@ -1,0 +1,1348 @@
+yarn run v1.22.22
+$ concurrently "wsrun --parallel start" "wsrun --parallel serve"
+(node:35552) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[0] @micro-medic/design-system
+[0]  | warning package.json: No license field
+[1] @micro-medic/design-system
+[1]  | warning package.json: No license field
+[1] @micro-medic/design-system-angular
+[1]  | warning package.json: No license field
+[0] @micro-medic/api-client
+[0]  | warning package.json: No license field
+[0] @micro-medic/design-system
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[1] @micro-medic/design-system-react
+[1]  | warning package.json: No license field
+[1] @micro-medic/design-system
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] @micro-medic/shared-store
+[0]  | warning package.json: No license field
+[1] @micro-medic/design-system-angular
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] @micro-medic/shared-types
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[0] @micro-medic/design-system-angular
+[0]  | warning package.json: No license field
+[0] @micro-medic/design-system-react
+[0]  | warning package.json: No license field
+[1] @micro-medic/shared-store
+[1]  | warning package.json: No license field
+[0] @micro-medic/design-system
+[0]  | `yarn start` failed with exit code 1
+[0] @micro-medic/api-client
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[1] @micro-medic/api-client
+[1]  | warning package.json: No license field
+[1] @micro-medic/design-system-react
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] @micro-medic/shared-types
+[0]  | `yarn start` failed with exit code 1
+[0] nav
+[0]  | $ webpack --watch
+[0] @micro-medic/api-client
+[0]  | `yarn start` failed with exit code 1
+[1] @micro-medic/shared-store
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[1] @micro-medic/shared-types
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] auth
+[0]  | $ webpack --watch
+[0] @micro-medic/design-system-react
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[1] calendar
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] notifications
+[0]  | $ webpack --watch
+[1] auth
+[1]  | $ serve dist -p 3006
+[0] calendar
+[0]  | $ webpack serve --
+[0] @micro-medic/shared-store
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[1] icd10
+[1]  | $ serve dist -p 3002
+[1] @micro-medic/api-client
+[1]  | $ C:\Faks\micro_medic\micro_medic_microfrontend\node_modules\.bin\serve
+[0] examination
+[0]  | $ webpack --watch
+[1] home
+[1]  | $ serve dist -p 3001
+[0] @micro-medic/design-system-react
+[0]  | `yarn start` failed with exit code 1
+[0] icd10
+[0]  | $ webpack --watch
+[0] @micro-medic/shared-store
+[0]  | `yarn start` failed with exit code 1
+[1] examination
+[1]  | $ serve dist -p 3004
+[0] home
+[0]  | $ webpack --watch
+[0] @micro-medic/design-system-angular
+[0]  | error Command "start" not found.
+[0]  | info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[1] nav
+[1]  | $ serve dist -p 3003
+[1] notifications
+[1]  | $ serve dist -p 3007
+[0]  | `yarn start` failed with exit code 1
+[1] calendar
+[1]  |  INFO  Accepting connections at http://localhost:3000
+[1] @micro-medic/design-system-angular
+[1]  |  INFO  Accepting connections at http://localhost:52268
+[1] @micro-medic/shared-types
+[1]  |  INFO  Accepting connections at http://localhost:52270
+[1] @micro-medic/design-system-react
+[1]  |  INFO  Accepting connections at http://localhost:52273
+[1] @micro-medic/design-system
+[1]  |  INFO  Accepting connections at http://localhost:52276
+[1] examination
+[1]  |  INFO  Accepting connections at http://localhost:3004
+[1] icd10
+[1]  |  INFO  Accepting connections at http://localhost:3002
+[1] @micro-medic/api-client
+[1]  |  INFO  Accepting connections at http://localhost:52280
+[1] auth
+[1]  |  INFO  Accepting connections at http://localhost:3006
+[1] notifications
+[1]  |  INFO  Accepting connections at http://localhost:3007
+[1] @micro-medic/shared-store
+[1]  |  INFO  Accepting connections at http://localhost:52286
+[1] home
+[1]  |  INFO  Accepting connections at http://localhost:3001
+[1] nav
+[1]  |  INFO  Accepting connections at http://localhost:3003
+[0] home
+[0]  | asset [1m[32mindex.html[39m[22m 5.05 KiB [1m[33m[compared for emit][39m[22m
+[0]  | Entrypoint [1mmain[39m[22m =
+[0]  | runtime modules 1.9 KiB 3 modules
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m[32mmain[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './src/index.ts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\home'[39m[22m
+[0]  | resolve './src/index.ts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\home'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\package.json (relative path: .)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\package.json (relative path: ./src/index.ts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\src\index.ts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\src\index.ts.ts doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\src\index.ts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\src\index.ts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\home\src\index.ts doesn't exist[39m[22m
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m1 error[39m[22m in 113 ms
+[0] calendar
+[0]  | <i> [webpack-dev-server] Project is running at:
+[0]  | <i> [webpack-dev-server] Loopback: [36mhttp://localhost:3009/[39m, [36mhttp://[::1]:3009/[39m
+[0]  | <i> [webpack-dev-server] On Your Network (IPv4): [36mhttp://192.168.0.28:3009/[39m
+[0]  | <i> [webpack-dev-server] Content not from webpack is served from '[36mC:\Faks\micro_medic\micro_medic_microfrontend\packages\calendar\public[39m' directory
+[0]  | <i> [webpack-dev-server] 404s will fallback to '[36m/index.html[39m'
+[0] nav
+[0]  | assets by chunk 169 KiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.7 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  | asset [1m[32mdesign-system_src_index_ts.js[39m[22m 87.4 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_standalone_ts.js[39m[22m 49.5 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_styles_css-src_reactive-element_ts-webpack_sharing_consume_default_micro-medic_design-sys-5df8bd.js[39m[22m 36.6 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_nav-app-bar_ts.js[39m[22m 28.7 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mremoteEntry.js[39m[22m 28.2 KiB [1m[33m[compared for emit][39m[22m (name: nav) 1 related asset
+[0]  | asset [1m[32mmain.js[39m[22m 27.8 KiB [1m[33m[compared for emit][39m[22m (name: main) 1 related asset
+[0]  | asset [1m[32msrc_Footer_ts.js[39m[22m 3.05 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mindex.html[39m[22m 2.92 KiB [1m[33m[compared for emit][39m[22m
+[0]  | asset [1m[32msrc_Header_ts.js[39m[22m 2.37 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | runtime modules 37.6 KiB 26 modules
+[0]  | cacheable modules 331 KiB
+[0]  |   modules by path [1m../[39m[22m 282 KiB 43 modules
+[0]  |   modules by path [1m./src/[39m[22m 48.2 KiB
+[0]  |     modules by path [1m./src/*.ts[39m[22m 33.9 KiB 8 modules
+[0]  |     modules by path [1m./src/*.css[39m[22m 14.3 KiB 2 modules
+[0]  | provide-module modules 84 bytes
+[0]  |   [1mprovide shared module (default) @micro-medic/design-system@1.0.0 = ../design-sys...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) lit@3.3.3 = ../../node_modules/lit/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | consume-shared-module modules 84 bytes
+[0]  |   [1mconsume shared module (default) @micro-medic/design-system@^1.0.0 (singleton) (f...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) lit@^3.3.3 (singleton) (fallback: ../../node_mod...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m./src/Header.ts[39m[22m [1m[32m10:32-66[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-attributes.js' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\nav\src'[39m[22m
+[0]  |  @ container entry ./Header[0]
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m./src/nav-app-bar.ts[39m[22m [1m[32m20:32-66[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-attributes.js' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\nav\src'[39m[22m
+[0]  |  @ ./src/Header.ts 6:0-27
+[0]  |  @ container entry ./Header[0]
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m./src/standalone.ts[39m[22m [1m[32m4:32-66[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-attributes.js' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\nav\src'[39m[22m
+[0]  |  @ ./src/bootstrap-standalone.ts 12:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 12:0-25
+[0]  | 
+[0]  | [1m[33m4 errors have detailed information that is not shown.
+[0]  | Use 'stats.errorDetails: true' resp. '--stats-error-details' to show it.[39m[22m
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m4 errors[39m[22m in 775 ms
+[0] notifications
+[0]  | assets by chunk 317 KiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_axios_dist_browser_axios_cjs.js[39m[22m 148 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70.1 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.8 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  | asset [1m[32mdesign-system_src_index_ts.js[39m[22m 87.4 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_standalone_ts.js[39m[22m 58.1 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_notification-center_ts.js[39m[22m 49.6 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mmain.js[39m[22m 27.7 KiB [1m[33m[compared for emit][39m[22m (name: main) 1 related asset
+[0]  | asset [1m[32mremoteEntry.js[39m[22m 27.3 KiB [1m[33m[compared for emit][39m[22m (name: notifications) 1 related asset
+[0]  | asset [1m[32mindex.html[39m[22m 3 KiB [1m[33m[compared for emit][39m[22m
+[0]  | asset [1m[32msrc_Notifications_ts.js[39m[22m 1.72 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | runtime modules 37.2 KiB 24 modules
+[0]  | modules by path [1m../[39m[22m 458 KiB 53 modules
+[0]  | modules by path [1m./src/*.ts[39m[22m 14.7 KiB
+[0]  |   [1m./src/bootstrap-standalone.ts[39m[22m 804 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1m./src/standalone.ts[39m[22m 4.06 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1m./src/Notifications.ts[39m[22m 1.2 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1m./src/notification-center.ts[39m[22m 7.05 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1m./src/durations.ts[39m[22m 1.64 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | provide-module modules 84 bytes
+[0]  |   [1mprovide shared module (default) @micro-medic/design-system@1.0.0 = ../design-sys...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) lit@3.3.3 = ../../node_modules/lit/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | consume-shared-module modules 84 bytes
+[0]  |   [1mconsume shared module (default) @micro-medic/design-system@^1.0.0 (singleton) (f...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) lit@^3.3.3 (singleton) (fallback: ../../node_mod...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  | resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src/session-channel)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.ts doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 12:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  | resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src/contracts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.ts doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |  @ ./src/standalone.ts 4:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 12:0-25
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m2 errors[39m[22m in 810 ms
+[0] icd10
+[0]  | assets by chunk 872 KiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_vue_dist_vue_runtime_esm-bundler_js.js[39m[22m 482 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_axios_index_js.js[39m[22m 221 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.7 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  | asset [1m[32msrc_ICD10_ts.js[39m[22m 150 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mdesign-system_src_index_ts.js[39m[22m 87.4 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_standalone_ts.js[39m[22m 52.1 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mremoteEntry.js[39m[22m 31.8 KiB [1m[33m[compared for emit][39m[22m (name: icd10) 1 related asset
+[0]  | asset [1m[32mmain.js[39m[22m 31.7 KiB [1m[33m[compared for emit][39m[22m (name: main) 1 related asset
+[0]  | asset [1m[32mapi-client_src_index_ts.js[39m[22m 16.6 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mshared-store_src_index_ts.js[39m[22m 15.7 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mshared-types_src_index_ts.js[39m[22m 8.38 KiB [1m[33m[compared for emit][39m[22m 1 related asset
+[0]  | asset [1m[32mindex.html[39m[22m 3.19 KiB [1m[33m[compared for emit][39m[22m
+[0]  | runtime modules 44.7 KiB 28 modules
+[0]  | cacheable modules 971 KiB
+[0]  |   modules by path [1m../[39m[22m 876 KiB 112 modules
+[0]  |   modules by path [1m./src/[39m[22m 94.9 KiB 43 modules
+[0]  | provide-module modules 294 bytes
+[0]  |   modules by path [1mprovide shared module (default) @micro-medic/[39m[22m 168 bytes 4 modules
+[0]  |   [1mprovide shared module (default) axios@1.19.0 = ../../node_modules/axios/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) lit@3.3.3 = ../../node_modules/lit/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) vue@3.5.41 = ../../node_modules/vue/dist/vue.run...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | consume-shared-module modules 294 bytes
+[0]  |   modules by path [1mconsume shared module (default) @micro-medic/[39m[22m 168 bytes 4 modules
+[0]  |   [1mconsume shared module (default) vue@^3.5.22 (singleton) (fallback: ../../node_mo...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) lit@^3.3.3 (singleton) (fallback: ../../node_mod...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) axios@^1.18.1 (singleton) (fallback: ../../node_...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  | resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src/session-channel)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.ts doesn't exist[39m[22m
+[0]  |       .vue
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.vue doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 15:5-30
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  | resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src/contracts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.ts doesn't exist[39m[22m
+[0]  |       .vue
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.vue doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |  @ consume shared module (default) @micro-medic/shared-types@^1.0.0 (singleton) (fallback: ../shared-types/src/index.ts)
+[0]  |  @ ../shared-store/src/index.ts 34:21-57
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 15:5-30
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m2 errors[39m[22m in 1158 ms
+[0] auth
+[0]  | assets by chunk 2.28 MiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_hookform_resolvers_zod_dist_zod_js-node_modules_css-loader_dist_runtime_-4c34e3.js[39m[22m 1.76 MiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_axios_index_js.js[39m[22m 221 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_single-spa_lib_es2015_esm_single-spa_dev_js.js[39m[22m 64.2 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.7 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react_index_js.js[39m[22m 47 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react-dom_index_js.js[39m[22m 19 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react_jsx-runtime_js.js[39m[22m 13.2 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  | + 12 assets
+[0]  | runtime modules 51.4 KiB 30 modules
+[0]  | modules by path [1m../[39m[22m 2.32 MiB 206 modules
+[0]  | modules by path [1m./src/[39m[22m 44 KiB 18 modules
+[0]  | provide-module modules 462 bytes
+[0]  |   modules by path [1mprovide shared module (default) @micro-medic/[39m[22m 210 bytes 5 modules
+[0]  |   + 6 modules
+[0]  | consume-shared-module modules 462 bytes
+[0]  |   modules by path [1mconsume shared module (default) @micro-medic/[39m[22m 210 bytes 5 modules
+[0]  |   [1mconsume shared module (default) single-spa-react@=6.0.2 (singleton) (fallback: ....(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) react@^19.2.7 (singleton) (fallback: ../../node_...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) single-spa@=6.0.3 (singleton) (fallback: ../../n...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) lit@^3.3.3 (singleton) (fallback: ../../node_mod...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) react-dom@^19.2.7 (singleton) (fallback: ../../n...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) axios@^1.18.1 (singleton) (fallback: ../../node_...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  | resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src/session-channel)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.ts doesn't exist[39m[22m
+[0]  |       .tsx
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.tsx doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.tsx 5:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  | resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src/contracts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.ts doesn't exist[39m[22m
+[0]  |       .tsx
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.tsx doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |  @ consume shared module (default) @micro-medic/shared-types@^1.0.0 (singleton) (fallback: ../shared-types/src/index.ts)
+[0]  |  @ ./src/standalone.tsx 6:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m2 errors[39m[22m in 1254 ms
+[0] icd10
+[0]  | assets by status 3.19 KiB [1m[32m[cached][39m[22m 1 asset
+[0]  | assets by chunk 872 KiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_vue_dist_vue_runtime_esm-bundler_js.js[39m[22m 482 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_axios_index_js.js[39m[22m 221 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.7 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  | asset [1m[32msrc_ICD10_ts.js[39m[22m 150 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | asset [1m[32mdesign-system_src_index_ts.js[39m[22m 87.4 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | asset [1m[32msrc_standalone_ts.js[39m[22m 52.1 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | asset [1m[32mremoteEntry.js[39m[22m 31.8 KiB [1m[32m[emitted][39m[22m (name: icd10) 1 related asset
+[0]  | asset [1m[32mmain.js[39m[22m 31.7 KiB [1m[32m[emitted][39m[22m (name: main) 1 related asset
+[0]  | asset [1m[32mapi-client_src_index_ts.js[39m[22m 16.6 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | asset [1m[32mshared-store_src_index_ts.js[39m[22m 15.7 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | asset [1m[32mshared-types_src_index_ts.js[39m[22m 8.38 KiB [1m[32m[emitted][39m[22m 1 related asset
+[0]  | runtime modules 44.7 KiB 28 modules
+[0]  | cacheable modules 971 KiB
+[0]  |   modules by path [1m../[39m[22m 876 KiB 112 modules
+[0]  |   modules by path [1m./src/[39m[22m 94.9 KiB 43 modules
+[0]  | provide-module modules 294 bytes
+[0]  |   modules by path [1mprovide shared module (default) @micro-medic/[39m[22m 168 bytes 4 modules
+[0]  |   [1mprovide shared module (default) axios@1.19.0 = ../../node_modules/axios/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) lit@3.3.3 = ../../node_modules/lit/index.js[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mprovide shared module (default) vue@3.5.41 = ../../node_modules/vue/dist/vue.run...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | consume-shared-module modules 294 bytes
+[0]  |   modules by path [1mconsume shared module (default) @micro-medic/[39m[22m 168 bytes 4 modules
+[0]  |   [1mconsume shared module (default) vue@^3.5.22 (singleton) (fallback: ../../node_mo...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) lit@^3.3.3 (singleton) (fallback: ../../node_mod...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   [1mconsume shared module (default) axios@^1.18.1 (singleton) (fallback: ../../node_...(truncated)[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  | resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src/session-channel)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.ts doesn't exist[39m[22m
+[0]  |       .vue
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.vue doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 15:5-30
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  | resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src/contracts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.ts doesn't exist[39m[22m
+[0]  |       .vue
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.vue doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |  @ consume shared module (default) @micro-medic/shared-types@^1.0.0 (singleton) (fallback: ../shared-types/src/index.ts)
+[0]  |  @ ../shared-store/src/index.ts 34:21-57
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 3:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 15:5-30
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m2 errors[39m[22m in 343 ms
+[0] calendar
+[0]  | assets by chunk 4.12 MiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_hookform_resolvers_zod_dist_zod_js-node_modules_react-big-calendar_dist_-8c13e7.js[39m[22m 3.6 MiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_axios_index_js.js[39m[22m 221 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_index_js.js[39m[22m 70 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_single-spa_lib_es2015_esm_single-spa_dev_js.js[39m[22m 64.2 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit-html_development_lit-html_js.js[39m[22m 63.8 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react_index_js.js[39m[22m 47 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_lit_directives_if-defined_js-node_modules_lit_directives_repeat_js.js[39m[22m 35 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react-dom_index_js.js[39m[22m 19 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_react_jsx-runtime_js.js[39m[22m 13.2 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
+[0]  | + 12 assets
+[0]  | runtime modules 101 KiB 38 modules
+[0]  | orphan modules 47.5 KiB [1m[33m[orphan][39m[22m 32 modules
+[0]  | modules by path [1m../[39m[22m 3.24 MiB 614 modules
+[0]  | modules by path [1m./[39m[22m 684 KiB 337 modules
+[0]  | provide-module modules 462 bytes
+[0]  |   modules by path [1mprovide shared module (default) @micro-medic/[39m[22m 210 bytes 5 modules
+[0]  |   + 6 modules
+[0]  | consume-shared-module modules 462 bytes
+[0]  |   modules by path [1mconsume shared module (default) @micro-medic/[39m[22m 210 bytes 5 modules
+[0]  |   + 6 modules
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  | resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\package.json (relative path: ./src/session-channel)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.ts doesn't exist[39m[22m
+[0]  |       .tsx
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.tsx doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src\session-channel doesn't exist[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.tsx 5:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  | resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'
+[0]  |   using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src)
+[0]  |     Field 'browser' doesn't contain a valid alias configuration
+[0]  |     using description file: C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\package.json (relative path: ./src/contracts)
+[0]  |       no extension
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |       .ts
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.ts doesn't exist[39m[22m
+[0]  |       .tsx
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.tsx doesn't exist[39m[22m
+[0]  |       .js
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.js doesn't exist[39m[22m
+[0]  |       .json
+[0]  |         Field 'browser' doesn't contain a valid alias configuration
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts.json doesn't exist[39m[22m
+[0]  |       as directory
+[0]  | [1m[31m        C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src\contracts doesn't exist[39m[22m
+[0]  |  @ consume shared module (default) @micro-medic/shared-types@^1.0.0 (singleton) (fallback: ../shared-types/src/index.ts)
+[0]  |  @ ./src/standalone.tsx 6:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m2 errors[39m[22m in 1647 ms
+[0] examination
+[0]  | assets by chunk 2.39 MiB (id hint: vendors)
+[0]  |   asset [1m[32mvendors-node_modules_angular_core_fesm2022_core_mjs.js[39m[22m 1.26 MiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_rxjs_dist_esm5_index_js.js[39m[22m 432 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_axios_index_js.js[39m[22m 221 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_angular_common_fesm2022_common_mjs.js[39m[22m 217 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_angular_platform-browser_fesm2022_platform-browser_mjs.js[39m[22m 190 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_rxjs_dist_esm5_internal_operators_map_js.js[39m[22m 52.8 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  |   asset [1m[32mvendors-node_modules_rxjs_dist_esm5_internal_operators_concatMap_js-node_modules_rxjs_dist_es-00097b.js[39m[22m 42.8 KiB [1m[33m[compared for emit][39m[22m (id hint: vendors) 1 related asset
+[0]  | + 9 assets
+[0]  | runtime modules 48.9 KiB 26 modules
+[0]  | orphan modules 13.1 KiB [1m[33m[orphan][39m[22m 4 modules
+[0]  | modules by path [1m../../node_modules/[39m[22m 1.7 MiB 305 modules
+[0]  | provide-module modules 336 bytes 8 modules
+[0]  | consume-shared-module modules 336 bytes 8 modules
+[0]  | modules by path [1m../api-client/src/[39m[22m 14.5 KiB 6 modules
+[0]  | modules by path [1m./src/*.ts[39m[22m 21.6 KiB 4 modules
+[0]  | modules by path [1m../shared-types/src/*.ts[39m[22m 7.13 KiB 4 modules
+[0]  | modules by path [1m../design-system/src/*.css[39m[22m 36.4 KiB
+[0]  |   [1m../design-system/src/tokens.css[39m[22m 1.15 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   + 3 modules
+[0]  | modules by path [1m../shared-store/src/*.ts[39m[22m 14.3 KiB
+[0]  |   [1m../shared-store/src/index.ts[39m[22m 1.89 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  |   + 2 modules
+[0]  | [1mcontainer entry[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m./src/ExaminationApp.ts[39m[22m [1m[32m102:54[39m[22m
+[0]  | [1mModule parse [1m[31mfailed[39m[22m[1m: [1m[31mUnexpected[39m[22m[1m token (102:54)
+[0]  | File was processed with these loaders:
+[0]  |  * ../../node_modules/@ngtools/webpack/src/ivy/index.js
+[0]  | You may need an additional loader to handle the result of these loaders.
+[0]  | |             @if (!auth.isAuthenticated()) {
+[0]  | |                 <!--
+[0]  | >                   Reachable in practice: `, activity, : .js ` keeps an unauthenticated visitor off this
+[0]  | |                   route, but a token can expire *while* this MFE is mounted ΓÇö `, api
+[0]  | |     } - client `'s[39m[22m
+[0]  |  @ ./src/Examination.ts 9:28-58
+[0]  |  @ container entry ./Examination[0]
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-store/src/auth-store.ts[39m[22m [1m[32m7:26-54[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './session-channel' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-store\src'[39m[22m
+[0]  |  @ ../shared-store/src/index.ts 18:13-36
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 5:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [1m../shared-types/src/index.ts[39m[22m [1m[32m20:13-35[39m[22m
+[0]  | [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './contracts' in 'C:\Faks\micro_medic\micro_medic_microfrontend\packages\shared-types\src'[39m[22m
+[0]  |  @ consume shared module (default) @micro-medic/shared-types@^1.0.0 (singleton) (fallback: ../shared-types/src/index.ts)
+[0]  |  @ ../shared-store/src/index.ts 34:21-57
+[0]  |  @ consume shared module (default) @micro-medic/shared-store@^1.0.0 (singleton) (fallback: ../shared-store/src/index.ts)
+[0]  |  @ ./src/standalone.ts 5:23-59
+[0]  |  @ ./src/bootstrap-standalone.ts 14:0-25
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96m../shared-store/src/auth-store.ts[0m:[93m5[0m:[93m57[0m - [91merror[0m[90m TS2307: [0mCannot find module './session-channel' or its corresponding type declarations.
+[0]  | 
+[0]  | [7m5[0m import { openSessionChannel, type SessionChannel } from './session-channel';
+[0]  | [7m [0m [91m                                                        ~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96m../shared-store/src/auth-store.ts[0m:[93m209[0m:[93m46[0m - [91merror[0m[90m TS7006: [0mParameter 'message' implicitly has an 'any' type.
+[0]  | 
+[0]  | [7m209[0m         sessionChannel = openSessionChannel((message) => {
+[0]  | [7m   [0m [91m                                             ~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96m../shared-types/src/index.ts[0m:[93m4[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './contracts' or its corresponding type declarations.
+[0]  | 
+[0]  | [7m4[0m export * from './contracts';
+[0]  | [7m [0m [91m              ~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/Examination.ts[0m:[93m54[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'EnvironmentProviders' is not assignable to type 'Provider'.
+[0]  | 
+[0]  | [7m54[0m     provideZonelessChangeDetection(),
+[0]  | [7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m13[0m:[93m65[0m - [91merror[0m[90m TS2307: [0mCannot find module './utils/handoff.js' or its corresponding type declarations.
+[0]  | 
+[0]  | [7m13[0m import { clearAppointmentHandoff, readAppointmentHandoff } from './utils/handoff.js';
+[0]  | [7m  [0m [91m                                                                ~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m34[0m:[93m1[0m - [91merror[0m[90m NG1002: [0mIncorrect number of arguments to @Component decorator
+[0]  | 
+[0]  | [7m 34[0m @Component({
+[0]  | [7m   [0m [91m~~~~~~~~~~~~[0m
+[0]  | [7m 35[0m     selector: 'exam-root',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m121[0m     `,
+[0]  | [7m   [0m [91m~~~~~~[0m
+[0]  | [7m122[0m })
+[0]  | [7m   [0m [91m~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m34[0m:[93m12[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+[0]  | 
+[0]  | [7m 34[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 35[0m     selector: 'exam-root',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 58[0m                   Reachable in practice: `activity.js` keeps an unauthenticated visitor off this
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 59[0m                   route, but a token can expire *while* this MFE is mounted ΓÇö `api-client`'s
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m58[0m:[93m43[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m58[0m                   Reachable in practice: `activity.js` keeps an unauthenticated visitor off this
+[0]  | [7m  [0m [91m                                          ~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m58[0m:[93m43[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'activity'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m58[0m                   Reachable in practice: `activity.js` keeps an unauthenticated visitor off this
+[0]  | [7m  [0m [91m                                          ~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m58[0m:[93m51[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m58[0m                   Reachable in practice: `activity.js` keeps an unauthenticated visitor off this
+[0]  | [7m  [0m [91m                                                  ~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m59[0m:[93m80[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m59[0m                   route, but a token can expire *while* this MFE is mounted ΓÇö `api-client`'s
+[0]  | [7m  [0m [91m                                                                               ~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m59[0m:[93m80[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'api'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m59[0m                   route, but a token can expire *while* this MFE is mounted ΓÇö `api-client`'s
+[0]  | [7m  [0m [91m                                                                               ~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m59[0m:[93m83[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m59[0m                   route, but a token can expire *while* this MFE is mounted ΓÇö `api-client`'s
+[0]  | [7m  [0m [91m                                                                                  ~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m59[0m:[93m84[0m - [91merror[0m[90m TS2304: [0mCannot find name 'client'.
+[0]  | 
+[0]  | [7m59[0m                   route, but a token can expire *while* this MFE is mounted ΓÇö `api-client`'s
+[0]  | [7m  [0m [91m                                                                                   ~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m60[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m60[0m                   `onUnauthorized` clears the store, which lands here as a state change with no
+[0]  | [7m  [0m [91m                   ~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m60[0m:[93m20[0m - [91merror[0m[90m TS2304: [0mCannot find name 'onUnauthorized'.
+[0]  | 
+[0]  | [7m60[0m                   `onUnauthorized` clears the store, which lands here as a state change with no
+[0]  | [7m  [0m [91m                   ~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m60[0m:[93m20[0m - [91merror[0m[90m TS2554: [0mExpected 1 arguments, but got 9.
+[0]  | 
+[0]  | [7m 60[0m                   `onUnauthorized` clears the store, which lands here as a state change with no
+[0]  | [7m   [0m [91m                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 61[0m                   route change behind it.
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m120[0m         </section>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m121[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m69[0m:[93m86[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m69[0m                   Presentation, not authorisation. The backend refuses regardless ΓÇö `ROLE_DOCTOR` on
+[0]  | [7m  [0m [91m                                                                                     ~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m69[0m:[93m86[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ROLE_DOCTOR'.
+[0]  | 
+[0]  | [7m69[0m                   Presentation, not authorisation. The backend refuses regardless ΓÇö `ROLE_DOCTOR` on
+[0]  | [7m  [0m [91m                                                                                     ~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m70[0m:[93m37[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m70[0m                   the URL matcher, `@PreAuthorize` on `ExaminationService.examine`, and
+[0]  | [7m  [0m [91m                                    ~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m70[0m:[93m56[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+[0]  | 
+[0]  | [7m70[0m                   the URL matcher, `@PreAuthorize` on `ExaminationService.examine`, and
+[0]  | [7m  [0m [91m                                                       [0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m70[0m:[93m56[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ExaminationService'.
+[0]  | 
+[0]  | [7m70[0m                   the URL matcher, `@PreAuthorize` on `ExaminationService.examine`, and
+[0]  | [7m  [0m [91m                                                       ~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m71[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m71[0m                   `AccessGuard` row by row. This branch exists so a patient who typed the URL reads
+[0]  | [7m  [0m [91m                   ~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m71[0m:[93m20[0m - [91merror[0m[90m TS2304: [0mCannot find name 'AccessGuard'.
+[0]  | 
+[0]  | [7m71[0m                   `AccessGuard` row by row. This branch exists so a patient who typed the URL reads
+[0]  | [7m  [0m [91m                   ~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m85[0m:[93m80[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m85[0m                             <!-- Above the picker, not instead of it, and not `retryable`: the id came
+[0]  | [7m  [0m [91m                                                                               ~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m85[0m:[93m80[0m - [91merror[0m[90m TS2304: [0mCannot find name 'retryable'.
+[0]  | 
+[0]  | [7m85[0m                             <!-- Above the picker, not instead of it, and not `retryable`: the id came
+[0]  | [7m  [0m [91m                                                                               ~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m108[0m:[93m28[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m108[0m                           `editing` and `submitting` share this pane deliberately. A submit in flight
+[0]  | [7m   [0m [91m                           ~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m108[0m:[93m28[0m - [91merror[0m[90m TS2304: [0mCannot find name 'editing'.
+[0]  | 
+[0]  | [7m108[0m                           `editing` and `submitting` share this pane deliberately. A submit in flight
+[0]  | [7m   [0m [91m                           ~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m108[0m:[93m42[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m108[0m                           `editing` and `submitting` share this pane deliberately. A submit in flight
+[0]  | [7m   [0m [91m                                         ~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m108[0m:[93m42[0m - [91merror[0m[90m TS2304: [0mCannot find name 'submitting'.
+[0]  | 
+[0]  | [7m108[0m                           `editing` and `submitting` share this pane deliberately. A submit in flight
+[0]  | [7m   [0m [91m                                         ~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/ExaminationApp.ts[0m:[93m122[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m122[0m })
+[0]  | [7m   [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/appointment-picker.component.ts[0m:[93m78[0m:[93m22[0m - [91merror[0m[90m TS2322: [0mType 'MmTableColumn<AppointmentRow>[]' is not assignable to type 'MmTableColumn<MmTableRow>[]'.
+[0]  |   Type 'MmTableColumn<AppointmentRow>' is not assignable to type 'MmTableColumn<MmTableRow>'.
+[0]  |     Type 'MmTableRow' is missing the following properties from type 'AppointmentRow': id, patient, when, dto
+[0]  | 
+[0]  | [7m78[0m                     [columns]="columns"
+[0]  | [7m  [0m [91m                     ~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/appointment-picker.component.ts[0m:[93m79[0m:[93m22[0m - [91merror[0m[90m TS2322: [0mType 'AppointmentRow[]' is not assignable to type 'MmTableRow[]'.
+[0]  |   Type 'AppointmentRow' is not assignable to type 'MmTableRow'.
+[0]  |     Index signature for type 'string' is missing in type 'AppointmentRow'.
+[0]  | 
+[0]  | [7m79[0m                     [rows]="rows()"
+[0]  | [7m  [0m [91m                     ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/appointment-picker.component.ts[0m:[93m83[0m:[93m44[0m - [91merror[0m[90m TS2345: [0mArgument of type 'MmRowClickEvent<MmTableRow>' is not assignable to parameter of type 'MmRowClickEvent<AppointmentRow>'.
+[0]  |   Type '{ row: MmTableRow; }' is not assignable to type '{ row: AppointmentRow; }'.
+[0]  |     Types of property 'row' are incompatible.
+[0]  |       Type 'MmTableRow' is missing the following properties from type 'AppointmentRow': id, patient, when, dto
+[0]  | 
+[0]  | [7m83[0m                     (rowClick)="onRowClick($event)"
+[0]  | [7m  [0m [91m                                           ~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/appointment-picker.component.ts[0m:[93m103[0m:[93m47[0m - [91merror[0m[90m TS2344: [0mType 'AppointmentRow' does not satisfy the constraint 'MmTableRow'.
+[0]  |   Index signature for type 'string' is missing in type 'AppointmentRow'.
+[0]  | 
+[0]  | [7m103[0m     protected readonly columns: MmTableColumn<AppointmentRow>[] = [
+[0]  | [7m   [0m [91m                                              ~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/appointment-picker.component.ts[0m:[93m144[0m:[93m49[0m - [91merror[0m[90m TS2344: [0mType 'AppointmentRow' does not satisfy the constraint 'MmTableRow'.
+[0]  |   Index signature for type 'string' is missing in type 'AppointmentRow'.
+[0]  | 
+[0]  | [7m144[0m     protected onRowClick(event: MmRowClickEvent<AppointmentRow>): void {
+[0]  | [7m   [0m [91m                                                ~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m26[0m:[93m12[0m - [91merror[0m[90m NG1001: [0mDecorator argument must be literal.
+[0]  | 
+[0]  | [7m 26[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 27[0m     selector: 'exam-diagnosis-panel',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 73[0m         </div>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~[0m
+[0]  | [7m 74[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m26[0m:[93m12[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+[0]  | 
+[0]  | [7m 26[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 27[0m     selector: 'exam-diagnosis-panel',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 49[0m             <!--
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 50[0m               `aria-live` because this region is filled in by a *different* micro-frontend. A
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m26[0m:[93m12[0m - [91merror[0m[90m TS2559: [0mType 'number' has no properties in common with type 'Component'.
+[0]  | 
+[0]  | [7m 26[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 27[0m     selector: 'exam-diagnosis-panel',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 73[0m         </div>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~[0m
+[0]  | [7m 74[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m50[0m:[93m16[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m50[0m               `aria-live` because this region is filled in by a *different* micro-frontend. A
+[0]  | [7m  [0m [91m               ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m50[0m:[93m16[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'aria'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m50[0m               `aria-live` because this region is filled in by a *different* micro-frontend. A
+[0]  | [7m  [0m [91m               ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m50[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m50[0m               `aria-live` because this region is filled in by a *different* micro-frontend. A
+[0]  | [7m  [0m [91m                   ~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m50[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'live'.
+[0]  | 
+[0]  | [7m50[0m               `aria-live` because this region is filled in by a *different* micro-frontend. A
+[0]  | [7m  [0m [91m                    ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/diagnosis-panel.component.ts[0m:[93m75[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m75[0m })
+[0]  | [7m  [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m53[0m:[93m1[0m - [91merror[0m[90m NG1002: [0mIncorrect number of arguments to @Component decorator
+[0]  | 
+[0]  | [7m 53[0m @Component({
+[0]  | [7m   [0m [91m~~~~~~~~~~~~[0m
+[0]  | [7m 54[0m     selector: 'exam-examination-form',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m144[0m     `,
+[0]  | [7m   [0m [91m~~~~~~[0m
+[0]  | [7m145[0m })
+[0]  | [7m   [0m [91m~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m53[0m:[93m12[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type '{ selector: string; standalone: boolean; imports: (typeof MmButtonDirective | typeof MmInputDirective | typeof DiagnosisPanelComponent | typeof ReactiveFormsModule | typeof PrescriptionListComponent)[]; changeDetection: ChangeDetectionStrategy; template: string; readonly: any; }' has no call signatures.
+[0]  | 
+[0]  | [7m 53[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 54[0m     selector: 'exam-examination-form',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 88[0m             <!--
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m16[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m  [0m [91m               ~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m16[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'readonly'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m  [0m [91m               ~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m24[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m  [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m64[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m  [0m [91m                                                               ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m64[0m - [91merror[0m[90m TS2304: [0mCannot find name 'form'.
+[0]  | 
+[0]  | [7m89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m  [0m [91m                                                               ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m89[0m:[93m64[0m - [91merror[0m[90m TS2554: [0mExpected 1 arguments, but got 4.
+[0]  | 
+[0]  | [7m 89[0m               `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+[0]  | [7m   [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 90[0m               children contains a form control ΓÇö the diagnosis arrives over the event bus and the
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m143[0m         </form>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~[0m
+[0]  | [7m144[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m91[0m:[93m53[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m91[0m               prescriptions live in the store ΓÇö so `this.form.disable()` below does not reach them.
+[0]  | [7m  [0m [91m                                                    ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m91[0m:[93m53[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+[0]  | 
+[0]  | [7m91[0m               prescriptions live in the store ΓÇö so `this.form.disable()` below does not reach them.
+[0]  | [7m  [0m [91m                                                    ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m116[0m:[93m69[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m116[0m                   Rendered inline as well as published as a toast. `notifications` is a live
+[0]  | [7m   [0m [91m                                                                    ~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m116[0m:[93m69[0m - [91merror[0m[90m TS2552: [0mCannot find name 'notifications'. Did you mean 'Notification'?
+[0]  | 
+[0]  | [7m116[0m                   Rendered inline as well as published as a toast. `notifications` is a live
+[0]  | [7m   [0m [91m                                                                    ~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  |   [96m../../node_modules/typescript/lib/lib.dom.d.ts[0m:[93m26485[0m:[93m13[0m
+[0]  |     [7m26485[0m declare var Notification: {
+[0]  |     [7m     [0m [96m            ~~~~~~~~~~~~[0m
+[0]  |     'Notification' is declared here.
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-form.component.ts[0m:[93m145[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m145[0m })
+[0]  | [7m   [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m21[0m:[93m1[0m - [91merror[0m[90m NG1002: [0mIncorrect number of arguments to @Component decorator
+[0]  | 
+[0]  | [7m 21[0m @Component({
+[0]  | [7m   [0m [91m~~~~~~~~~~~~[0m
+[0]  | [7m 22[0m     selector: 'exam-summary',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m101[0m     `,
+[0]  | [7m   [0m [91m~~~~~~[0m
+[0]  | [7m102[0m })
+[0]  | [7m   [0m [91m~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m21[0m:[93m12[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type '{ selector: string; standalone: boolean; imports: (typeof MmButtonDirective | typeof MmCardDirective)[]; changeDetection: ChangeDetectionStrategy; template: string; role: any; frequencyIntakeInHours: any; }' has no call signatures.
+[0]  | 
+[0]  | [7m 21[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 22[0m     selector: 'exam-summary',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 69[0m                                       Note the field name: the response DTO calls this
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 70[0m                                       `frequencyIntakeInHours` while the request called it
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m28[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m28[0m             <!-- `role="status"` so the outcome is announced, not just shown. -->
+[0]  | [7m  [0m [91m                  ~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m28[0m:[93m24[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type 'String' has no call signatures.
+[0]  | 
+[0]  | [7m28[0m             <!-- `role="status"` so the outcome is announced, not just shown. -->
+[0]  | [7m  [0m [91m                       ~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m70[0m:[93m40[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m70[0m                                       `frequencyIntakeInHours` while the request called it
+[0]  | [7m  [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m70[0m:[93m40[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'frequencyIntakeInHours'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m70[0m                                       `frequencyIntakeInHours` while the request called it
+[0]  | [7m  [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m70[0m:[93m62[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m70[0m                                       `frequencyIntakeInHours` while the request called it
+[0]  | [7m  [0m [91m                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m71[0m                                       `usageFrequencyInHours`. Same value, two spellings.
+[0]  | [7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m71[0m:[93m40[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m71[0m                                       `usageFrequencyInHours`. Same value, two spellings.
+[0]  | [7m  [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m71[0m:[93m40[0m - [91merror[0m[90m TS2304: [0mCannot find name 'usageFrequencyInHours'.
+[0]  | 
+[0]  | [7m71[0m                                       `usageFrequencyInHours`. Same value, two spellings.
+[0]  | [7m  [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m71[0m:[93m40[0m - [91merror[0m[90m TS2554: [0mExpected 1 arguments, but got 2.
+[0]  | 
+[0]  | [7m 71[0m                                       `usageFrequencyInHours`. Same value, two spellings.
+[0]  | [7m   [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 72[0m                                     -->
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m100[0m         </mm-card>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m101[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/examination-summary.component.ts[0m:[93m102[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m102[0m })
+[0]  | [7m   [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m41[0m:[93m1[0m - [91merror[0m[90m NG1002: [0mIncorrect number of arguments to @Component decorator
+[0]  | 
+[0]  | [7m 41[0m @Component({
+[0]  | [7m   [0m [91m~~~~~~~~~~~~[0m
+[0]  | [7m 42[0m     selector: 'exam-medicine-search',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m111[0m     `,
+[0]  | [7m   [0m [91m~~~~~~[0m
+[0]  | [7m112[0m })
+[0]  | [7m   [0m [91m~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m41[0m:[93m12[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+[0]  | 
+[0]  | [7m 41[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 42[0m     selector: 'exam-medicine-search',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 54[0m               `[value]` is bound but no form directive is attached, which is the documented way to
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m51[0m:[93m15[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type 'String' has no call signatures.
+[0]  | 
+[0]  | [7m51[0m     template: `
+[0]  | [7m  [0m [91m              ~[0m
+[0]  | [7m52[0m         <div class="exam-medsearch">
+[0]  | [7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m53[0m             <!--
+[0]  | [7m  [0m [91m~~~~~~~~~~~~~~~~[0m
+[0]  | [7m54[0m               `[value]` is bound but no form directive is attached, which is the documented way to
+[0]  | [7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m54[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'value'.
+[0]  | 
+[0]  | [7m54[0m               `[value]` is bound but no form directive is attached, which is the documented way to
+[0]  | [7m  [0m [91m                ~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                   ~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m20[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'mm'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                   ~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m22[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                     ~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m23[0m - [91merror[0m[90m TS2552: [0mCannot find name 'input'. Did you mean 'oninput'?
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                      ~~~~~[0m
+[0]  | 
+[0]  |   [96m../../node_modules/typescript/lib/lib.dom.d.ts[0m:[93m43888[0m:[93m13[0m
+[0]  |     [7m43888[0m declare var oninput: ((this: Window, ev: InputEvent) => any) | null;
+[0]  |     [7m     [0m [96m            ~~~~~~~[0m
+[0]  |     'oninput' is declared here.
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m47[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                                              ~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m47[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type 'typeof MmInputDirective' has no call signatures.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                                              ~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m47[0m - [91merror[0m[90m TS2554: [0mExpected 1 arguments, but got 3.
+[0]  | 
+[0]  | [7m 55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m   [0m [91m                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 56[0m               so combining the two would give the value two owners.
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m110[0m         </div>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~[0m
+[0]  | [7m111[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m77[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                                                                            ~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m55[0m:[93m77[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ControlValueAccessor'.
+[0]  | 
+[0]  | [7m55[0m               use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+[0]  | [7m  [0m [91m                                                                            ~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/medicine-search.component.ts[0m:[93m112[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m112[0m })
+[0]  | [7m   [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m54[0m:[93m12[0m - [91merror[0m[90m NG1001: [0mDecorator argument must be literal.
+[0]  | 
+[0]  | [7m 54[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 55[0m     selector: 'exam-prescription-dialog',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m129[0m         </mm-modal>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m130[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m54[0m:[93m12[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+[0]  |   Type '{ selector: string; standalone: boolean; imports: (typeof MmButtonDirective | typeof MmInputDirective | typeof MmModalDirective | typeof MmSelectDirective | typeof MedicineSearchComponent | typeof ReactiveFormsModule)[]; changeDetection: ChangeDetectionStrategy; template: string; methodUse: any; }' has no call signatures.
+[0]  | 
+[0]  | [7m 54[0m @Component({
+[0]  | [7m   [0m [91m           ~[0m
+[0]  | [7m 55[0m     selector: 'exam-prescription-dialog',
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m 78[0m                 <!--
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m 79[0m                   The dosing half stays hidden until a medicine is chosen: `methodUse` and the
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m79[0m:[93m77[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m79[0m                   The dosing half stays hidden until a medicine is chosen: `methodUse` and the
+[0]  | [7m  [0m [91m                                                                            ~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m79[0m:[93m77[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'methodUse'. Either declare one or provide an initializer.
+[0]  | 
+[0]  | [7m79[0m                   The dosing half stays hidden until a medicine is chosen: `methodUse` and the
+[0]  | [7m  [0m [91m                                                                            ~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m79[0m:[93m86[0m - [91merror[0m[90m TS1005: [0m',' expected.
+[0]  | 
+[0]  | [7m 79[0m                   The dosing half stays hidden until a medicine is chosen: `methodUse` and the
+[0]  | [7m   [0m [91m                                                                                     ~~~~~~~~~[0m
+[0]  | [7m 80[0m                   interval are instructions *about* a medicine, so offering them first invites the
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m...[0m 
+[0]  | [7m129[0m         </mm-modal>
+[0]  | [7m   [0m [91m~~~~~~~~~~~~~~~~~~~[0m
+[0]  | [7m130[0m     `,
+[0]  | [7m   [0m [91m~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-dialog.component.ts[0m:[93m131[0m:[93m1[0m - [91merror[0m[90m TS1135: [0mArgument expression expected.
+[0]  | 
+[0]  | [7m131[0m })
+[0]  | [7m   [0m [91m~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-list.component.ts[0m:[93m51[0m:[93m9[0m - [91merror[0m[90m NG2012: [0mComponent imports must be standalone components, directives, pipes, or must be NgModules.
+[0]  | 
+[0]  | [7m51[0m         PrescriptionDialogComponent,
+[0]  | [7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-list.component.ts[0m:[93m131[0m:[93m47[0m - [91merror[0m[90m TS2344: [0mType 'PrescriptionRow' does not satisfy the constraint 'MmTableRow'.
+[0]  |   Index signature for type 'string' is missing in type 'PrescriptionRow'.
+[0]  | 
+[0]  | [7m131[0m     protected readonly columns: MmTableColumn<PrescriptionRow>[] = [
+[0]  | [7m   [0m [91m                                              ~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/components/prescription-list.component.ts[0m:[93m177[0m:[93m49[0m - [91merror[0m[90m TS2344: [0mType 'PrescriptionRow' does not satisfy the constraint 'MmTableRow'.
+[0]  |   Index signature for type 'string' is missing in type 'PrescriptionRow'.
+[0]  | 
+[0]  | [7m177[0m     protected onRowClick(event: MmRowClickEvent<PrescriptionRow>): void {
+[0]  | [7m   [0m [91m                                                ~~~~~~~~~~~~~~~[0m
+[0]  | 
+[0]  | [1m[31mERROR[39m[22m in [96msrc/state/event-bus.service.ts[0m:[93m43[0m:[93m30[0m - [91merror[0m[90m TS2345: [0mArgument of type '[...EventPayloadMap[T] extends void | undefined ? [] : [payload: EventPayloadMap[T]]]' is not assignable to parameter of type 'PayloadOf<T> extends void | undefined ? [] : [payload: PayloadOf<T>]'.
+[0]  | 
+[0]  | [7m43[0m         eventBus.emit(event, ...args);
+[0]  | [7m  [0m [91m                             ~~~~~~~[0m
+[0]  | 
+[0]  | [1m[33m2 errors have detailed information that is not shown.
+[0]  | Use 'stats.errorDetails: true' resp. '--stats-error-details' to show it.[39m[22m
+[0]  | 
+[0]  | webpack 5.108.4 compiled with [1m[31m95 errors[39m[22m in 2155 ms
+[1] notifications
+[1]  | 
+[1] nav
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] auth
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] notifications
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] examination
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] calendar
+[1]  | 
+[1] home
+[1]  | 
+[0] calendar
+[0]  | <i> [webpack-dev-server] Gracefully shutting down. To force exit, press ^C again. Please wait...
+[1] calendar
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/api-client
+[1]  | 
+[1] home
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/api-client
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] icd10
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/shared-store
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/design-system
+[1]  | 
+[1] @micro-medic/design-system-react
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/design-system
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/shared-types
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
+[1] @micro-medic/design-system-angular
+[1]  | 
+[1]  |  INFO  Gracefully shutting down. Please wait...
