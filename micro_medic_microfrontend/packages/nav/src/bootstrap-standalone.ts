@@ -1,5 +1,5 @@
 // Dynamic import, so the harness lands in an async chunk and Module Federation's shared scope is
-// initialized before any shared module (`@micro-medic/shared-store`) is evaluated.
+// initialized before any shared module (`lit`, via `@micro-medic/design-system`) is evaluated.
 //
 // The `.js` extension is what `moduleResolution: nodenext` requires of a relative ESM specifier
 // (TS2835 without it) even though the file on disk is `standalone.ts`; webpack maps it back via

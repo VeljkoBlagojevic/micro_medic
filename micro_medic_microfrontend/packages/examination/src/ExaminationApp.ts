@@ -1,11 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MmEmptyStateDirective } from '@micro-medic/design-system-angular';
+import {
+    MmEmptyStateDirective,
+    MmErrorStateDirective,
+    MmSpinnerDirective,
+} from '@micro-medic/design-system-angular';
 import { AppointmentPickerComponent } from './components/appointment-picker.component.js';
 import { ExaminationFormComponent } from './components/examination-form.component.js';
 import { ExaminationSummaryComponent } from './components/examination-summary.component.js';
 import { PatientContextComponent } from './components/patient-context.component.js';
 import { AuthStore } from './state/auth.store.js';
 import { ExaminationDraftStore } from './state/examination-draft.store.js';
+import { clearAppointmentHandoff, readAppointmentHandoff } from './utils/handoff.js';
 
 // Namespaced, MFE-local styles. The document-wide theme (`tokens.css` + `global.css`) is loaded
 // once by the shell — a remote that ships a reset collides with every other remote that does.
@@ -31,6 +36,8 @@ import './styles.css';
     standalone: true,
     imports: [
         MmEmptyStateDirective,
+        MmErrorStateDirective,
+        MmSpinnerDirective,
         AppointmentPickerComponent,
         PatientContextComponent,
         ExaminationFormComponent,
@@ -70,7 +77,19 @@ import './styles.css';
                 ></mm-empty-state>
             } @else {
                 @switch (draft.phase()) {
+                    @case ('resolving-appointment') {
+                        <mm-spinner centered label="Opening the appointment…"></mm-spinner>
+                    }
                     @case ('selecting-appointment') {
+                        @if (draft.adoptError(); as message) {
+                            <!-- Above the picker, not instead of it, and not `retryable`: the id came
+                                 from a link, so a 403 will say the same thing next time. The recovery
+                                 is choosing one of your own appointments, rendered underneath. -->
+                            <mm-error-state
+                                heading="Could not open that appointment"
+                                [message]="message"
+                            ></mm-error-state>
+                        }
                         <exam-appointment-picker></exam-appointment-picker>
                     }
                     @case ('recorded') {
@@ -105,6 +124,19 @@ export class ExaminationApp {
     protected readonly draft = inject(ExaminationDraftStore);
     protected readonly auth = inject(AuthStore);
 
+    constructor() {
+        /*
+         * The receiving end of the handoff from `calendar` (see `utils/handoff.ts`). It lives here
+         * rather than in the store because reading `window.location` is a composition concern, and the
+         * root is the one place that knows it is mounted as a route. The `isDoctor` guard only avoids
+         * a round trip whose 403 nobody would read — the backend refuses regardless.
+         */
+        const appointmentId = readAppointmentHandoff();
+        if (appointmentId !== null && this.auth.isDoctor()) {
+            void this.draft.adoptAppointment(appointmentId);
+        }
+    }
+
     /**
      * Back to a blank draft after a recorded examination.
      *
@@ -116,8 +148,13 @@ export class ExaminationApp {
      * would be the more convenient default and the wrong one: the next examination is almost never
      * for the same patient, and one silently attributed to the previous appointment is a clinical
      * error, not a UX annoyance.
+     *
+     * The URL is cleaned in the same breath: once the examination is committed, `?appointmentId=`
+     * points at a `COMPLETED` appointment, so leaving it would turn the next reload into an error the
+     * doctor did nothing to cause.
      */
     protected startAnother(): void {
+        clearAppointmentHandoff();
         this.draft.reset();
     }
 }

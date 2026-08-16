@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@micro-medic/design-system": "1.0.0",
+    "@micro-medic/shared-store": "1.0.0",
+    "@micro-medic/shared-types": "1.0.0",
     "single-spa": "6.0.3"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "start": "webpack --watch",
     "build": "webpack --mode production",
     "serve": "serve dist -p 3001"
@@ -16,6 +19,8 @@
     "html-webpack-plugin": "^5.6.7",
     "serve": "^14.0.1",
     "style-loader": "4.0.0",
+    "ts-loader": "9.6.2",
+    "typescript": "^6.0.3",
     "webpack": "5.108.4",
     "webpack-cli": "7.2.1"
   }

@@ -1,7 +1,12 @@
 import { useCallback, useState } from 'react';
 import { MmButton, MmEmptyState, MmErrorState, MmSpinner } from '@micro-medic/design-system-react';
 import { eventBus } from '@micro-medic/shared-store';
-import { EventTypes, Role, type ScheduledAppointmentDto } from '@micro-medic/shared-types';
+import {
+    APPOINTMENT_HANDOFF_PARAM,
+    EventTypes,
+    Role,
+    type ScheduledAppointmentDto
+} from '@micro-medic/shared-types';
 import {
     AppointmentCard,
     BookingModal,
@@ -11,6 +16,7 @@ import {
 } from './components';
 import { useCalendar } from './hooks/useCalendar';
 import { useExaminationSync } from './hooks/useExaminationSync';
+import { useNavigate } from './hooks/useNavigate';
 import { useAuthState, useCalendarView } from './state';
 import { loadErrorMessage } from './utils';
 import type { CalendarEvent } from './types';
@@ -50,13 +56,30 @@ export const CalendarApp = () => {
     const isPatient = role === Role.PATIENT;
 
     const closeDialog = useCallback(() => setDialog({ kind: 'none' }), []);
+    const navigate = useNavigate();
 
     const onSelectEvent = useCallback((event: CalendarEvent) => {
         setSelectedId(event.id);
-        // Announce the selection so sibling micro-frontends can react — this is the one
-        // outbound event the calendar owns, and `examination` is its intended consumer.
-        eventBus.emit(EventTypes.CALENDAR_APPOINTMENT_SELECTED, { appointment: event.resource });
+        // The id only, never the DTO — a consumer must fetch through an authorized endpoint. Nothing
+        // can hear this today; see the reachability table in `shared-types/src/events.ts`.
+        eventBus.emit(EventTypes.CALENDAR_APPOINTMENT_SELECTED, { appointmentId: event.id });
     }, []);
+
+    /**
+     * The handoff to `examination`. It travels in the URL because it has to survive a mount boundary:
+     * this MFE unmounts the instant the navigation resolves, so the bus could not deliver it. Only
+     * the id crosses — `examination` re-fetches, which is what keeps the read behind `AccessGuard`.
+     *
+     * The parameter name is shared; the path is not. A wrong parameter is a screen that opens empty
+     * with no error anywhere, while a wrong path is a blank route found immediately — and the routing
+     * table belongs to the shell, so a remote has no business holding a constant for it.
+     */
+    const onRecordExamination = useCallback(
+        (appointment: ScheduledAppointmentDto) => {
+            navigate(`/examination?${APPOINTMENT_HANDOFF_PARAM}=${appointment.id}`);
+        },
+        [navigate]
+    );
 
     if (!isAuthenticated) {
         return (
@@ -123,8 +146,10 @@ export const CalendarApp = () => {
                                 // `requireSelfDoctor` — so a patient's cancel is accepted.
                                 canReschedule={isDoctor}
                                 canCancel={isDoctor || isPatient}
+                                canRecordExamination={isDoctor}
                                 onReschedule={(appointment) => setDialog({ kind: 'reschedule', appointment })}
                                 onCancel={(appointment) => setDialog({ kind: 'cancel', appointment })}
+                                onRecordExamination={onRecordExamination}
                                 onClose={() => setSelectedId(null)}
                             />
                         )}

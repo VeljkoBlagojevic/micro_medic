@@ -13,13 +13,20 @@ import {
     toMedicineUsageRequest,
     type PrescriptionDraft,
 } from '../models/prescription.js';
+import { calendarService } from '../services/calendar.service.js';
 import { toSubmittableStartTime } from '../utils/date-time.js';
+import { adoptAppointmentErrorMessage } from '../utils/error-message.js';
 import { EventBusService } from './event-bus.service.js';
 
 /** Where the examination is in its lifecycle. Drives which pane the shell renders. */
 export type DraftPhase =
     /** No appointment chosen — the doctor must pick one before anything else is meaningful. */
     | 'selecting-appointment'
+    /**
+     * The `?appointmentId=` handoff is being fetched. Its own phase rather than a flag: otherwise the
+     * picker renders, loads the doctor's whole appointment list, and is immediately replaced.
+     */
+    | 'resolving-appointment'
     /** An appointment is chosen and the form is being filled in. */
     | 'editing'
     /** `POST /api/examinations` is in flight. */
@@ -59,6 +66,14 @@ export class ExaminationDraftStore {
     private readonly submittingSignal = signal(false);
     private readonly resultSignal = signal<ExaminationDetailDto | null>(null);
     private readonly submitErrorSignal = signal<string | null>(null);
+    private readonly resolvingSignal = signal(false);
+    private readonly adoptErrorSignal = signal<string | null>(null);
+
+    /**
+     * Discards a superseded `adoptAppointment` response — same discipline as `async-state.ts`. Two
+     * adoptions can be in flight, and the slower one must not overwrite the newer answer.
+     */
+    private adoptSequence = 0;
 
     // --- readonly views --------------------------------------------------------------
 
@@ -68,12 +83,19 @@ export class ExaminationDraftStore {
     readonly result = this.resultSignal.asReadonly();
     readonly submitError = this.submitErrorSignal.asReadonly();
 
+    /** Why the `?appointmentId=` handoff failed, if it did. Rendered above the picker. */
+    readonly adoptError = this.adoptErrorSignal.asReadonly();
+
     readonly patient = computed(() => this.appointmentSignal()?.patient ?? null);
 
     readonly phase = computed<DraftPhase>(() => {
         if (this.resultSignal()) return 'recorded';
         if (this.submittingSignal()) return 'submitting';
-        return this.appointmentSignal() ? 'editing' : 'selecting-appointment';
+        if (this.appointmentSignal()) return 'editing';
+        // After the appointment check, so a resolved adoption goes straight to `editing`, and before
+        // the fallback, so the picker does not flash while the fetch is in flight.
+        if (this.resolvingSignal()) return 'resolving-appointment';
+        return 'selecting-appointment';
     });
 
     /**
@@ -130,11 +152,16 @@ export class ExaminationDraftStore {
             this.submitErrorSignal.set(null);
         });
 
-        this.bus.listen(EventTypes.CALENDAR_APPOINTMENT_SELECTED, ({ appointment }) => {
-            // `selectAppointment` re-checks the lock; this is only here so the intent reads at the
-            // subscription rather than two calls away.
+        /*
+         * The calendar's selection — the one subscription here that cannot fire today, since the two
+         * MFEs are on disjoint routes and the bus has no replay. The real handoff arrives in the URL.
+         * Kept because it points at the *same* method, so there is one adoption path with one
+         * authorization and one audit row however the id arrives, and it goes live unchanged the day
+         * a screen mounts both fragments. See `shared-types/src/events.ts`.
+         */
+        this.bus.listen(EventTypes.CALENDAR_APPOINTMENT_SELECTED, ({ appointmentId }) => {
             if (this.isLocked()) return;
-            this.selectAppointment(appointment);
+            void this.adoptAppointment(appointmentId);
         });
 
         /*
@@ -165,12 +192,58 @@ export class ExaminationDraftStore {
         this.submitErrorSignal.set(null);
     }
 
-    clearAppointment(): void {
+    /**
+     * The receiving end of the cross-MFE handoff, and the fetch is the point of it: an id is all that
+     * crosses the boundary, so this package asks the backend who the patient is rather than being
+     * told. `GET /api/calendar/{id}` runs `AccessGuard.requireAppointmentAccess`, which authorises the
+     * read *and* writes the `medical_access_log` row — neither of which happened when the whole
+     * `ScheduledAppointmentDto` arrived on the bus and was rendered straight out of the payload.
+     *
+     * A rejection is an ordinary outcome: `adoptError` renders above the picker.
+     */
+    async adoptAppointment(appointmentId: number): Promise<void> {
         if (this.isLocked()) return;
-        this.appointmentSignal.set(null);
-        this.prescriptionsSignal.set([]);
-        this.submitErrorSignal.set(null);
+        // Already current: re-fetching would only add a second audit row for the same access.
+        if (this.appointmentSignal()?.id === appointmentId) return;
+
+        const sequence = ++this.adoptSequence;
+        this.resolvingSignal.set(true);
+        this.adoptErrorSignal.set(null);
+
+        try {
+            const appointment = await calendarService.getById(appointmentId);
+            if (sequence !== this.adoptSequence) return;
+            // Re-checked after the await: a logout (which calls `reset`) or a submit can land while
+            // the request is in flight, and adopting into a locked draft would contradict the screen.
+            if (this.isLocked()) return;
+
+            /*
+             * Authorised, but not examinable. `ExaminationService.examine` accepts only `SCHEDULED`,
+             * and a URL is not filtered the way the picker's list is. Without this, a stale link to a
+             * `COMPLETED` visit opens a fully populated form that can only fail with a 400 on submit.
+             */
+            if (appointment.status !== AppointmentStatus.SCHEDULED) {
+                this.adoptErrorSignal.set(
+                    `That appointment is ${appointment.status.toLowerCase()} and cannot be examined. Choose one below.`
+                );
+                return;
+            }
+
+            this.appointmentSignal.set(appointment);
+            this.prescriptionsSignal.set([]);
+            this.submitErrorSignal.set(null);
+        } catch (error) {
+            if (sequence !== this.adoptSequence) return;
+            this.adoptErrorSignal.set(adoptAppointmentErrorMessage(error));
+        } finally {
+            if (sequence === this.adoptSequence) this.resolvingSignal.set(false);
+        }
     }
+
+    /*
+     * No `clearAppointment` by design: dropping the appointment invalidates the prescriptions and the
+     * anamnesis with it, which is `reset()`. Only the diagnosis can be changed in place.
+     */
 
     clearDiagnosis(): void {
         if (this.isLocked()) return;
@@ -277,5 +350,10 @@ export class ExaminationDraftStore {
         this.submittingSignal.set(false);
         this.resultSignal.set(null);
         this.submitErrorSignal.set(null);
+        this.resolvingSignal.set(false);
+        this.adoptErrorSignal.set(null);
+        // So an in-flight adoption cannot resolve into the draft this just cleared — a logout landing
+        // mid-fetch must not leave the next doctor looking at the previous one's patient.
+        this.adoptSequence++;
     }
 }

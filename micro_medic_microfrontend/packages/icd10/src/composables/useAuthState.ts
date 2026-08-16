@@ -1,11 +1,12 @@
 import { onScopeDispose, readonly, ref, type Ref } from 'vue';
-import { authStore, type AuthState } from '@micro-medic/shared-store';
+import { authContext, type AuthState } from '@micro-medic/shared-store';
 
 /**
- * Vue bridge over the shared auth store.
+ * Vue bridge over the shared auth context.
  *
- * The store is a closure-based singleton with an imperative `subscribe(cb) => unsubscribe` API, and
- * it is deliberately framework-neutral: it is read from React (`calendar/src/state/useAuthState.ts`),
+ * The context is a frozen, read-only view of a closure-based singleton with an imperative
+ * `subscribe(cb) => unsubscribe` API, deliberately framework-neutral: it is read from React
+ * (`calendar/src/state/useAuthState.ts`),
  * from Angular (`examination/src/state/auth.store.ts`), from two plain custom elements and now from
  * here. Each consumer writes the eight lines that adapt it to its own reactivity system, and *that*
  * is the property worth demonstrating — a store that needed a Vue plugin, a React context and an
@@ -18,11 +19,11 @@ import { authStore, type AuthState } from '@micro-medic/shared-store';
  * is stale advice.
  */
 export function useAuthState(): Readonly<Ref<AuthState>> {
-    const state = ref<AuthState>(authStore.getState());
+    const state = ref<AuthState>(authContext.getState());
 
     // `subscribe` hands back its own teardown, so it is already the right shape for the scope.
     onScopeDispose(
-        authStore.subscribe((next) => {
+        authContext.subscribe((next) => {
             state.value = next;
         })
     );
@@ -33,7 +34,7 @@ export function useAuthState(): Readonly<Ref<AuthState>> {
      * that window would otherwise leave this ref holding a snapshot no notification will ever
      * correct. Cheap to do, and the same reason `nav-app-bar` re-reads in `connectedCallback`.
      */
-    state.value = authStore.getState();
+    state.value = authContext.getState();
 
     // `readonly` so a consumer cannot assign to it: the store is the single source of truth, and a
     // component writing here would produce state that disagrees with every other MFE.

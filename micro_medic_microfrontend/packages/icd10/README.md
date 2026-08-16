@@ -47,7 +47,7 @@ interface there would make every consumer depend on Vue's types.
 
 ## What replaced the placeholder
 
-This was the last plain-JS micro-frontend besides the shell, and it rendered a static list. It also
+This was the last plain-JS *feature* micro-frontend (the shell followed), and it rendered a static list. It also
 carried the hand-rolled HTTP and auth code CLAUDE.md flags as the real debt in the legacy packages:
 
 | Before | Now |

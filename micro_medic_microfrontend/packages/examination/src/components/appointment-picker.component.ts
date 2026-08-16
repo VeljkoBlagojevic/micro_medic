@@ -27,11 +27,12 @@ interface AppointmentRow {
 /**
  * Chooses which appointment the examination is being recorded for.
  *
- * The doctor normally arrives here from the calendar, in which case
- * `CALENDAR_APPOINTMENT_SELECTED` has already populated the draft and this pane never renders.
- * It exists for the other path — opening `/examination` directly, or after a page reload, when the
- * bus has published nothing because the bus is a live channel and not a queue. Without it the
- * screen would be a form that can never be submitted, with no way to say why.
+ * The doctor normally arrives here from the calendar's "Record examination" button, which carries the
+ * appointment id in `?appointmentId=`; `ExaminationApp` adopts it before this pane would render, so
+ * on that path it never does. It exists for the two other ways in — opening `/examination` directly,
+ * and a handoff the backend refused (someone else's appointment, or one since deleted), which lands
+ * here with `draft.adoptError()` shown above the table. Without it the screen would be a form that
+ * can never be submitted, with no way to say why.
  *
  * Only `SCHEDULED` appointments are offered: `ExaminationService.examine` rejects any other status
  * outright, and offering a `COMPLETED` one would be an invitation to a guaranteed 400.

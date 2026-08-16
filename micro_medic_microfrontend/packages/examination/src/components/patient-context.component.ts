@@ -125,10 +125,13 @@ export class PatientContextComponent {
          * Refetch whenever the patient changes.
          *
          * An `effect` rather than a call in the appointment-selection path: the appointment can be
-         * set from three places — this MFE's picker, the calendar over the event bus, and a reset
-         * on logout — and making each one remember to refresh is how a stale pane happens. Keyed on
-         * the patient id, not the appointment, so switching between two appointments for the same
-         * patient does not refetch identical data.
+         * set from three places — this MFE's picker, the `?appointmentId=` handoff from the calendar,
+         * and a reset on logout — and making each one remember to refresh is how a stale pane happens.
+         * Keyed on the patient id, not the appointment, so switching between two appointments for the
+         * same patient does not refetch identical data.
+         *
+         * All three paths reach the patient through a fetch this MFE made — the handoff carries an id,
+         * never a DTO — so nothing here renders without `AccessGuard` having allowed it.
          */
         let lastPatientId: number | null = null;
 

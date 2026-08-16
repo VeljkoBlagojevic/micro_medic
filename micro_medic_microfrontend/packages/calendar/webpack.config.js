@@ -1,21 +1,28 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-module.exports = {
+// `--mode production` (what `yarn build` passes) overrides a config's `mode`, but *not* an explicit
+// `optimization.minimize: false` — not being a mode default, that block survived every production
+// build, so every remote had been shipping unminified. Both settings derive from the one flag now.
+const isProd = (argv) => argv.mode === 'production';
+
+module.exports = (_env, argv) => ({
   entry: './src/bootstrap-standalone',
   cache: false,
 
-  mode: 'development',
-  devtool: 'source-map',
-
-  optimization: {
-    minimize: false
-  },
+  mode: isProd(argv) ? 'production' : 'development',
+  devtool: isProd(argv) ? false : 'source-map',
 
   output: {
     // `auto`, not a literal origin: derived from `document.currentScript.src` when
     // remoteEntry.js executes, so the container works on whatever host serves it.
-    publicPath: 'auto'
+    publicPath: 'auto',
+    // Immutable chunks behind a stable `remoteEntry.js`: ModuleFederationPlugin's own `filename`
+    // wins for the container entry, so the shell holds one URL per remote while everything behind
+    // it can be cached forever. Production only, and this is the package where that matters: it is
+    // the only one on webpack-dev-server, and `[contenthash]` is rejected while HMR is active.
+    chunkFilename: isProd(argv) ? '[name].[contenthash].js' : '[name].js',
+    clean: isProd(argv)
   },
 
   devServer: {
@@ -87,4 +94,4 @@ module.exports = {
       template: './public/index.html',
     })
   ]
-};
+});

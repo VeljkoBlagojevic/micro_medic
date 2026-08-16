@@ -9,9 +9,8 @@
  *
  * The interesting part is the layering. Flat config applies blocks in order, later `rules`
  * winning, so this file reads top to bottom as "everything, then TS, then React, then the
- * exceptions". The legacy plain-JS packages are NOT exempted from correctness rules, only from
- * the modern-syntax ones they predate — the point of linting a mid-migration codebase is to stop
- * the old style spreading, not to freeze it.
+ * exceptions". The first block still covers plain JS, which is now only the webpack configs — the
+ * shell was the last package with plain-JS sources and it is TypeScript now.
  *
  * Type-aware linting (`projectService`) is on for the TS packages, which is what makes rules like
  * `no-floating-promises` possible. It costs a real typecheck per run, so it is scoped to `**\/*.ts`
@@ -153,7 +152,7 @@ export default tseslint.config(
          * `.tsx` only. This block used to include `packages/nav/src/**\/*.js` and
          * `packages/home/src/**\/*.js` for legacy JSX in plain-JS files; there is none left — `nav`
          * is TypeScript custom elements now, `icd10` is Vue SFCs (handled by the block below), and
-         * the shell is three files of plain JS with no markup in them. A `files` pattern matching
+         * the shell is three TypeScript files with no markup in them. A `files` pattern matching
          * nothing is not an error, so this would have gone unnoticed indefinitely.
          */
         files: ['**/*.tsx'],

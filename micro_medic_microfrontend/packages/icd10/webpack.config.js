@@ -3,6 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const { VueLoaderPlugin } = require('vue-loader');
 
+// `--mode production` (what `yarn build` passes) overrides a config's `mode`, but *not* an explicit
+// `optimization.minimize: false` — not being a mode default, that block survived every production
+// build, so every remote had been shipping unminified. Both settings derive from the one flag now.
+const isProd = (argv) => argv.mode === 'production';
+
 /**
  * The Vue micro-frontend — the narrow (1/4) pane of the `/examination` horizontal split.
  *
@@ -22,26 +27,27 @@ const { VueLoaderPlugin } = require('vue-loader');
  * (nothing → one predicate → one package → eleven directives) is a result of the project rather than
  * an inconsistency in it.
  */
-module.exports = {
+module.exports = (_env, argv) => ({
   entry: './src/bootstrap-standalone',
   cache: false,
 
-  mode: 'development',
-  devtool: 'source-map',
-
-  optimization: {
-    minimize: false
-  },
+  mode: isProd(argv) ? 'production' : 'development',
+  devtool: isProd(argv) ? false : 'source-map',
 
   output: {
     // `auto`, not a literal origin: derived from `document.currentScript.src` when
     // remoteEntry.js executes, so the container works on whatever host serves it.
-    publicPath: 'auto'
+    publicPath: 'auto',
+    // Immutable chunks behind a stable `remoteEntry.js`: ModuleFederationPlugin's own `filename`
+    // wins for the container entry, so the shell holds one URL per remote while everything behind
+    // it can be cached forever. Production only — `[contenthash]` and HMR do not mix.
+    chunkFilename: isProd(argv) ? '[name].[contenthash].js' : '[name].js',
+    clean: isProd(argv)
   },
 
   // No `devServer` here on purpose: `start` is `webpack --watch` plus `serve dist -p 3002`, so
-  // webpack-dev-server never runs and its settings were read by nothing. Only `calendar` and
-  // `shared-store` use `webpack serve`, and they are the only two that configure a devServer.
+  // webpack-dev-server never runs and its settings were read by nothing. `calendar` is the only
+  // package that uses `webpack serve`, and so the only one that configures a devServer.
 
   resolve: {
     extensions: ['.ts', '.vue', '.js', '.json'],
@@ -184,4 +190,4 @@ module.exports = {
       template: './public/index.html'
     })
   ]
-};
+});

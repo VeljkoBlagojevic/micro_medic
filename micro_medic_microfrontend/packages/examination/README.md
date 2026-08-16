@@ -51,8 +51,30 @@ by the shell around the two mount points. A fragment renders into its own mount 
 the screen it shares, so a remote that claimed a share of the width would be imposing a layout on a
 sibling it cannot observe.
 
-`CALENDAR_APPOINTMENT_SELECTED` is the second inbound event, and `EXAMINATION_COMPLETED` the one
-outbound one.
+### The calendar handoff arrives in the URL, not on the bus
+
+`EXAMINATION_COMPLETED` is this package's one outbound event. Coming the other way, the appointment
+does **not** arrive on the bus, and the reason is worth stating because it is the limit of the
+mechanism rather than a shortcoming of this package.
+
+`calendar` lives on `/calendar` and this MFE on `/examination`. The click meaning "record an
+examination for this appointment" *is* the navigation that unmounts the fragment making it, and the
+bus is a live `EventTarget` with no replay — so a message published at that moment has no listener
+and is gone. No ordering fixes it. The handoff is therefore `?appointmentId=<id>`, read by
+`ExaminationApp` and resolved by `ExaminationDraftStore.adoptAppointment`; `src/utils/handoff.ts` is
+the parsing and the argument.
+
+The rule the two directions settle into: **the URL for a handoff that crosses a mount boundary, the
+bus for coordination inside one screen.** Which mechanism is right follows from the composition
+topology, not from which micro-frontends are talking — which is why `ICD10_DISEASE_SELECTED`, between
+two fragments that *are* mounted together, stays on the bus.
+
+Only the id crosses. `adoptAppointment` fetches `GET /api/calendar/{id}`, so
+`AccessGuard.requireAppointmentAccess` decides whether this doctor may see that patient and writes the
+`medical_access_log` row — necessary, because a query parameter is pasted and edited by hand. The
+`CALENDAR_APPOINTMENT_SELECTED` subscription in the store is kept, pointed at the same method, so
+there is one adoption path with one authorisation however the id arrives; it is deliberately
+unreachable today, and `shared-types/src/events.ts` records which events are reachable and why.
 
 ## Zoneless, and why that is not a detail
 
@@ -202,9 +224,9 @@ A running backend at `http://localhost:8080` is required for anything beyond the
 | Path | What it is |
 |---|---|
 | `src/Examination.ts` | Federated entry: hand-written single-spa lifecycles, shared providers, the `ErrorHandler` blast radius |
-| `src/ExaminationApp.ts` | Root component — the `@switch` over `phase()` |
-| `src/state/examination-draft.store.ts` | The draft, and the bus subscriptions that fill it |
-| `src/state/auth.store.ts` | Angular bridge over the shared auth store |
+| `src/ExaminationApp.ts` | Root component — the `@switch` over `phase()`, and where the `?appointmentId=` handoff is consumed |
+| `src/state/examination-draft.store.ts` | The draft, the bus subscriptions that fill it, and `adoptAppointment` |
+| `src/state/auth.store.ts` | Angular bridge over the shared read-only `authContext` |
 | `src/state/event-bus.service.ts` | `DestroyRef`-scoped bus subscriptions |
 | `src/state/async-state.ts` | Loading/error/data holder with the out-of-order guard |
 | `src/components/` | Eight components: picker, context, form, diagnosis panel, prescription list + dialog, medicine search, summary |
@@ -212,4 +234,5 @@ A running backend at `http://localhost:8080` is required for anything beyond the
 | `src/services/` | `createService` wrappers for examinations, medicines, appointments, reports |
 | `src/utils/date-time.ts` | The offset-free `LocalDateTime` ↔ `datetime-local` conversions |
 | `src/utils/error-message.ts` | `ApiError` → doctor-readable text |
+| `src/utils/handoff.ts` | Parsing the `?appointmentId=` handoff, and why it is the URL and not the bus |
 | `src/models/prescription.ts` | The draft prescription view model and its narrowing to the wire format |

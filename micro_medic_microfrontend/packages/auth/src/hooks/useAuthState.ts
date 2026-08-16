@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { authStore, type AuthState } from '@micro-medic/shared-store';
+import { authContext, type AuthState } from '@micro-medic/shared-store';
 
 /**
- * React view of the imperative auth store.
+ * React view of the shared session.
+ *
+ * `authContext` even here, in the MFE that writes the session: `useAuthActions` is the single commit
+ * point and the only file in this package that imports `authStore`.
  *
  * Duplicated from `calendar`'s copy on purpose: an MFE-to-MFE import would couple two
  * independently deployable packages, and `shared-store` cannot own it without taking on a
@@ -12,13 +15,13 @@ import { authStore, type AuthState } from '@micro-medic/shared-store';
  * framework-free.
  */
 export function useAuthState(): AuthState {
-    const [authState, setAuthState] = useState<AuthState>(() => authStore.getState());
+    const [authState, setAuthState] = useState<AuthState>(() => authContext.getState());
 
     useEffect(() => {
         // Re-read on mount: the store may have changed between the initial render and this
         // effect (another MFE could have logged out in that window).
-        setAuthState(authStore.getState());
-        return authStore.subscribe(setAuthState);
+        setAuthState(authContext.getState());
+        return authContext.subscribe(setAuthState);
     }, []);
 
     return authState;

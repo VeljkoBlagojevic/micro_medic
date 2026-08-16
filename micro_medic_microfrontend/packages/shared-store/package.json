@@ -2,6 +2,7 @@
     "name": "@micro-medic/shared-store",
     "version": "1.0.0",
     "description": "Framework agnostic shared store and global auth store and event bus for micro-medic MicroFrontend architecture",
+    "//build": "No webpack, and no Module Federation. This is a library consumed from source through the `paths` map in tsconfig.base.json — like `api-client` and `shared-types` — so every consumer's own bundler compiles it. It used to also be a federated remote on :3005 purely because the plain-JS shell had no ts-loader; the shell is TypeScript now, so the port, the container and the placeholder harness page are gone.",
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "module": "./src/index.ts",
@@ -15,20 +16,13 @@
         "src"
     ],
     "scripts": {
-        "typecheck": "tsc --noEmit",
-        "start": "webpack serve",
-        "build": "webpack --mode production"
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@micro-medic/api-client": "1.0.0",
         "@micro-medic/shared-types": "1.0.0"
     },
     "devDependencies": {
-        "typescript": "^6.0.3",
-        "webpack": "^5.108.4",
-        "webpack-cli": "^7.2.1",
-        "webpack-dev-server": "^6.0.0",
-        "html-webpack-plugin": "^5.6.7",
-        "ts-loader": "^9.6.2"
+        "typescript": "^6.0.3"
     }
 }

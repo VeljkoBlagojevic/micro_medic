@@ -5,20 +5,19 @@
  * because the element already *is* the component. `single-spa-react`, `single-spa-vue` and friends
  * exist to translate between a framework's own mount/unmount and single-spa's; a custom element's
  * `connectedCallback`/`disconnectedCallback` are already that contract, so all this has to do is put
- * the element into the DOM and take it out again.
+ * the element into the DOM and take it out again — plus the one thing single-spa's contract has no
+ * equivalent for: projecting the host's `customProps` onto the element as **attributes**, which is
+ * parent-to-fragment communication in Geers §6.1.1 and a custom element's native way to receive input.
  *
  * It lives in the design system rather than in one MFE because two of them need it — `nav` mounts
- * `<nav-app-bar>` and `<nav-footer>` with it, `notifications` mounts `<notification-center>` — and
- * because it is the counterpart of `mountDesignSystemParcel`: together they are this package's
- * answer to "how does a custom element take part in the composition", one as an application and one
- * as a parcel. Note that it imports nothing from `single-spa`: the lifecycle contract is three
- * promise-returning functions, and typing the props structurally rather than importing single-spa's
- * own type is what keeps this adapter decoupled from whichever single-spa major is actually
- * running — a structural type cannot go stale against a version bump the way an import can, even
- * though `home`, `auth` and `calendar` all share one version of it today (see
- * `home/webpack.config.js`).
+ * `<nav-app-bar>` and `<nav-footer>` with it, `notifications` mounts `<notification-center>`. Note
+ * that it imports nothing from `single-spa`: the lifecycle contract is three promise-returning
+ * functions, and typing the props structurally rather than importing single-spa's own type is what
+ * keeps this adapter decoupled from whichever single-spa major is actually running — a structural
+ * type cannot go stale against a version bump the way an import can, even though `home`, `auth` and
+ * `calendar` all share one version of it today (see `home/webpack.config.js`).
  *
- * `single-spa-html` (which `icd10` uses) would also work, and this deliberately does not use it:
+ * `single-spa-html` would also work, and this deliberately does not use it:
  *
  *   - it mounts by assigning `innerHTML`, which means unmounting is `innerHTML = ''`. Appending and
  *     removing a node is the same effect without re-parsing a string, and it keeps a reference to
@@ -27,8 +26,8 @@
  *     module` whose accuracy nothing checks;
  *   - the adapter it saves is this file.
  *
- * `icd10` keeps using it on purpose, so the repo shows both: the library route for a plain-HTML
- * fragment, and the hand-rolled route where the fragment is a custom element.
+ * No package in the monorepo depends on it: every MFE writes its own three functions, which shows what
+ * the framework adapters actually do.
  */
 
 /**
@@ -47,6 +46,12 @@ export interface CustomElementMountProps {
     domElement?: HTMLElement;
     /** A caller-supplied container resolver, which wins over the default one. */
     domElementGetter?: () => HTMLElement | null;
+    /**
+     * Whatever the shell passed as `customProps` at registration — single-spa merges it into the same
+     * object. Typed `unknown` because this package cannot know what a host chooses to pass, which is
+     * also why a projector has to narrow it before use.
+     */
+    [key: string]: unknown;
 }
 
 export interface CustomElementLifecycles {
@@ -54,6 +59,38 @@ export interface CustomElementLifecycles {
     mount: (props: CustomElementMountProps) => Promise<void>;
     unmount: (props: CustomElementMountProps) => Promise<void>;
 }
+
+/** Attribute values to project onto the element. `null` removes the attribute. */
+export type AttributeMap = Record<string, string | null>;
+
+/**
+ * Context from the parent, readable now and again whenever it changes.
+ *
+ * `subscribe` rather than a plain map because `customProps` are fixed at registration while the
+ * context behind them is not: single-spa hands the same object to every mount, so a one-shot read
+ * would give the fragment the state at mount time and never correct it.
+ *
+ * The listener takes no argument on purpose — the adapter re-reads `get()`, so the projection from
+ * context to attributes lives in exactly one place instead of once per path.
+ */
+export interface AttributeSource {
+    get(): AttributeMap;
+    subscribe(onChange: () => void): () => void;
+}
+
+/**
+ * Turns mount props into an attribute source, or `null` for "this host passed nothing".
+ *
+ * This is the seam that keeps the design system domain-free. Parent-to-fragment context is Geers
+ * §6.1.1 — the parent sets attributes, the child observes them — but *what* the context is stays with
+ * the fragment: `nav` knows a session has a user name and a role, and this package's only dependency
+ * is `lit`. So the host supplies the projection and the adapter only applies it.
+ *
+ * Returning `null` is a supported outcome, not a failure. A fragment must still render when mounted
+ * by a host that passes no props at all — its own dev harness, most obviously — so the element's
+ * no-attributes state has to be a real state rather than a broken one.
+ */
+export type AttributeProjector = (props: CustomElementMountProps) => AttributeSource | null;
 
 /**
  * Resolves the container to mount into, following single-spa's own precedence.
@@ -88,19 +125,39 @@ function resolveContainer(props: CustomElementMountProps, tag: string): HTMLElem
 }
 
 /**
+ * Writes an attribute map onto the element.
+ *
+ * The `getAttribute` comparison is not a micro-optimisation: `setAttribute` runs
+ * `attributeChangedCallback` even when the value is unchanged, so without it every context change
+ * would re-render the element once per projected attribute rather than once.
+ */
+function applyAttributes(element: HTMLElement, attributes: AttributeMap): void {
+    Object.entries(attributes).forEach(([name, value]) => {
+        if (value === null) element.removeAttribute(name);
+        else if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+    });
+}
+
+/**
  * Builds single-spa lifecycles that mount one instance of `tag`.
  *
  * The element must already be registered — pass a tag whose module has been imported, since
  * registration is an import side effect throughout this repo.
+ *
+ * `projectAttributes` is optional, and passing one is what makes the fragment a child in Geers's
+ * §6.1.1 sense: the host's context arrives as attributes, which is a custom element's *native* input
+ * mechanism, so the fragment needs no import to read it and no framework to observe it. That is the
+ * decoupling — a fragment configured through attributes can be mounted by a host that shares no code
+ * with it at all, whereas one that imports a shared store is bound to that store's module identity.
  */
-export function createCustomElementLifecycles(tag: string): CustomElementLifecycles {
+export function createCustomElementLifecycles(tag: string, projectAttributes?: AttributeProjector): CustomElementLifecycles {
     /*
      * Keyed by container rather than held in a single slot. single-spa serialises an application's
      * own mount/unmount, so one slot would usually do — but the same lifecycles can legitimately be
      * mounted as several parcels into different containers at once, and then a single slot would
      * leak every element but the last.
      */
-    const mounted = new Map<HTMLElement, HTMLElement>();
+    const mounted = new Map<HTMLElement, { element: HTMLElement; unsubscribe?: () => void }>();
 
     return {
         bootstrap(): Promise<void> {
@@ -112,7 +169,19 @@ export function createCustomElementLifecycles(tag: string): CustomElementLifecyc
         mount(props: CustomElementMountProps): Promise<void> {
             const container = resolveContainer(props, tag);
             const element = document.createElement(tag);
-            mounted.set(container, element);
+
+            const source = projectAttributes?.(props) ?? null;
+            /*
+             * Before insertion, deliberately. `attributeChangedCallback` fires on a disconnected
+             * element, so the element's *first* render already has the host's context — rather than
+             * rendering signed-out and correcting itself a frame later, which is a visible flicker in
+             * a fragment that is on screen from first paint.
+             */
+            if (source) applyAttributes(element, source.get());
+
+            const unsubscribe = source?.subscribe(() => applyAttributes(element, source.get()));
+            mounted.set(container, { element, unsubscribe });
+
             // Appending is what runs `connectedCallback`, which is where the element renders and
             // subscribes. Nothing else to trigger.
             container.appendChild(element);
@@ -121,11 +190,14 @@ export function createCustomElementLifecycles(tag: string): CustomElementLifecyc
 
         unmount(props: CustomElementMountProps): Promise<void> {
             const container = resolveContainer(props, tag);
-            const element = mounted.get(container);
+            const entry = mounted.get(container);
             mounted.delete(container);
-            // `remove()` runs `disconnectedCallback`, which is where the subscriptions are torn
-            // down. Skipping it is what would leak a store subscription per mount.
-            element?.remove();
+            // Unsubscribe first: the projection closes over the element, so a context change arriving
+            // after removal would write attributes onto a detached node.
+            entry?.unsubscribe?.();
+            // `remove()` runs `disconnectedCallback`, which is where the element's own listeners are
+            // torn down. Skipping it is what would leak a subscription per mount.
+            entry?.element.remove();
             return Promise.resolve();
         },
     };

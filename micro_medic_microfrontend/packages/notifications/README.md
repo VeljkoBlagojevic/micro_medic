@@ -13,7 +13,7 @@ payload into the design system's `<mm-toast-region>`.
 ## Why it is its own micro-frontend
 
 It was a third application inside `nav`, and the shell's route table is what gave it away: the chrome
-is suppressed on `/login` and `/register` (`exceptRoutes` in `home/src/routes.js`), while a failed
+is suppressed on `/login` and `/register` (`exceptRoutes` in `home/src/routes.ts`), while a failed
 sign-in is the case that most needs a toast. So the toast layer needed a different activity function
 from the header's — and a fragment with its own route contract, its own set of consumers (every MFE
 that emits, versus the one team that owns the chrome) and its own reason to change is a different

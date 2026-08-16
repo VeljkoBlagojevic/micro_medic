@@ -76,6 +76,27 @@ export function loadErrorMessage(error: unknown, subject: string): string {
     return `Could not load ${subject}. Please try again.`;
 }
 
+/**
+ * The appointment named by `?appointmentId=` could not be adopted. A 403 here is an ordinary outcome
+ * rather than a bug — someone followed a link to an appointment that is not theirs — so every branch
+ * points at the picker instead of implying something broke.
+ */
+export function adoptAppointmentErrorMessage(error: unknown): string {
+    if (!(error instanceof ApiError)) return 'Could not open that appointment. Choose one below.';
+
+    const transport = transportMessage(error);
+    if (transport) return transport;
+
+    if (error.isForbidden) {
+        return 'That appointment is not one of yours to examine. Choose one of your own below.';
+    }
+    if (error.isNotFound) {
+        return 'That appointment no longer exists. Choose one below.';
+    }
+
+    return 'Could not open that appointment. Choose one below.';
+}
+
 export function reportErrorMessage(error: unknown): string {
     if (!(error instanceof ApiError)) return 'Could not generate the report.';
 

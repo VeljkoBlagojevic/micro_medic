@@ -2,6 +2,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const { AngularWebpackPlugin, AngularWebpackLoaderPath } = require('@ngtools/webpack');
 
+// `--mode production` (what `yarn build` passes) overrides a config's `mode`, but *not* an explicit
+// `optimization.minimize: false` — not being a mode default, that block survived every production
+// build, so every remote had been shipping unminified. Both settings derive from the one flag now.
+const isProd = (argv) => argv.mode === 'production';
+
 /**
  * The Angular micro-frontend, and the third framework on this screen.
  *
@@ -10,21 +15,22 @@ const { AngularWebpackPlugin, AngularWebpackLoaderPath } = require('@ngtools/web
  * imports another micro-frontend — the only coupling is the event bus and the `mm-*` design
  * system, both framework-agnostic on purpose.
  */
-module.exports = {
+module.exports = (_env, argv) => ({
   entry: './src/bootstrap-standalone',
   cache: false,
 
-  mode: 'development',
-  devtool: 'source-map',
-
-  optimization: {
-    minimize: false
-  },
+  mode: isProd(argv) ? 'production' : 'development',
+  devtool: isProd(argv) ? false : 'source-map',
 
   output: {
     // `auto`, not a literal origin: derived from `document.currentScript.src` when
     // remoteEntry.js executes, so the container works on whatever host serves it.
-    publicPath: 'auto'
+    publicPath: 'auto',
+    // Immutable chunks behind a stable `remoteEntry.js`: ModuleFederationPlugin's own `filename`
+    // wins for the container entry, so the shell holds one URL per remote while everything behind
+    // it can be cached forever. Production only — `[contenthash]` and HMR do not mix.
+    chunkFilename: isProd(argv) ? '[name].[contenthash].js' : '[name].js',
+    clean: isProd(argv)
   },
 
   resolve: {
@@ -118,4 +124,4 @@ module.exports = {
       template: './public/index.html'
     })
   ]
-};
+});

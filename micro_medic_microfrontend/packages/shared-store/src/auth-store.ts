@@ -1,9 +1,11 @@
 import type { Role, UserDto } from '@micro-medic/shared-types';
 import { EventTypes } from '@micro-medic/shared-types';
-import { authService, configureApiClient } from '@micro-medic/api-client';
+import { configureApiClient } from '@micro-medic/api-client';
 import { eventBus } from './event-bus';
+import { openSessionChannel, type SessionChannel } from './session-channel';
 
-type Subscriber = (state: AuthState) => void;
+/** Exported because `AuthContext` names it in a public signature. */
+export type Subscriber = (state: AuthState) => void;
 
 const TOKEN_KEY = 'authToken';
 const USER_KEY = 'currentUser';
@@ -57,6 +59,10 @@ function createAuthStore() {
     let user: UserDto | null = readStoredUser();
     let isAuthenticated: boolean = !!token && !!user;
     const subscribers: Set<Subscriber> = new Set<Subscriber>();
+
+    // Opened at the bottom of this factory, once `store` exists. Null in a non-DOM context, which is
+    // why every publish below is optional rather than assumed.
+    let sessionChannel: SessionChannel | null = null;
 
     // Importing this module IS the api-client bootstrap: it tells the shared axios
     // instance where to find the token and what to do when the backend rejects it.
@@ -122,7 +128,12 @@ function createAuthStore() {
             persist();
             notify();
 
-            eventBus.emit(EventTypes.AUTH_LOGIN, { token: newToken, user: newUser });
+            // The user, not the token: a subscriber needing an authenticated request goes through
+            // `api-client`, which reads the token from this store.
+            eventBus.emit(EventTypes.AUTH_LOGIN, { user: newUser });
+
+            // The bus reaches this document; the channel reaches the other tabs.
+            sessionChannel?.publish({ type: 'signed-in' });
         },
 
         logout(): void {
@@ -138,24 +149,10 @@ function createAuthStore() {
             notify();
 
             eventBus.emit(EventTypes.AUTH_LOGOUT);
-        },
 
-        /** Re-reads the user from `GET /api/auth/me`; logs out if the token is no longer valid. */
-        async refreshUser(): Promise<void> {
-            if (!token) {
-                console.warn('[AuthStore] Cannot refresh user: no token.');
-                return;
-            }
-
-            try {
-                user = await authService.getCurrentUser();
-                isAuthenticated = true;
-                persist();
-                notify();
-            } catch (error) {
-                console.error('[AuthStore] Failed to refresh user:', error);
-                store.logout();
-            }
+            // The re-entry guard above is what keeps this to one message per real sign-out, however
+            // many in-flight requests the 401 interceptor answers.
+            sessionChannel?.publish({ type: 'signed-out' });
         },
 
         subscribe(subscriber: Subscriber): () => void {
@@ -166,17 +163,67 @@ function createAuthStore() {
         },
     };
 
-    // Keep tabs in sync: logging out in one tab should not leave another believing it is
-    // still authenticated. `storage` only fires in *other* tabs, so this cannot loop.
+    /*
+     * There was an uncalled `refreshUser()` here — `GET /api/auth/me`, then `logout()` on failure. A
+     * store method that revalidates on demand invites a caller to treat a successful refresh as
+     * authorization; session validity is decided per request by the backend. `authService.getCurrentUser`
+     * stays, since `api-client` mirrors the controller regardless of who consumes it.
+     */
+
+    /**
+     * Adopts a session decided somewhere outside this tab.
+     *
+     * **The bus emit is the part that was missing**, and it is why a doctor could sign out in one tab
+     * and leave a patient's name, diagnosis and anamnesis on screen in the next. Three consumers listen
+     * to the bus rather than to this store — the shell (redirect), `notifications` (clear the stack,
+     * since a toast may name a patient) and `examination` (`reset()` the draft) — so the previous
+     * handler, which only called `notify()`, skipped all three. `nav` re-rendered to a signed-out bar,
+     * which made it look handled: the app bar said "Sign in" above a form full of patient data.
+     *
+     * Guarded on an actual change, which is what makes two observers safe: the channel and `storage`
+     * both fire for the same sign-out and the second to arrive returns here. The guard compares the
+     * token rather than `isAuthenticated`, so a token replaced for the same user still reports — that
+     * is a new session.
+     */
+    function applyExternalSession(nextToken: string | null, nextUser: UserDto | null): void {
+        const nextIsAuthenticated = !!nextToken && !!nextUser;
+        if (nextToken === token && nextIsAuthenticated === isAuthenticated) return;
+
+        token = nextToken;
+        user = nextUser;
+        isAuthenticated = nextIsAuthenticated;
+
+        notify();
+
+        if (nextIsAuthenticated && nextUser) eventBus.emit(EventTypes.AUTH_LOGIN, { user: nextUser });
+        else eventBus.emit(EventTypes.AUTH_LOGOUT);
+    }
+
     if (typeof window !== 'undefined') {
+        /*
+         * The channel says which of the two happened, and that is the whole reason it is worth having:
+         * a `signed-out` message clears this tab **without consulting storage**, so it is still correct
+         * when the other tab could not remove the keys (`persist()` warns and carries on) or when
+         * storage throws here. `storage` cannot express that — see the handler below.
+         */
+        sessionChannel = openSessionChannel((message) => {
+            if (message.type === 'signed-out') applyExternalSession(null, null);
+            else applyExternalSession(readStoredToken(), readStoredUser());
+        });
+
+        /*
+         * Kept alongside the channel, not as a `typeof BroadcastChannel` fallback: `storage` observes
+         * the medium, so it is the only one of the two that notices these keys being written by code
+         * that never called this store.
+         *
+         * Note what it has to do that the channel does not — infer the meaning by reading the result.
+         * "The keys are empty" is as close as it can get to "signed out", which is exactly Geers's
+         * point about `storage` carrying no semantics.
+         */
         window.addEventListener('storage', (event) => {
             // key === null means the whole store was cleared.
             if (event.key !== null && event.key !== TOKEN_KEY && event.key !== USER_KEY) return;
-
-            token = readStoredToken();
-            user = readStoredUser();
-            isAuthenticated = !!token && !!user;
-            notify();
+            applyExternalSession(readStoredToken(), readStoredUser());
         });
     }
 
@@ -194,5 +241,27 @@ const globalScope = globalThis as typeof globalThis & { __MICRO_MEDIC_AUTH_STORE
 export const authStore: AuthStore = globalScope.__MICRO_MEDIC_AUTH_STORE__ ?? (globalScope.__MICRO_MEDIC_AUTH_STORE__ = createAuthStore());
 
 export type { AuthStore };
+
+/**
+ * The read-only half of the auth surface — the composition's shared context: who is signed in, and a
+ * way to hear when that changes.
+ *
+ * Session state has one writer (the `auth` MFE, plus `api-client`'s `onUnauthorized`); a second
+ * fragment deciding it is logged in would be two remotes disagreeing about who the patient in front of
+ * the doctor is. Handing out the full store made that a matter of discipline — this is a frozen object
+ * with no `login`/`logout` *on the value*, so it is a matter of reach. `nav` and `auth` still import
+ * `authStore`, for sign-out and sign-in respectively; everyone else reads.
+ */
+export interface AuthContext {
+    /** A snapshot. Never mutate it; the store hands out a fresh object each call. */
+    getState(): AuthState;
+    /** Returns its own unsubscribe, which is the whole teardown. */
+    subscribe(subscriber: Subscriber): () => void;
+}
+
+export const authContext: AuthContext = Object.freeze({
+    getState: () => authStore.getState(),
+    subscribe: (subscriber: Subscriber) => authStore.subscribe(subscriber),
+});
 
 export default authStore;

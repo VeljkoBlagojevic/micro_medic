@@ -16,9 +16,11 @@ It is the textbook **vertical split**: one team-sized slice that owns a feature 
 own routes, its own UI, its own backend endpoints — rather than a horizontal layer shared by
 everyone. Two properties follow from that, and both are the point:
 
-- **Nothing else can authenticate.** Every other MFE reads the *result* (`authStore`, or the
-  `AUTH_LOGIN` event) and none of them knows how a token is obtained. Move to OAuth tomorrow and
-  this package is the only one that changes.
+- **Nothing else can authenticate.** Every other MFE reads the *result* — `authContext`, the shared
+  store's frozen read-only view, or the `AUTH_LOGIN` event — and none of them knows how a token is
+  obtained. That is enforced rather than agreed: `authContext` has no `login` or `logout` on it, so
+  `useAuthActions` in this package and nav's sign-out button are the only code in the monorepo that
+  imports `authStore` itself. Move to OAuth tomorrow and this package is the only one that changes.
 - **It can be deployed alone.** A change to the login form ships without rebuilding the calendar.
 
 The brand panel beside the form is part of *this* MFE, not a second one. Splitting it out would

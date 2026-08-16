@@ -2,19 +2,23 @@
 <html lang="en">
   <head>
     <!--
-      Remote containers, loaded eagerly because each remote uses `library: { type: 'var' }` —
-      the global must exist before single-spa imports from it. One tag per port in the topology:
-      3001 home (self), 3002 icd10, 3003 nav, 3004 examination, 3005 shared-store,
-      3006 auth, 3007 notifications, 3009 calendar. Adding a remote means adding it here too.
+      No remote container tags here any more, and their absence is the point.
+
+      There used to be seven, blocking, in this element: `remotes` in `webpack.config.js` named each
+      remote by the bare global its `library: { type: 'var' }` defines, so the global had to exist
+      before single-spa could import from it. The cost was paid on every route — the visitor
+      downloaded and executed all seven containers before the shell ran, whether or not the route
+      needed them — and a single remote being unreachable took the whole document down with it,
+      before any error handler existed to say so.
+
+      They are now declared as `name@url` in `webpack.config.js`, which is webpack's own lazy form:
+      the container script is injected at the first `import('nav/Header')`. One of the seven was the
+      shell fetching its *own* container from :3001, which exposes nothing.
+
+      What that buys, in order of how much it matters: a remote is downloaded only on a route that
+      mounts it; a failed remote is a rejected `import()` that `src/index.ts` answers with a fallback
+      region rather than a blank page; and the port map lives in one file instead of two.
     -->
-    <script src="http://localhost:3001/remoteEntry.js"></script>
-    <script src="http://localhost:3002/remoteEntry.js"></script>
-    <script src="http://localhost:3003/remoteEntry.js"></script>
-    <script src="http://localhost:3004/remoteEntry.js"></script>
-    <script src="http://localhost:3005/remoteEntry.js"></script>
-    <script src="http://localhost:3006/remoteEntry.js"></script>
-    <script src="http://localhost:3007/remoteEntry.js"></script>
-    <script src="http://localhost:3009/remoteEntry.js"></script>
   </head>
   <body>
     <!--
@@ -24,7 +28,7 @@
 
       `auth` is deliberately outside `.mm-container`: it is a vertical split that owns the whole
       viewport, and the shell's chrome is switched off on its routes (`exceptRoutes` in
-      `src/routes.js`).
+      `src/routes.ts`).
     -->
     <div id="single-spa-application:auth"></div>
 

@@ -9,7 +9,6 @@ package down to nothing at all (see "How much glue each framework needs" below).
 design-system              (Lit)  ← the components live here, once
 ├── design-system-react    (@lit/react wrappers)
 ├── design-system-angular  (a @Directive per tag)
-├── parcel.ts              (single-spa parcel, for an MFE with no binding package)
 └── lifecycles.ts          (single-spa application, for custom-element MFEs)
 ```
 
@@ -78,19 +77,29 @@ itself and would fight the element over ownership of the list. It knows nothing 
 bus — subscribing to `NOTIFICATION_SHOW` and deciding how long each type lives belongs to the
 `notifications` MFE, which is what keeps this package free of any dependency on `shared-store`.
 
-## Two ways a custom element joins the composition
+## How a custom element joins the composition
 
-Both are exported here, because both are about custom elements in single-spa rather than about any
-one micro-frontend:
+Exported here rather than from one MFE, because it is about custom elements in single-spa rather than
+about any one micro-frontend:
 
-- **`mountDesignSystemParcel`** (`parcel.ts`) — a single-spa *parcel*: one `mm-*` element rendered
-  inside an app that is already mounted. The escape hatch for an MFE with no binding package.
-- **`createCustomElementLifecycles(tag)`** (`lifecycles.ts`) — a single-spa *application* whose
-  entire UI is one custom element. `nav` uses it for `<nav-app-bar>`/`<nav-footer>`,
-  `notifications` for `<notification-center>`. A custom element's
+- **`createCustomElementLifecycles(tag, projectAttributes?)`** (`lifecycles.ts`) — a single-spa
+  *application* whose entire UI is one custom element. `nav` uses it for
+  `<nav-app-bar>`/`<nav-footer>`, `notifications` for `<notification-center>`. A custom element's
   `connectedCallback`/`disconnectedCallback` already *are* single-spa's contract, so the adapter
   only appends and removes a node; it imports nothing from `single-spa`, so the same function works
   regardless of which single-spa major a consumer happens to be on.
+
+  The optional second argument is the one thing single-spa's contract has no equivalent for: it turns
+  the host's `customProps` into **attributes** on the element, and keeps them current while mounted
+  (Geers §6.1.1). Attributes are set *before* insertion, since `attributeChangedCallback` fires on a
+  disconnected element — so the fragment's first render already has its context instead of flickering
+  through a default. `nav` passes one; `notifications` needs none.
+
+  What the projector is, and is not: it returns an `AttributeSource`, and the *projection* belongs to
+  the consumer. This package depends on `lit` and nothing else, so it cannot know what a session is —
+  `nav/src/session-attributes.ts` decides that a session flattens to three scalars, and the adapter
+  only writes what it is handed. Returning `null` is a supported answer, meaning "this host passed
+  nothing", which is what a dev harness does.
 
 `defineElement` is exported for the same reason — an MFE that defines its own elements (`nav`,
 `notifications`) should use the same guarded registration rather than duplicate it.

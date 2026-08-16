@@ -22,15 +22,18 @@
   </head>
   <body>
     <!--
-      Stands in for the shell: it fakes the two inputs the chrome reacts to but does not own —
-      auth state and the current route. Toasts are not here; they belong to the `notifications`
-      MFE on :3007, which has a harness of its own.
+      Stands in for the shell: it supplies the two inputs the chrome reacts to but does not own — the
+      session (as attributes on the bar) and the current route. Toasts are not here; they belong to
+      the `notifications` MFE on :3007, which has a harness of its own.
+
+      There is no "Sign out" button here, deliberately. The bar's own button does not end a session,
+      it dispatches `nav:sign-out` and lets its host decide — so a second one on this bar would be
+      testing the harness rather than the contract.
     -->
     <div class="harness">
-      <span class="harness__label">Auth</span>
+      <span class="harness__label">Session</span>
       <button type="button" data-harness-login="doctor">Sign in as doctor</button>
       <button type="button" data-harness-login="patient">Sign in as patient</button>
-      <button type="button" data-harness-logout>Sign out</button>
 
       <span class="harness__label">Route</span>
       <button type="button" data-harness-route="/calendar">/calendar</button>
@@ -46,6 +49,10 @@
         Sign in as a doctor and then as a patient: the <code>Examination</code> link is offered
         only to clinicians. Switching to <code>/calendar-archive</code> shows that
         <code>/calendar</code> is not marked current — the match is on segment boundaries.
+      </p>
+      <p>
+        Inspect <code>&lt;nav-app-bar&gt;</code> while doing it: the whole session is three attributes,
+        and setting them by hand in the devtools console works exactly as the shell does.
       </p>
       <p>Tab from the address bar to reveal the “Skip to content” link, which targets this element.</p>
     </main>

@@ -7,8 +7,11 @@ interface AppointmentCardProps {
   appointment: ScheduledAppointmentDto;
   canReschedule: boolean;
   canCancel: boolean;
+  /** Doctors only — `POST /api/examinations` requires `ROLE_DOCTOR`. */
+  canRecordExamination: boolean;
   onReschedule: (appointment: ScheduledAppointmentDto) => void;
   onCancel: (appointment: ScheduledAppointmentDto) => void;
+  onRecordExamination: (appointment: ScheduledAppointmentDto) => void;
   onClose: () => void;
 }
 
@@ -16,13 +19,17 @@ export const AppointmentCard = ({
     appointment,
     canReschedule,
     canCancel,
+    canRecordExamination,
     onReschedule,
     onCancel,
+    onRecordExamination,
     onClose,
 }: AppointmentCardProps) => {
     const actionable = isActionable(appointment.status);
     const showReschedule = actionable && canReschedule;
     const showCancel = actionable && canCancel;
+    // `SCHEDULED` only, like the other two: `ExaminationService` rejects any other status.
+    const showRecord = actionable && canRecordExamination;
 
     // Interpolating the fields directly produced "details for undefined undefined" whenever the
     // DTO arrives without a patient, which is exactly when a label matters most.
@@ -63,8 +70,15 @@ export const AppointmentCard = ({
           <dd>{doctorName}</dd>
         </dl>
 
-        {(showReschedule || showCancel) && (
+        {(showRecord || showReschedule || showCancel) && (
           <div className="cal-detail__actions">
+            {/* An explicit button, not a side effect of selecting the event — that would navigate
+                away on every click and make this pane unreachable. */}
+            {showRecord && (
+              <MmButton variant="primary" onClick={() => onRecordExamination(appointment)}>
+                Record examination
+              </MmButton>
+            )}
             {showReschedule && (
               <MmButton variant="secondary" onClick={() => onReschedule(appointment)}>
                 Reschedule

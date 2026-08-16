@@ -1,4 +1,4 @@
-import { authStore, type AuthState } from '@micro-medic/shared-store';
+import { NAV_SIGN_OUT_EVENT, type Role } from '@micro-medic/shared-types';
 /*
  * Also a side-effect import: reaching the package registers every `mm-*` element. The bar renders
  * `<mm-button>`, so the tag has to be defined before the first render — see the note in the class
@@ -11,7 +11,11 @@ import { authStore, type AuthState } from '@micro-medic/shared-store';
  */
 import { defineElement } from '@micro-medic/design-system';
 import { ReactiveElement, escapeHtml } from './reactive-element.js';
-import { HOME_HREF, LOGIN_HREF, MAIN_LANDMARK_ID, isCurrent, visibleLinks } from './nav-links.js';
+import { HOME_HREF, LOGIN_HREF, MAIN_LANDMARK_ID, isCurrent, parseRole, visibleLinks } from './nav-links.js';
+
+// The attribute names are shared with the projection that writes them — one definition, because a
+// disagreement between the two is silent. See that file for why the session is projected as scalars.
+import { ATTR_AUTHENTICATED, ATTR_USER_NAME, ATTR_USER_ROLE } from './session-attributes.js';
 
 /**
  * The application's navigation bar.
@@ -21,8 +25,20 @@ import { HOME_HREF, LOGIN_HREF, MAIN_LANDMARK_ID, isCurrent, visibleLinks } from
  * application pays for on first paint. React and Angular each earn their weight in a feature MFE
  * with forms, queries and derived state; a bar with two links and one button does not
  * have enough state to spend a framework on. What it does instead is show that the integration
- * contract — single-spa lifecycles, the shared store, the event bus, the design system — is
- * genuinely framework-agnostic, because here there is no framework to hide behind.
+ * contract — single-spa lifecycles, the design system, and the browser's own attributes and events —
+ * is genuinely framework-agnostic, because here there is no framework to hide behind.
+ *
+ * **Attributes in, events out**, and that is the entire coupling: the session arrives as
+ * `authenticated` / `user-name` / `user-role`, set by the shell through
+ * `createCustomElementLifecycles` (Geers §6.1.1), and sign-out leaves as a bubbling
+ * `nav:sign-out` (§6.1.2). This element imports nothing from `@micro-medic/shared-store` — it used to
+ * read `authStore` and call `logout()` on it, which made the most-visible fragment in the application
+ * the one most tightly bound to shared mutable state. A fragment configured this way can be mounted
+ * by any host that can set an attribute, including a plain HTML page with no bundler.
+ *
+ * The trade is real and worth naming: three scalars are less than an `AuthState`, so a projection has
+ * to decide what the fragment gets. That is the constraint doing the work rather than a limitation —
+ * the bar cannot read a field it was never given, so what it depends on is legible in one place.
  *
  * **It still uses the design system.** That is not a contradiction: the design system is Lit
  * elements, and a custom element is exactly what has no trouble consuming another custom element.
@@ -41,27 +57,32 @@ import { HOME_HREF, LOGIN_HREF, MAIN_LANDMARK_ID, isCurrent, visibleLinks } from
  * frame around the widgets.
  *
  * Nav knows the route *table* — it renders the links — but not the routing *rules*. The shell
- * decides what mounts (`home/src/routes.js`); a link to a route the visitor cannot view is
+ * decides what mounts (`home/src/routes.ts`); a link to a route the visitor cannot view is
  * redirected by the shell, not hidden by a check here.
  */
 export class NavAppBar extends ReactiveElement {
     /**
-     * The last auth snapshot, kept as a field because `render()` must be synchronous and pure.
+     * The session attributes, so a change to any of them re-renders.
      *
-     * Reading `authStore.getState()` inside `render()` would work too, and this is the better
-     * habit: it makes the render a function of *this element's* state, so what is on screen is
-     * always exactly what the last notification carried.
+     * Nothing is mirrored into a field: the attributes *are* the state, and copying them into one
+     * would create a second version of it that has to be kept in agreement. `render()` reads the DOM
+     * it is rendering from, which is what a custom element's own input mechanism gives for free.
      */
-    private auth: AuthState = authStore.getState();
+    static readonly observedAttributes: readonly string[] = [ATTR_AUTHENTICATED, ATTR_USER_NAME, ATTR_USER_ROLE];
 
     private pathname: string = window.location.pathname;
 
-    protected subscribe(): Array<() => void> {
-        const onAuthChange = (state: AuthState) => {
-            this.auth = state;
-            this.requestRender();
-        };
+    /**
+     * Fires for attributes set on a *disconnected* element too, which is what lets the adapter set the
+     * session before insertion and have the first render already be correct. `requestRender` returns
+     * early while disconnected — `connectedCallback` renders on insertion regardless — so that costs
+     * nothing here and avoids rendering twice on every mount.
+     */
+    attributeChangedCallback(): void {
+        this.requestRender();
+    }
 
+    protected subscribe(): Array<() => void> {
         const onRouteChange = () => {
             const next = window.location.pathname;
             // Guard the assignment, not just the render: single-spa fires a routing event for
@@ -71,9 +92,9 @@ export class NavAppBar extends ReactiveElement {
             this.requestRender();
         };
 
-        // Re-read on connect: a navigation or a login may have happened between the constructor
-        // and now (the element is created, then appended, then rendered).
-        this.auth = authStore.getState();
+        // Re-read on connect: a navigation may have happened between the constructor and now (the
+        // element is created, then appended, then rendered). The session needs no equivalent — it
+        // arrives as attributes, which are already on the element by the time it is inserted.
         this.pathname = window.location.pathname;
 
         /*
@@ -86,8 +107,6 @@ export class NavAppBar extends ReactiveElement {
         window.addEventListener('single-spa:routing-event', onRouteChange);
 
         return [
-            // `subscribe` hands back its own teardown, so it is already the right shape.
-            authStore.subscribe(onAuthChange),
             () => window.removeEventListener('popstate', onRouteChange),
             () => window.removeEventListener('single-spa:routing-event', onRouteChange),
         ];
@@ -134,15 +153,23 @@ export class NavAppBar extends ReactiveElement {
 
         if (target.closest('[data-nav-action="sign-out"]')) {
             /*
-             * Clears local state only. There is no token-revocation endpoint and a JWT stays
-             * valid until it expires, so "sign out" means "this browser forgets the token".
+             * Announces the intent; the shell decides what it means (Geers §6.1.2). This used to call
+             * `authStore.logout()` directly, and the difference is which package owns session
+             * *transitions*: the bar knows a button was pressed, not that signing out clears
+             * `localStorage`, ends a cross-tab channel session and redirects to `/login`.
              *
-             * It deliberately does not navigate: `logout()` emits `AUTH_LOGOUT`, the shell
-             * listens for that and redirects. A logout triggered from here, from a 401
-             * interceptor, or from another tab therefore behaves identically — and the bar does
-             * not need to know where the login screen lives.
+             * `bubbles` and `composed`, both load-bearing. Bubbling is what lets the shell listen on
+             * `window` without knowing where in the document this fragment mounted — the hierarchy
+             * carries the meaning, which is why an event beats the shared bus for the child→parent
+             * direction specifically. `composed` because this element's own children are light DOM
+             * today, but `<mm-button>`'s are not, and a fragment that grew a shadow root would
+             * otherwise stop being heard with no error anywhere.
+             *
+             * It deliberately does not navigate. A sign-out from here, from the 401 interceptor, or
+             * from another tab all end in the same place because none of the three decides where that
+             * is.
              */
-            authStore.logout();
+            this.dispatchEvent(new CustomEvent(NAV_SIGN_OUT_EVENT, { bubbles: true, composed: true }));
             return;
         }
 
@@ -180,8 +207,19 @@ export class NavAppBar extends ReactiveElement {
         window.dispatchEvent(new PopStateEvent('popstate'));
     };
 
+    /** Present or absent, per the boolean-attribute convention — `"false"` would read as signed in. */
+    private get isAuthenticated(): boolean {
+        return this.hasAttribute(ATTR_AUTHENTICATED);
+    }
+
+    /** Named `userRole` rather than `role`: `HTMLElement.role` already exists, and it holds the landmark. */
+    private get userRole(): Role | null {
+        return parseRole(this.getAttribute(ATTR_USER_ROLE));
+    }
+
     protected render(): string {
-        const { isAuthenticated, user, role } = this.auth;
+        const { isAuthenticated, userRole } = this;
+        const userName = this.getAttribute(ATTR_USER_NAME);
 
         return `
             ${this.renderSkipLink()}
@@ -193,9 +231,9 @@ export class NavAppBar extends ReactiveElement {
                         ? `
                             <span class="nav-bar__user">
                                 <span class="nav-bar__name">
-                                    ${user ? escapeHtml(`${user.firstname} ${user.lastname}`) : 'Signed in'}
+                                    ${userName ? escapeHtml(userName) : 'Signed in'}
                                 </span>
-                                ${role ? `<span class="nav-bar__role">${escapeHtml(formatRole(role))}</span>` : ''}
+                                ${userRole ? `<span class="nav-bar__role">${escapeHtml(formatRole(userRole))}</span>` : ''}
                             </span>
                             <mm-button variant="tertiary" size="sm" data-nav-action="sign-out">
                                 Sign out
@@ -234,7 +272,7 @@ export class NavAppBar extends ReactiveElement {
     }
 
     private renderLinks(): string {
-        const links = visibleLinks(this.auth.role);
+        const links = visibleLinks(this.userRole);
         if (links.length === 0) return '';
 
         const items = links

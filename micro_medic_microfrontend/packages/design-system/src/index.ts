@@ -7,13 +7,13 @@ export * from './components';
 export { defineElement } from './define';
 export { baseStyles, focusRing, visuallyHidden } from './styles/shared.styles';
 
-export { mountDesignSystemParcel } from './parcel';
-export type { DesignSystemParcelProps } from './parcel';
-
 /*
- * The two ways a custom element takes part in the composition: as a single-spa *application*
- * (`createCustomElementLifecycles`, used by `nav` and `notifications`) or as a *parcel* mounted by
- * another MFE (`mountDesignSystemParcel`, the escape hatch for an MFE with no binding package).
+ * How a custom element takes part in the composition: as a single-spa *application* whose whole UI is
+ * one element. `nav` and `notifications` are both that shape.
+ *
+ * A `mountDesignSystemParcel` export was deleted from here. It was the offered escape hatch for an MFE
+ * with no binding package, and nothing imported it — the repo answered that case differently, since
+ * what `icd10` needs is `isCustomElement` in its vue-loader options, not a parcel.
  */
 export { createCustomElementLifecycles } from './lifecycles';
-export type { CustomElementLifecycles, CustomElementMountProps } from './lifecycles';
+export type { AttributeMap, AttributeProjector, AttributeSource, CustomElementLifecycles, CustomElementMountProps } from './lifecycles';

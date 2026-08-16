@@ -1,4 +1,4 @@
-import type { DiseaseDto, ScheduledAppointmentDto, UserDto } from './dtos';
+import type { DiseaseDto, UserDto } from './dtos';
 
 /**
  * The cross-micro-frontend contract: every message any remote may publish or subscribe to.
@@ -9,18 +9,48 @@ import type { DiseaseDto, ScheduledAppointmentDto, UserDto } from './dtos';
  * no listener is a publisher shouting into a channel that has no other end. Both read as
  * integration that exists.
  *
- * Every entry below has at least one emitter and one listener today:
+ * | Event | Emitted by | Consumed by | Reachable? |
+ * |---|---|---|---|
+ * | `ICD10_DISEASE_SELECTED` | `icd10` | `examination` | yes — same screen |
+ * | `CALENDAR_APPOINTMENT_SELECTED` | `calendar` | `examination` | **not today** — see below |
+ * | `EXAMINATION_COMPLETED` | `examination` | `calendar` | **not today** — see below |
+ * | `AUTH_LOGIN` | `shared-store` | `home` | yes — shell is never unmounted |
+ * | `AUTH_LOGOUT` | `shared-store` | `home`, `examination`, `icd10`, `notifications` | yes |
+ * | `NOTIFICATION_SHOW` | `auth`, `calendar`, `examination` | `notifications` | yes — always mounted |
+ * | `NOTIFICATION_DISMISSED` | `notifications` | — (offered to emitters; no subscriber today) | n/a |
  *
- * | Event | Emitted by | Consumed by |
- * |---|---|---|
- * | `ICD10_DISEASE_SELECTED` | `icd10` | `examination` |
- * | `CALENDAR_APPOINTMENT_SELECTED` | `calendar` | `examination` |
- * | `EXAMINATION_COMPLETED` | `examination` | `calendar` |
- * | `AUTH_LOGIN` / `AUTH_LOGOUT` | `shared-store` | `home`, `examination`, `icd10`, `nav`, `notifications` |
- * | `NOTIFICATION_SHOW` | `auth`, `calendar`, `examination` | `notifications` |
- * | `NOTIFICATION_DISMISSED` | `notifications` | — (offered to emitters; no subscriber today) |
+ * ## Why the `Reachable?` column exists
  *
- * `NOTIFICATION_DISMISSED` is the one deliberate exception, and it is the inverse of the others:
+ * The `EventTarget` underneath has **no replay** (Geers §6.1.5), and single-spa unmounts an
+ * application on every navigation away from its route — so **two MFEs on disjoint routes can never
+ * hear each other**, whatever the ordering. That makes both `calendar ↔ examination` events
+ * structurally undeliverable in the composed app; they fire only in the dev harnesses. Each has a
+ * durable mechanism carrying the real handoff instead:
+ *
+ * - **`calendar` → `examination`** travels in the **URL** (`/examination?appointmentId=<id>`), which
+ *   survives a reload and is re-authorized on arrival. The event is kept, narrowed to an id, and
+ *   wired to the same `adoptAppointment(id)` the URL path calls, so it goes live the day one screen
+ *   mounts both fragments.
+ * - **`examination` → `calendar`** has no URL to ride on, so `calendar` invalidates its query on
+ *   mount and treats staleness as its own problem. See `useExaminationSync`.
+ *
+ * The rule: **the URL for a handoff that crosses a mount boundary, the bus for coordination within
+ * one screen** — decided by composition topology, not by which two MFEs are talking.
+ *
+ * ## Two things this bus is deliberately not
+ *
+ * **Not the cross-tab channel.** The two `AUTH_*` events fire for a session change made in *another*
+ * tab as well as in this one — `shared-store`'s `BroadcastChannel` receives the notice and the store
+ * re-emits locally. Consumers therefore need no second mechanism, and the bus stays a same-document
+ * channel: nothing here crosses a tab boundary by itself.
+ *
+ * **Not how a fragment talks to its parent.** `nav` dropped off the `AUTH_LOGOUT` row above and is not
+ * on any other: it receives the session as attributes from the shell and asks for a sign-out with a
+ * bubbling `nav:sign-out` DOM event. Where one participant *contains* the other, the hierarchy already
+ * carries the meaning, and a flat channel throws that away — so this bus is for fragments that are
+ * siblings, which is every row in the table.
+ *
+ * `NOTIFICATION_DISMISSED` is a different kind of exception, and it is the inverse of the others:
  * it is the reply half of a request the `notifications` MFE receives, so its subscriber is
  * whichever emitter wants to know its toast was seen. Dropping it would mean an emitter *could
  * not* find out.
@@ -57,8 +87,14 @@ export interface DiseaseSelectedPayload {
     disease: DiseaseDto;
 }
 
+/**
+ * The id, never the `ScheduledAppointmentDto` (Geers §6.1, minimal payloads). The DTO used to travel
+ * whole, nesting a patient's name and email on a channel any remote can subscribe to — and the
+ * consumer rendered those fields straight from the payload, so the read never reached the backend.
+ * An id forces a fetch through `AccessGuard`, which is what restores the audit trail.
+ */
 export interface CalendarAppointmentSelectedPayload {
-    appointment: ScheduledAppointmentDto;
+    appointmentId: number;
 }
 
 /**
@@ -70,8 +106,13 @@ export interface ExaminationCompletedPayload {
     examinationId: number;
 }
 
+/**
+ * Who signed in — never the JWT. The token used to ride along here, which put a bearer credential on
+ * a channel every remote can subscribe to for no reason: the only legitimate way to send an
+ * authenticated request is `api-client`, which reads the token from the store itself. A subscriber
+ * that has the token can bypass that, and one that stores a copy has a second session state to drift.
+ */
 export interface AuthLoginPayload {
-    token: string;
     user: UserDto;
 }
 

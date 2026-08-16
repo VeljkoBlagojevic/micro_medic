@@ -1,24 +1,30 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-module.exports = {
+// `--mode production` (what `yarn build` passes) overrides a config's `mode`, but *not* an explicit
+// `optimization.minimize: false` — not being a mode default, that block survived every production
+// build, so every remote had been shipping unminified. Both settings derive from the one flag now.
+const isProd = (argv) => argv.mode === 'production';
+
+module.exports = (_env, argv) => ({
   // The standalone harness, not one of the exposed modules: `entry` builds the page served on
   // :3003 for development, while `exposes` below is what the shell consumes. The dynamic import
   // inside it forces an async chunk so the federation shared scope initializes first.
   entry: './src/bootstrap-standalone',
   cache: false,
 
-  mode: 'development',
-  devtool: 'source-map',
-
-  optimization: {
-    minimize: false
-  },
+  mode: isProd(argv) ? 'production' : 'development',
+  devtool: isProd(argv) ? false : 'source-map',
 
   output: {
     // `auto`, not a literal origin: derived from `document.currentScript.src` when
     // remoteEntry.js executes, so the container works on whatever host serves it.
-    publicPath: 'auto'
+    publicPath: 'auto',
+    // Immutable chunks behind a stable `remoteEntry.js`: ModuleFederationPlugin's own `filename`
+    // wins for the container entry, so the shell holds one URL per remote while everything behind
+    // it can be cached forever. Production only — `[contenthash]` and HMR do not mix.
+    chunkFilename: isProd(argv) ? '[name].[contenthash].js' : '[name].js',
+    clean: isProd(argv)
   },
 
   resolve: {
@@ -89,19 +95,21 @@ module.exports = {
        * remote loaded first would silently own the components — and any fix shipped by the other
        * would appear to have no effect.
        *
-       * What is *not* here is more interesting. `@micro-medic/shared-store` and `shared-types` are
-       * consumed as TypeScript source through the tsconfig `paths` map, so `shared-store` is
-       * bundled into this remote — and the store is still a singleton at runtime anyway:
-       * `auth-store.ts` and `event-bus.ts` park their instances on
-       * `globalThis.__MICRO_MEDIC_AUTH_STORE__` / `__MICRO_MEDIC_EVENT_BUS__`, so a second
-       * evaluation of the module finds the first instance and hands it back. Federation's
-       * `singleton: true` is an optimisation for those two, not the mechanism — which is why this
-       * remote observes exactly the same auth state and event bus as `calendar` and `auth` even
-       * though it does not negotiate them through the shared scope.
+       * What is *not* here is more interesting, and the list got shorter for a reason worth stating.
        *
-       * `single-spa` is absent too: this package imports it nowhere — `src/lifecycles.ts`
-       * implements the lifecycle contract directly and `nav-app-bar.ts` navigates with
-       * `pushState`, so there is no dependency to add in the first place, singleton or not.
+       * `@micro-medic/shared-store` was in this comment as the interesting case — bundled from source
+       * yet still a runtime singleton, because `auth-store.ts` and `event-bus.ts` park their instances
+       * on `globalThis`. It is now absent from the *package* entirely: the bar takes the session as
+       * attributes from the shell and dispatches a bubbling `nav:sign-out` instead of importing a
+       * store to mutate. The `globalThis` dedupe is still how the other consumers stay in agreement;
+       * this remote simply is not one of them any more. `shared-types` remains, as source through the
+       * tsconfig `paths` map, and is types-only — nothing of it survives into the bundle but the
+       * `Role` enum's values.
+       *
+       * `single-spa` is absent too: this package imports it nowhere — the design system's
+       * `createCustomElementLifecycles` implements the lifecycle contract directly and
+       * `nav-app-bar.ts` navigates with `pushState`, so there is no dependency to add in the first
+       * place, singleton or not.
        */
       shared: {
         lit: { singleton: true, requiredVersion: '^3.3.3' },
@@ -112,4 +120,4 @@ module.exports = {
       template: './public/index.html'
     })
   ]
-};
+});

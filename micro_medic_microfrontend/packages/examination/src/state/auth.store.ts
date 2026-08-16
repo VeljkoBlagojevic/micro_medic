@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
-import { authStore, type AuthState } from '@micro-medic/shared-store';
+import { authContext, type AuthState } from '@micro-medic/shared-store';
 import { Role } from '@micro-medic/shared-types';
 
 /**
@@ -13,11 +13,14 @@ import { Role } from '@micro-medic/shared-types';
  *
  * Not `providedIn: 'root'` by accident — it must be a singleton *within this MFE's* injector so
  * every component sees one subscription. It is not shared across MFEs; the thing that is shared is
- * the store underneath it.
+ * the context underneath it.
+ *
+ * That context is the read-only `authContext`, not `authStore`: this MFE has no business signing anyone
+ * in or out, and the frozen object makes the capability absent rather than merely unused.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
-    private readonly state = signal<AuthState>(authStore.getState());
+    private readonly state = signal<AuthState>(authContext.getState());
 
     readonly user = computed(() => this.state().user);
     readonly role = computed(() => this.state().role);
@@ -45,7 +48,7 @@ export class AuthStore {
         // leaked subscription here would keep a destroyed injector's signal alive and writing —
         // the Angular analogue of the double-subscription bug `nav` and `notifications` guard
         // against in `connectedCallback`.
-        const unsubscribe = authStore.subscribe((next) => this.state.set(next));
+        const unsubscribe = authContext.subscribe((next) => this.state.set(next));
         inject(DestroyRef).onDestroy(unsubscribe);
     }
 }

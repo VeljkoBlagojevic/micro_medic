@@ -5,9 +5,9 @@
   "private": true,
   "//deps": "No framework runtime, and no `single-spa` either. The chrome is mounted on every route, so anything it depends on is paid for on first paint by every visitor — see README.md. The single-spa adapter is `src/lifecycles.ts`, and it is short because a custom element's connect/disconnect already IS the lifecycle contract.",
   "//design-system": "A real dependency: the bar renders `<mm-button>`, so the components must be registered at runtime, not just their CSS tokens present. Lit rides along transitively and is a federation singleton (see webpack.config.js) — the shell already has it on the page for `calendar` and `auth`, so the marginal cost to first paint is nil, and a chrome that hand-rolled its own button would be the most visible thing in the app to drift from the theme.",
+  "//shared-store": "Deliberately absent, and it was here until the communication patterns landed. The bar receives the session as attributes and asks for a sign-out with a bubbling event, so it needs no shared mutable state at all — see src/session-attributes.ts. `shared-types` stays, for the `Role` enum a nav link is filtered by and the `nav:sign-out` name the shell listens for; those are contracts, not state.",
   "dependencies": {
     "@micro-medic/design-system": "1.0.0",
-    "@micro-medic/shared-store": "1.0.0",
     "@micro-medic/shared-types": "1.0.0"
   },
   "devDependencies": {

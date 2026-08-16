@@ -77,10 +77,17 @@ export abstract class ReactiveElement extends HTMLElement {
     /**
      * Schedules a render on the microtask queue.
      *
-     * Coalescing matters more than it looks: `AUTH_LOGIN` triggers both a store notification and
-     * a single-spa routing event, so a login would otherwise render this element twice in a row.
+     * Coalescing matters more than it looks: signing in changes the session attributes and fires a
+     * single-spa routing event, so it would otherwise render this element twice in a row.
      */
     protected requestRender(): void {
+        /*
+         * Nothing to schedule while detached, and this is not just an optimisation. The mount adapter
+         * sets attributes *before* inserting the element, and `attributeChangedCallback` fires on a
+         * disconnected element — so without this, every mount would queue a microtask that runs after
+         * `connectedCallback` has already rendered, and render the whole bar a second time.
+         */
+        if (!this.isConnected) return;
         if (this.renderQueued) return;
         this.renderQueued = true;
         queueMicrotask(() => {
@@ -109,9 +116,9 @@ const ESCAPES: Record<string, string> = {
  * Escapes a value for interpolation into an HTML string.
  *
  * Not optional: `render()` builds markup by concatenation, and what it interpolates includes the
- * user's name and role, which arrive from the backend by way of the auth store. That crosses a
- * trust boundary — a patient's own surname is enough, since nothing between the registration form
- * and this string treats it as markup.
+ * user's name and role, which arrive from the backend and reach this element as attributes set by
+ * the host. That crosses a trust boundary — a patient's own surname is enough, since nothing between
+ * the registration form and this string treats it as markup.
  *
  * The parameter is deliberately narrow rather than `unknown`. Accepting `unknown` and calling
  * `String()` on it would silently render `[object Object]` for a value that turned out not to be

@@ -4,7 +4,7 @@ import { Role } from '@micro-medic/shared-types';
  * The navigation table: which links the bar offers, and to whom.
  *
  * This is *not* a second copy of the shell's routing table, and the distinction is worth being
- * precise about because it looks like duplication. The shell's `routes.js` decides **what mounts**
+ * precise about because it looks like duplication. The shell's `routes.ts` decides **what mounts**
  * on a path. This decides **what is worth offering** to the person looking at the bar. They are
  * different questions with different answers — `/login` is a route but never a nav link, and a
  * patient has no reason to be offered the examination screen even though the route exists.
@@ -55,6 +55,20 @@ export const LOGIN_HREF = '/login';
  */
 export const MAIN_LANDMARK_ID = 'mm-main';
 
+/**
+ * A role attribute value from the host, or `null` for absent-or-unrecognised.
+ *
+ * Validated rather than cast: an attribute is a string the fragment did not write, and an unknown
+ * value has to mean "no role" instead of a role that matches nothing — otherwise a host typo would
+ * silently hide the links it was meant to reveal. Also the one thing that gets checked when a host
+ * projects context in: an attribute has no type.
+ */
+export function parseRole(value: string | null): Role | null {
+    if (!value) return null;
+    const known: readonly string[] = Object.values(Role);
+    return known.includes(value) ? (value as Role) : null;
+}
+
 /** The links visible to `role`, which may be `null` for a signed-in user with no role claim. */
 export function visibleLinks(role: Role | null): readonly NavLink[] {
     return NAV_LINKS.filter((link) => !link.roles || (role !== null && link.roles.includes(role)));
@@ -63,7 +77,7 @@ export function visibleLinks(role: Role | null): readonly NavLink[] {
 /**
  * Whether `pathname` is "inside" `href`, for the purpose of marking a link current.
  *
- * Matches on whole path segments, the same rule the shell's `activity.js` uses: a bare
+ * Matches on whole path segments, the same rule the shell's `activity.ts` uses: a bare
  * `startsWith` would mark `/calendar` as the current page while the user is on
  * `/calendar-archive`. Keeping the two consistent matters — the highlighted link claiming one
  * thing while the shell mounts another is a confusing class of bug.
