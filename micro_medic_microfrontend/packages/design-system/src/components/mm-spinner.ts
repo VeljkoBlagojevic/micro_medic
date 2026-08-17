@@ -12,11 +12,11 @@ export class MmSpinner extends LitElement {
         hideLabel: { type: Boolean, attribute: 'hide-label' },
     };
 
-    size: SpinnerSize = 'md';
-    label = 'Loading...';
-    centered = false;
+    accessor size: SpinnerSize = 'md';
+    accessor label = 'Loading...';
+    accessor centered = false;
     /** Keeps the label as the accessible name but removes it visually. */
-    hideLabel = false;
+    accessor hideLabel = false;
 
     static styles = [
         baseStyles,

@@ -18,14 +18,14 @@ export class MmButton extends LitElement {
         label: { type: String },
     };
 
-    variant: ButtonVariant = 'primary';
-    size: ButtonSize = 'md';
-    disabled = false;
-    loading = false;
-    type: ButtonType = 'button';
-    fullWidth = false;
+    accessor variant: ButtonVariant = 'primary';
+    accessor size: ButtonSize = 'md';
+    accessor disabled = false;
+    accessor loading = false;
+    accessor type: ButtonType = 'button';
+    accessor fullWidth = false;
     /** Accessible name used while `loading` replaces the slotted label with a spinner. */
-    label = '';
+    accessor label = '';
 
     static styles = [
         baseStyles,

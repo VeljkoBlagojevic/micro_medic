@@ -92,6 +92,9 @@ module.exports = (_env, argv) => ({
       // `remoteEntry.js` — the plugin always builds a container — and nothing consumes it, which is
       // why `public/index.html` no longer fetches the shell's own container on :3001.
       remotes: REMOTES,
+
+      remoteType: 'script',
+
       /*
        * `single-spa` is now shared as a singleton. It used to be declared `shared: {}` here
        * while the shell sat on single-spa 5 and `calendar`/`auth` were already on 6 — sharing it
@@ -114,7 +117,7 @@ module.exports = (_env, argv) => ({
        * `singleton: true` would only be an optimisation.
        */
       shared: {
-        'single-spa': { singleton: true }
+        'single-spa': { singleton: true, eager: true }
       }
     }),
     new HtmlWebpackPlugin({template: './public/index.html'}),

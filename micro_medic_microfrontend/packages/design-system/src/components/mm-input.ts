@@ -24,22 +24,22 @@ export class MmInput extends LitElement {
         step: { type: String },
     };
 
-    label = '';
-    name = '';
-    type = 'text';
-    value = '';
-    placeholder = '';
-    error = '';
-    hint = '';
-    disabled = false;
-    readonly = false;
-    required = false;
-    multiline = false;
-    rows = 3;
-    autocomplete = '';
-    min = '';
-    max = '';
-    step = '';
+    accessor label = '';
+    accessor name = '';
+    accessor type = 'text';
+    accessor value = '';
+    accessor placeholder = '';
+    accessor error = '';
+    accessor hint = '';
+    accessor disabled = false;
+    accessor readonly = false;
+    accessor required = false;
+    accessor multiline = false;
+    accessor rows = 3;
+    accessor autocomplete = '';
+    accessor min = '';
+    accessor max = '';
+    accessor step = '';
 
     /**
      * Ids must be unique *within this shadow root*, but `aria-describedby` and `for` are

@@ -1,12 +1,13 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Entity
-
+@DiscriminatorValue("Doctor")
 @EqualsAndHashCode(callSuper = true)
 @Getter
 public class Doctor extends User {

@@ -129,20 +129,9 @@ export class NavAppBar extends ReactiveElement {
     constructor() {
         super();
         this.addEventListener('click', this.onClick);
+    }
 
-        /*
-         * The host carries the layout classes rather than a wrapper `<div>` inside it.
-         *
-         * `.mm-appbar` is the design system's bar primitive — it is what pins this to
-         * `--mm-header-height`, so the chrome and every fragment below it line up against the same
-         * number. An unstyled custom element is `display: inline` by default, so without a class
-         * (or the `display` rule in `styles.css`) the bar would not lay out at all.
-         *
-         * `role="banner"` because a custom element has no implicit semantics: `<nav-app-bar>` is
-         * an unknown tag to assistive technology, where `<header>` at the top level would have
-         * announced itself. This is the one real cost of the custom-element approach, and it is
-         * one attribute.
-         */
+    protected applyHostSemantics(): void {
         this.classList.add('mm-appbar', 'nav-bar');
         this.setAttribute('role', 'banner');
     }

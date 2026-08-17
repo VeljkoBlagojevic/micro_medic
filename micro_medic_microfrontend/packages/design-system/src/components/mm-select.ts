@@ -40,15 +40,15 @@ export class MmSelect extends LitElement {
         required: { type: Boolean, reflect: true },
     };
 
-    label = '';
-    name = '';
-    value = '';
-    placeholder = '';
-    options: MmSelectOption[] = [];
-    error = '';
-    hint = '';
-    disabled = false;
-    required = false;
+    accessor label = '';
+    accessor name = '';
+    accessor value = '';
+    accessor placeholder = '';
+    accessor options: MmSelectOption[] = [];
+    accessor error = '';
+    accessor hint = '';
+    accessor disabled = false;
+    accessor required = false;
 
     private readonly uid = `mm-select-${++idCounter}`;
 

@@ -16,6 +16,8 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING, length = 31)
+
 @Getter
 @Setter
 public abstract class User implements UserDetails {

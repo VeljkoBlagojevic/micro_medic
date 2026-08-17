@@ -12,11 +12,11 @@ export class MmErrorState extends LitElement {
         retryLabel: { type: String, attribute: 'retry-label' },
     };
 
-    heading = 'An error occurred';
-    description = 'Something went wrong. Please try again later.';
-    message = '';
-    retryable = false;
-    retryLabel = 'Try again';
+    accessor heading = 'An error occurred';
+    accessor description = 'Something went wrong. Please try again later.';
+    accessor message = '';
+    accessor retryable = false;
+    accessor retryLabel = 'Try again';
 
     static styles = [
         baseStyles,

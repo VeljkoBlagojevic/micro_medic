@@ -25,13 +25,13 @@ export class MmTable extends LitElement {
         caption: { type: String },
     };
 
-    columns: MmTableColumn[] = [];
-    rows: MmTableRow[] = [];
-    clickable = false;
+    accessor columns: MmTableColumn[] = [];
+    accessor rows: MmTableRow[] = [];
+    accessor clickable = false;
     /** Column used as the stable row identity. Falls back to the row index. */
-    rowKey = 'id';
-    emptyStateMessage = 'No data available';
-    caption = '';
+    accessor rowKey = 'id';
+    accessor emptyStateMessage = 'No data available';
+    accessor caption = '';
 
     static styles = [
         baseStyles,

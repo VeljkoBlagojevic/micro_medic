@@ -17,8 +17,7 @@ import { ReactiveElement } from './reactive-element.js';
  * reason.
  */
 export class NavFooter extends ReactiveElement {
-    constructor() {
-        super();
+    protected applyHostSemantics(): void {
         // See the note in `nav-app-bar.ts`: a custom element has neither layout nor semantics of
         // its own, so both are set explicitly. `contentinfo` is what `<footer>` would have implied.
         this.classList.add('nav-footer');

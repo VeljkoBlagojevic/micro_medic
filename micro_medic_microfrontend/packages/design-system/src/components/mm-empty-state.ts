@@ -9,14 +9,14 @@ export class MmEmptyState extends LitElement {
         icon: { type: String },
     };
 
-    heading = 'Nothing here yet';
-    description = 'There is no content to display at the moment.';
+    accessor heading = 'Nothing here yet';
+    accessor description = 'There is no content to display at the moment.';
     /**
      * A literal glyph, not an icon-font name. The previous default was `'info-circle'`
      * rendered into an `<sl-icon>` — a Shoelace element this design system never registers,
      * so it produced an empty inline box. Slot `icon` for anything richer.
      */
-    icon = '📋';
+    accessor icon = '📋';
 
     static styles = [
         baseStyles,

@@ -16,12 +16,12 @@ export class MmModal extends LitElement {
         _hasFooter: { state: true },
     };
 
-    open = false;
-    heading = '';
-    size: 'sm' | 'md' | 'lg' = 'md';
-    dismissible = true;
+    accessor open = false;
+    accessor heading = '';
+    accessor size: 'sm' | 'md' | 'lg' = 'md';
+    accessor dismissible = true;
 
-    private _hasFooter = false;
+    private accessor _hasFooter = false;
     private readonly uid = `mm-modal-${++idCounter}`;
     /** Element that had focus before opening, so it can be restored on close. */
     private previouslyFocused: HTMLElement | null = null;

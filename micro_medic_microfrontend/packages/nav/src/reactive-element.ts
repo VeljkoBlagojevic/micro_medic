@@ -34,6 +34,7 @@ export abstract class ReactiveElement extends HTMLElement {
     private renderQueued = false;
 
     connectedCallback(): void {
+        this.applyHostSemantics();
         this.renderNow();
         this.teardowns = this.subscribe();
     }
@@ -58,6 +59,11 @@ export abstract class ReactiveElement extends HTMLElement {
      */
     protected subscribe(): Array<() => void> {
         return [];
+    }
+
+
+    protected applyHostSemantics(): void {
+        
     }
 
     /** The element's inner HTML for the current state. */

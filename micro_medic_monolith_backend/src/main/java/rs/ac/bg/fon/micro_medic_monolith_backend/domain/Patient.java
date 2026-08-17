@@ -1,10 +1,11 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.EqualsAndHashCode;
 
 @Entity
-
+@DiscriminatorValue("Patient")
 @EqualsAndHashCode(callSuper = true)
 public class Patient extends User {
 

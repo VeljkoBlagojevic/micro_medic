@@ -19,10 +19,10 @@ export class MmToast extends LitElement {
         dismissible: { type: Boolean },
     };
 
-    type: ToastType = 'info';
+    accessor type: ToastType = 'info';
     /** The text to show. Slot the default slot instead for anything richer. */
-    message = '';
-    dismissible = true;
+    accessor message = '';
+    accessor dismissible = true;
 
     static styles = [
         baseStyles,

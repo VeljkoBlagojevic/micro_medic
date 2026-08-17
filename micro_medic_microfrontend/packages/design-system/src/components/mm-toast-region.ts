@@ -35,7 +35,7 @@ export class MmToastRegion extends LitElement {
         _toasts: { state: true },
     };
 
-    placement: 'top-right' | 'top-center' | 'bottom-right' = 'top-right';
+    accessor placement: 'top-right' | 'top-center' | 'bottom-right' = 'top-right';
 
     /**
      * Most toasts shown at once; the oldest is dropped beyond it.
@@ -44,9 +44,9 @@ export class MmToastRegion extends LitElement {
      * retry loop can emit indefinitely. Without a cap that remote covers the screen for every
      * other one.
      */
-    max = 4;
+    accessor max = 4;
 
-    private _toasts: ToastRecord[] = [];
+    private accessor _toasts: ToastRecord[] = [];
 
     /** Timers by toast id, so a manual dismissal can cancel the pending auto-dismissal. */
     private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();

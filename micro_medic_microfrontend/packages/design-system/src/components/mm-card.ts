@@ -10,11 +10,11 @@ export class MmCard extends LitElement {
         _hasFooter: { state: true },
     };
 
-    heading = '';
-    clickable = false;
+    accessor heading = '';
+    accessor clickable = false;
 
-    private _hasHeader = false;
-    private _hasFooter = false;
+    private accessor _hasHeader = false;
+    private accessor _hasFooter = false;
 
     static styles = [
         baseStyles,
