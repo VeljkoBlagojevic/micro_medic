@@ -51,8 +51,8 @@ const PAGE_SIZE = 8;
     template: `
         <div class="exam-medsearch">
             <!--
-              `[value]` is bound but no form directive is attached, which is the documented way to
-              use `mm-input` outside a form: `MmInputDirective` implements `ControlValueAccessor`,
+              '[value]' is bound but no form directive is attached, which is the documented way to
+              use 'mm-input' outside a form: 'MmInputDirective' implements 'ControlValueAccessor',
               so combining the two would give the value two owners.
             -->
             <mm-input

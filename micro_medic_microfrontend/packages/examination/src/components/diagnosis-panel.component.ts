@@ -47,7 +47,7 @@ import { ExaminationDraftStore } from '../state/examination-draft.store.js';
             </div>
 
             <!--
-              `aria-live` because this region is filled in by a *different* micro-frontend. A
+              'aria-live' because this region is filled in by a *different* micro-frontend. A
               sighted user sees the selection appear beside the list they clicked; without this
               announcement a screen-reader user gets no feedback that their click in the ICD-10
               pane did anything at all.

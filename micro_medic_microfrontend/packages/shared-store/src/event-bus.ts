@@ -2,6 +2,18 @@ import type { EventType, EventPayloadMap } from '@micro-medic/shared-types';
 
 type PayloadOf<T extends EventType> = T extends keyof EventPayloadMap ? EventPayloadMap[T] : never;
 
+/**
+ * The rest-argument tuple of `emit` — empty for a payload-less event, one element otherwise.
+ *
+ * Exported because a caller that re-declares this conditional cannot forward to `emit`. Two
+ * structurally identical conditional types over an *unresolved* generic are not mutually assignable:
+ * TypeScript defers both and compares them by reference, so `examination`'s `EventBusService.emit`
+ * spelling out the same `extends undefined | void ? [] : [...]` failed to spread into this one
+ * (TS2345). Sharing the alias makes them the same type reference, which is what the checker needs.
+ */
+export type EmitArgs<T extends EventType> =
+    PayloadOf<T> extends undefined | void ? [] : [payload: PayloadOf<T>];
+
 type Listener<T extends EventType> = (payload: PayloadOf<T>) => void;
 
 type AnyListener = Listener<EventType>;
@@ -34,10 +46,7 @@ class EventBus {
      */
     private wrappers = new Map<EventType, Map<AnyListener, EventListener>>();
 
-    emit<T extends EventType>(
-        event: T,
-        ...args: PayloadOf<T> extends undefined | void ? [] : [payload: PayloadOf<T>]
-    ): void {
+    emit<T extends EventType>(event: T, ...args: EmitArgs<T>): void {
         if (isDebug()) {
             console.debug(`[EventBus] Emitting event: ${event}`, ...args);
         }

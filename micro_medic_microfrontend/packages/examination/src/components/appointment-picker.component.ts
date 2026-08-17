@@ -15,14 +15,21 @@ import { ExaminationDraftStore } from '../state/examination-draft.store.js';
 import { formatTimeRange } from '../utils/date-time.js';
 import { loadErrorMessage } from '../utils/error-message.js';
 
-/** The table row shape. Flat and pre-formatted, because `mm-table` renders strings. */
-interface AppointmentRow {
+/**
+ * The table row shape. Flat and pre-formatted, because `mm-table` renders strings.
+ *
+ * A `type` alias, not an `interface`: `MmTableColumn<TRow extends MmTableRow>` constrains the row to
+ * `Record<string, unknown>`, and only an object *type* gets the implicit index signature that
+ * satisfies it. Declared as an interface this fails with TS2344 and takes the two template bindings
+ * down with it.
+ */
+type AppointmentRow = {
     id: number;
     patient: string;
     when: string;
     /** Kept so the row-click handler can hand the real DTO to the store. */
     dto: ScheduledAppointmentDto;
-}
+};
 
 /**
  * Chooses which appointment the examination is being recorded for.

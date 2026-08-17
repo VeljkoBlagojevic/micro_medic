@@ -76,7 +76,7 @@ const FREQUENCY_OPTIONS: MmSelectOption[] = [
                 ></exam-medicine-search>
 
                 <!--
-                  The dosing half stays hidden until a medicine is chosen: `methodUse` and the
+                  The dosing half stays hidden until a medicine is chosen: 'methodUse' and the
                   interval are instructions *about* a medicine, so offering them first invites the
                   doctor to fill in a form that has nothing to attach to.
                 -->

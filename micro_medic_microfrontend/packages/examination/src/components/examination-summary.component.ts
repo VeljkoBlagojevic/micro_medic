@@ -25,7 +25,7 @@ import { reportErrorMessage } from '../utils/error-message.js';
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <mm-card heading="Examination recorded">
-            <!-- `role="status"` so the outcome is announced, not just shown. -->
+            <!-- 'role="status"' so the outcome is announced, not just shown. -->
             <div role="status">
                 <p class="exam-summary__lead">
                     Examination <strong>#{{ examination().id }}</strong> was saved and the
@@ -67,8 +67,8 @@ import { reportErrorMessage } from '../utils/error-message.js';
                                     — {{ usage.methodUse }},
                                     <!--
                                       Note the field name: the response DTO calls this
-                                      `frequencyIntakeInHours` while the request called it
-                                      `usageFrequencyInHours`. Same value, two spellings.
+                                      'frequencyIntakeInHours' while the request called it
+                                      'usageFrequencyInHours'. Same value, two spellings.
                                     -->
                                     {{ frequency(usage.frequencyIntakeInHours) }}
                                 </li>

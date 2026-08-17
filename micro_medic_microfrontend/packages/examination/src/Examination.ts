@@ -4,6 +4,7 @@ import {
     provideZonelessChangeDetection,
     type ApplicationRef,
     type ComponentRef,
+    type EnvironmentProviders,
     type Provider,
 } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
@@ -49,8 +50,13 @@ const FALLBACK_ID = 'examination-mfe-fallback-root';
  *
  * Exported so `standalone.ts` boots the *same* application rather than a lookalike. A dev harness
  * that configures its own providers stops being evidence about the real thing.
+ *
+ * `Array<Provider | EnvironmentProviders>` — the union `createApplication` itself takes. A
+ * `provide*` function returns `EnvironmentProviders`, which is deliberately *not* a `Provider`: it
+ * is an opaque token that may only be applied at the environment level, so a `Provider[]` cannot
+ * hold `provideZonelessChangeDetection()`.
  */
-export const examinationProviders: Provider[] = [
+export const examinationProviders: Array<Provider | EnvironmentProviders> = [
     provideZonelessChangeDetection(),
     {
         /*

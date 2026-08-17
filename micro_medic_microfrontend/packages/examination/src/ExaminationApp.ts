@@ -55,9 +55,9 @@ import './styles.css';
 
             @if (!auth.isAuthenticated()) {
                 <!--
-                  Reachable in practice: `activity.js` keeps an unauthenticated visitor off this
-                  route, but a token can expire *while* this MFE is mounted — `api-client`'s
-                  `onUnauthorized` clears the store, which lands here as a state change with no
+                  Reachable in practice: 'activity.js' keeps an unauthenticated visitor off this
+                  route, but a token can expire *while* this MFE is mounted — 'api-client''s
+                  'onUnauthorized' clears the store, which lands here as a state change with no
                   route change behind it.
                 -->
                 <mm-empty-state
@@ -66,9 +66,9 @@ import './styles.css';
                 ></mm-empty-state>
             } @else if (!auth.isDoctor()) {
                 <!--
-                  Presentation, not authorisation. The backend refuses regardless — `ROLE_DOCTOR` on
-                  the URL matcher, `@PreAuthorize` on `ExaminationService.examine`, and
-                  `AccessGuard` row by row. This branch exists so a patient who typed the URL reads
+                  Presentation, not authorisation. The backend refuses regardless — 'ROLE_DOCTOR' on
+                  the URL matcher, '@PreAuthorize' on 'ExaminationService.examine', and
+                  'AccessGuard' row by row. This branch exists so a patient who typed the URL reads
                   an explanation instead of a form that 403s on submit.
                 -->
                 <mm-empty-state
@@ -82,7 +82,7 @@ import './styles.css';
                     }
                     @case ('selecting-appointment') {
                         @if (draft.adoptError(); as message) {
-                            <!-- Above the picker, not instead of it, and not `retryable`: the id came
+                            <!-- Above the picker, not instead of it, and not 'retryable': the id came
                                  from a link, so a 403 will say the same thing next time. The recovery
                                  is choosing one of your own appointments, rendered underneath. -->
                             <mm-error-state
@@ -105,7 +105,7 @@ import './styles.css';
                     }
                     @default {
                         <!--
-                          `editing` and `submitting` share this pane deliberately. A submit in flight
+                          'editing' and 'submitting' share this pane deliberately. A submit in flight
                           is the same screen with its controls locked, not a different screen: swapping
                           the form out for a spinner would discard the DOM the doctor is looking at and
                           make a failed submit reappear as a jarring re-mount.

@@ -22,13 +22,18 @@ import {
     type PrescriptionSubmission,
 } from './prescription-dialog.component.js';
 
-/** Flat, pre-formatted row — `mm-table` renders strings, not objects. */
-interface PrescriptionRow {
+/**
+ * Flat, pre-formatted row — `mm-table` renders strings, not objects.
+ *
+ * A `type` alias, not an `interface`, for the same reason as `AppointmentRow`: `MmTableRow` is
+ * `Record<string, unknown>` and an interface has no implicit index signature to satisfy it.
+ */
+type PrescriptionRow = {
     draftId: string;
     medicine: string;
     method: string;
     frequency: string;
-}
+};
 
 /**
  * The therapy's medicine list.

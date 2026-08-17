@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
-import { eventBus, EventTypes } from '@micro-medic/shared-store';
+import { eventBus, EventTypes, type EmitArgs } from '@micro-medic/shared-store';
 import type { EventPayloadMap, EventType } from '@micro-medic/shared-types';
 
 /**
@@ -34,12 +34,12 @@ export class EventBusService {
         this.destroyRef.onDestroy(unsubscribe);
     }
 
-    emit<T extends EventType>(
-        event: T,
-        ...args: EventPayloadMap[T] extends undefined | void
-            ? []
-            : [payload: EventPayloadMap[T]]
-    ): void {
+    /**
+     * `EmitArgs<T>` is imported rather than re-declared. Spelling the same conditional out here left
+     * two deferred conditional types the checker compares by reference and refuses to spread into
+     * one another — see the alias's own comment in `shared-store`.
+     */
+    emit<T extends EventType>(event: T, ...args: EmitArgs<T>): void {
         eventBus.emit(event, ...args);
     }
 

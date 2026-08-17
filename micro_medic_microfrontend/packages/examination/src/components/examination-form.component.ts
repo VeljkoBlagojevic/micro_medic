@@ -86,9 +86,9 @@ const THERAPY_MIN_LENGTH = 5;
             ></mm-input>
 
             <!--
-              `readonly` is bound to the store's lock, not to `form.disabled`. Neither of these two
+              'readonly' is bound to the store's lock, not to 'form.disabled'. Neither of these two
               children contains a form control — the diagnosis arrives over the event bus and the
-              prescriptions live in the store — so `this.form.disable()` below does not reach them.
+              prescriptions live in the store — so 'this.form.disable()' below does not reach them.
               Without this binding the "Clear" button and the prescription dialog stay live during
               the POST, which the store now also refuses, but a control that visibly does nothing
               when pressed is its own defect.
@@ -113,7 +113,7 @@ const THERAPY_MIN_LENGTH = 5;
 
             @if (draft.submitError(); as message) {
                 <!--
-                  Rendered inline as well as published as a toast. `notifications` is a live
+                  Rendered inline as well as published as a toast. 'notifications' is a live
                   channel with no queue, so a toast emitted while it is unmounted is simply lost —
                   and a failed submit is the one message that must survive that.
                 -->

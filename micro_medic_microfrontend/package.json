@@ -3,8 +3,9 @@
   "private": true,
   "scripts": {
     "build": "yarn workspaces run build",
-    "serve": "wsrun --parallel serve",
-    "start": "concurrently \"wsrun --parallel start\" \"wsrun --parallel serve\"",
+    "//serve": "`--exclude-missing` is load-bearing on both of these. Yarn 1 falls back to running a `node_modules/.bin` binary when a workspace has no script of that name, and `serve` *is* such a binary — so without the flag `wsrun --parallel serve` started seven stray static servers: one per library package, serving its own source directory on an ephemeral port, plus `calendar` (which declares no `serve` on purpose, being the one package on webpack-dev-server) squatting serve's default port 3000. `start` has no matching binary, so there it merely printed six `Command \"start\" not found` failures. Both are the same misconfiguration.",
+    "serve": "wsrun --exclude-missing --parallel serve",
+    "start": "concurrently \"wsrun --exclude-missing --parallel start\" \"wsrun --exclude-missing --parallel serve\"",
     "typecheck": "wsrun --parallel typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
