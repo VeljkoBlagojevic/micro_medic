@@ -1,8 +1,10 @@
 package rs.ac.bg.fon.micro_medic_monolith_backend.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 @Table(name = "medical_access_log")
 
 @Data
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
 @Builder
 public class MedicalAccessLog {
 

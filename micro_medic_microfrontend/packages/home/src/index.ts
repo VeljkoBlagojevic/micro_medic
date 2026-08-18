@@ -44,23 +44,9 @@ const registered: Array<{ entry: RouteEntry; isActive: (location: Location) => b
     (entry) => {
         const isActive = createActivityFn(entry, isAuthenticated);
 
-        // DEBUG: Log what we're registering and why it's active/inactive
-        console.log(`[shell] Registering application "${entry.name}"`);
-        console.log(`  - routes: ${JSON.stringify(entry.routes)}`);
-        console.log(`  - exceptRoutes: ${JSON.stringify(entry.exceptRoutes)}`);
-        console.log(`  - public: ${entry.public ?? false}`);
-        const app = entry.load;
-
-        // DEBUG: Log when loading
-        app().then(() => {
-            console.log(`[shell] Application "${entry.name}" loaded successfully`);
-        }).catch(error => {
-            console.error(`[shell] Failed to load application "${entry.name}":`, error);
-        });
-
         registerApplication({
             name: entry.name,
-            app,
+            app: entry.load,
             activeWhen: isActive,
             /*
              * Parent → fragment, offered **uniformly** (Geers §6.1.1).
@@ -152,28 +138,8 @@ const pageContainer = document.querySelector<HTMLElement>('.mm-container');
 /** DEBUG: Log when evaluating activities */
 function applyLayout(): void {
     if (!pageContainer) return;
-    
-    /** DEBUG: Log current activities state */
-    console.log(`[shell] Evaluating activities on pathname: ${window.location.pathname}`);
-    let fullLayoutApp = null;
-    pageContainer.hidden = registered.some(
-        ({ entry, isActive }) => {
-            const active = isActive(window.location);
-            if (entry.layout === 'full') {
-                console.log(`  - ${entry.name}: layout=full, active=${active}`);
-                fullLayoutApp = entry.name;
-            } else if (entry.name === 'calendar') {
-                console.log(`  - ${entry.name}: active=${active}`);
-            }
-            return active;
-        }
-    );
-    
-    if (fullLayoutApp) {
-        console.log(`[shell] Full layout app: ${fullLayoutApp}, hiding container`);
-    } else {
-        console.log(`[shell] Container visible`);
-    }
+
+    pageContainer.hidden = registered.some(({ entry, isActive }) => entry.layout === 'full' && isActive(window.location));
 }
 
 /*

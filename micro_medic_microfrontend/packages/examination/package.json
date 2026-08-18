@@ -10,7 +10,8 @@
   },
   "comments": {
     "typecheck": "`ngc`, not `tsc --noEmit`. tsc compiles the TypeScript but never looks at a template, so every `mm-*` binding would go unchecked and the whole reason design-system-angular exists would be forfeited. There is no `--noEmit` equivalent for ngc, hence the throwaway outDir (gitignored with the rest of dist).",
-    "angular-compiler": "@angular/compiler and @angular/compiler-cli are devDependencies, not dependencies: this package is AOT-compiled by @ngtools/webpack, so templates are compiled at build time and the compiler never reaches the browser. Listing them as runtime dependencies is what accidentally ships ~200 kB of compiler to every visitor."
+    "angular-compiler": "@angular/compiler and @angular/compiler-cli are devDependencies, not dependencies: this package is AOT-compiled by @ngtools/webpack, so templates are compiled at build time and the compiler never reaches the browser. Listing them as runtime dependencies is what accidentally ships ~200 kB of compiler to every visitor.",
+    "babel-loader": "The only babel loader in the monorepo, and it is not a transpiler here. Runs exactly one plugin @angular/compiler-cli/linker/babel, which rewrites Angular decorators to be tree-shakable. This is a build-time concern, not a runtime concern, so it is a devDependency."
   },
   "dependencies": {
     "@angular/common": "^22.1.0",
@@ -29,7 +30,9 @@
   "devDependencies": {
     "@angular/compiler": "^22.1.0",
     "@angular/compiler-cli": "^22.1.0",
+    "@babel/core": "^8.0.1",
     "@ngtools/webpack": "^22.1.0",
+    "babel-loader": "^10.1.1",
     "css-loader": "7.1.4",
     "html-webpack-plugin": "^5.6.7",
     "serve": "^14.0.1",

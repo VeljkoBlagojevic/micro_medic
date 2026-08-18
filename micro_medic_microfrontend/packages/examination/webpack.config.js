@@ -55,8 +55,28 @@ module.exports = (_env, argv) => ({
        * which means shipping `@angular/compiler` to every visitor.
        */
       {
-        test: /\.[cm]?[jt]sx?$/,
+        test: /\.[cm]?tsx?$/,
         loader: AngularWebpackLoaderPath
+      },
+      {
+        test: /\.[cm]?js?$/,
+        include: /node_modules[\\/]@angular[\\/]/,
+        use: {
+          loader: require.resolve('babel-loader'),
+          options: {
+            babelrc: false,
+            configFile: false,
+            plugins: [
+              [
+                require.resolve('@angular/compiler-cli/linker/babel'),
+                {
+                  sourceMap: false,
+                  linkerJitMode: false,
+                }
+              ]
+            ]
+          }
+        }
       },
       // This MFE's own namespaced stylesheet only. The document-wide theme (tokens.css +
       // global.css) is the shell's job — two remotes shipping a reset is the classic
