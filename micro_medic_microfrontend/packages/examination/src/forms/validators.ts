@@ -18,7 +18,7 @@ import type { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/fo
 /** Trimmed length, so a field of spaces fails the backend's `@NotBlank` here instead of on POST. */
 export function notBlank(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.value as unknown;
         if (typeof value !== 'string' || value.trim().length > 0) return null;
         return { notBlank: true };
     };
@@ -30,7 +30,7 @@ export function notBlank(): ValidatorFn {
  */
 export function minTrimmedLength(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.value as unknown;
         if (typeof value !== 'string') return null;
 
         const length = value.trim().length;
@@ -51,7 +51,7 @@ export function minTrimmedLength(min: number): ValidatorFn {
  */
 export function notInFuture(toleranceMs = 0): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.value as unknown;
         if (typeof value !== 'string' || value === '') return null;
 
         const parsed = new Date(value).getTime();
@@ -65,7 +65,7 @@ export function notInFuture(toleranceMs = 0): ValidatorFn {
 /** Rejects a start time absurdly far in the past — almost always a mistyped year. */
 export function notBefore(earliest: Date): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.value as unknown;
         if (typeof value !== 'string' || value === '') return null;
 
         const parsed = new Date(value).getTime();
@@ -87,7 +87,7 @@ export function notBefore(earliest: Date): ValidatorFn {
  */
 export function nonNegativeInteger(max: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.value as unknown;
         if (value === null || value === '' || value === undefined) return null;
 
         const parsed = typeof value === 'number' ? value : Number(value);

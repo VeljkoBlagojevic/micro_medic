@@ -43,12 +43,17 @@ renderState();
 authStore.subscribe(renderState);
 
 const eventEl = document.getElementById('cal-last-event');
-eventBus.on(EventTypes.CALENDAR_APPOINTMENT_SELECTED, ({ appointment }) => {
+eventBus.on(EventTypes.CALENDAR_APPOINTMENT_SELECTED, ({ appointmentId }) => {
     if (!eventEl) return;
-    const patient = appointment.patient
-        ? `${appointment.patient.firstname} ${appointment.patient.lastname}`
-        : 'unknown patient';
-    eventEl.textContent = `Last event: appointment ${appointment.id} — ${patient} at ${appointment.start}`;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedId = urlParams.get('appointmentId');
+    const storedPatient = localStorage.getItem(`selected-patient-${selectedId}`);
+    const startParam = selectedId ? new URLSearchParams(urlParams).get('start') : undefined;
+    
+eventEl.textContent = 
+    'Last event: appointment ' + appointmentId +
+    (storedPatient ? (startParam ? ' — ' + storedPatient + ' at ' + startParam : ' — ' + storedPatient + ' at scheduled') : ' — patient details not available in dev harness');
 });
 
 // Surface in-app notifications, which every mutation emits on success.

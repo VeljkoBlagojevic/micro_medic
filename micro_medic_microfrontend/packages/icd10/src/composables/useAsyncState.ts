@@ -68,11 +68,14 @@ export function useAsyncState<T>(isEmptyValue: (value: T) => boolean): AsyncStat
         isLoading: computed(() => status.value === 'loading'),
         isInitialLoading: computed(() => status.value === 'loading' && data.value === null),
         isEmpty: computed(() => {
-            const value = data.value;
+            const value = data.value as T | null;
             return status.value === 'success' && value !== null && isEmptyValue(value);
         }),
 
-        async run(operation, toMessage) {
+        async run(
+            operation: () => Promise<T>,
+            toMessage: (error: unknown) => string
+        ) {
             const ticket = ++sequence;
             status.value = 'loading';
             error.value = null;
