@@ -133,12 +133,12 @@ export class MmInput extends LitElement {
         return this.renderRoot?.querySelector('input, textarea') ?? null;
     }
 
-    private onInput(evt: Event) {
+    private handleInput(evt: Event) {
         this.value = (evt.target as HTMLInputElement | HTMLTextAreaElement).value;
         this.emit('mm-input');
     }
 
-    private onChange(evt: Event) {
+    private handleChange(evt: Event) {
         this.value = (evt.target as HTMLInputElement | HTMLTextAreaElement).value;
         this.emit('mm-change');
     }
@@ -148,7 +148,7 @@ export class MmInput extends LitElement {
      * consumers listening on the host would never see it. Re-emit it as a composed event
      * that does — form libraries rely on blur to mark a field as touched.
      */
-    private onBlur() {
+    private handleBlur() {
         this.emit('mm-blur');
     }
 
@@ -184,9 +184,9 @@ export class MmInput extends LitElement {
                     ?required=${this.required}
                     aria-invalid=${invalid}
                     aria-describedby=${describedBy ?? nothing}
-                    @input=${this.onInput}
-                    @change=${this.onChange}
-                    @blur=${this.onBlur}
+                    @input=${this.handleInput}
+                    @change=${this.handleChange}
+                    @blur=${this.handleBlur}
                 ></textarea>
             `;
         }
@@ -206,9 +206,9 @@ export class MmInput extends LitElement {
                 ?required=${this.required}
                 aria-invalid=${invalid}
                 aria-describedby=${describedBy ?? nothing}
-                @input=${this.onInput}
-                @change=${this.onChange}
-                @blur=${this.onBlur}
+                @input=${this.handleInput}
+                @change=${this.handleChange}
+                @blur=${this.handleBlur}
             />
         `;
     }

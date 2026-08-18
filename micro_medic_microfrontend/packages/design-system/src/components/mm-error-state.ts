@@ -61,7 +61,7 @@ export class MmErrorState extends LitElement {
         `,
     ];
 
-    private onRetry() {
+    private handleRetry() {
         this.dispatchEvent(new CustomEvent('mm-retry', { bubbles: true, composed: true }));
     }
 
@@ -73,7 +73,7 @@ export class MmErrorState extends LitElement {
                 ${this.heading ? html`<div class="heading">${this.heading}</div>` : nothing}
                 <div class="description">${this.message || this.description}</div>
                 ${this.retryable
-                    ? html`<button class="retry" type="button" @click=${this.onRetry}>
+                    ? html`<button class="retry" type="button" @click=${this.handleRetry}>
                           ${this.retryLabel}
                       </button>`
                     : nothing}

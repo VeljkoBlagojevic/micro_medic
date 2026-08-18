@@ -3,7 +3,14 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { baseStyles, focusRing } from '../styles/shared.styles';
 import { defineElement } from '../define';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger' | 'success' | 'warning';
+export type ButtonVariant = 
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'inverse'
+    | 'danger'
+    | 'success'
+    | 'warning';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
@@ -24,7 +31,6 @@ export class MmButton extends LitElement {
     accessor loading = false;
     accessor type: ButtonType = 'button';
     accessor fullWidth = false;
-    /** Accessible name used while `loading` replaces the slotted label with a spinner. */
     accessor label = '';
 
     static styles = [
@@ -100,6 +106,11 @@ export class MmButton extends LitElement {
                 color: var(--mm-color-primary, #0f3460);
                 border-color: var(--mm-color-border, #dee2e6);
             }
+            .variant-inverse {
+                background-color: var(--mm-color-primary, #0f3460);
+                color: var(--mm-color-on-primary, #ffffff);
+                border-color: transparent;
+            }
             .variant-danger {
                 background-color: var(--mm-color-danger, #dc3545);
                 color: var(--mm-color-on-danger, #fff);
@@ -139,7 +150,7 @@ export class MmButton extends LitElement {
      * association does not cross the shadow boundary. Re-dispatch the intent on the host so
      * the surrounding form still submits.
      */
-    private onClick(event: Event) {
+    private handleClick(event: Event) {
         if (this.disabled || this.loading) {
             event.preventDefault();
             event.stopImmediatePropagation();
@@ -167,11 +178,11 @@ export class MmButton extends LitElement {
                 ?disabled=${busy}
                 aria-busy=${this.loading ? 'true' : 'false'}
                 aria-label=${ifDefined(this.loading && this.label ? this.label : undefined)}
-                @click=${this.onClick}
+                @click=${this.handleClick}
             >
                 ${this.loading
                     ? html`<span class="spinner" part="spinner"></span>`
-                    : html`<slot></slot>`}
+                    : html`<slot>${this.label}</slot>`}
             </button>
         `;
     }

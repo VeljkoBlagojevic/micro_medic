@@ -224,7 +224,7 @@ export class NavAppBar extends ReactiveElement {
                                 </span>
                                 ${userRole ? `<span class="nav-bar__role">${escapeHtml(formatRole(userRole))}</span>` : ''}
                             </span>
-                            <mm-button variant="tertiary" size="sm" data-nav-action="sign-out">
+                            <mm-button variant="danger" size="sm" data-nav-action="sign-out">
                                 Sign out
                             </mm-button>
                           `

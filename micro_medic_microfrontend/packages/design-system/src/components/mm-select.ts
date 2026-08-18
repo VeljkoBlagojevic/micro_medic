@@ -131,13 +131,13 @@ export class MmSelect extends LitElement {
      * bridges listen for `mm-input` (that is where `MmField` maps `onValueChange`), so both
      * are emitted from the one native `change`.
      */
-    private onChange(evt: Event) {
+    private handleChange(evt: Event) {
         this.value = (evt.target as HTMLSelectElement).value;
         this.emit('mm-input');
         this.emit('mm-change');
     }
 
-    private onBlur() {
+    private handleBlur() {
         this.emit('mm-blur');
     }
 
@@ -173,8 +173,8 @@ export class MmSelect extends LitElement {
                 ?required=${this.required}
                 aria-invalid=${this.error ? 'true' : 'false'}
                 aria-describedby=${describedBy ?? nothing}
-                @change=${this.onChange}
-                @blur=${this.onBlur}
+                @change=${this.handleChange}
+                @blur=${this.handleBlur}
             >
                 ${this.placeholder
                     ? html`<option value="" disabled ?selected=${!this.value}>

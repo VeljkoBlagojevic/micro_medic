@@ -110,10 +110,10 @@ export function nonNegativeInteger(max: number): ValidatorFn {
 export function firstErrorMessage(
     control: AbstractControl | null,
     fieldLabel: string
-): string | undefined {
+): string {
     // Only speak up once the doctor has left the field or tried to submit. Validating an
     // untouched form turns a blank page red before anything has been typed.
-    if (!control || !control.errors || !(control.touched || control.dirty)) return undefined;
+    if (!control || !control.errors || !(control.touched || control.dirty)) return '';
 
     const errors = control.errors;
 

@@ -119,7 +119,7 @@ export class MmTable extends LitElement {
         return '';
     }
 
-    private onRowClick(row: MmTableRow) {
+    private handleRowClick(row: MmTableRow) {
         if (!this.clickable) return;
         // `composed: true` — without it the event stops at the shadow boundary and no
         // consumer outside the component can ever hear it.
@@ -128,11 +128,11 @@ export class MmTable extends LitElement {
         );
     }
 
-    private onRowKeyDown(event: KeyboardEvent, row: MmTableRow) {
+    private handleRowKeyDown(event: KeyboardEvent, row: MmTableRow) {
         if (!this.clickable) return;
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            this.onRowClick(row);
+            this.handleRowClick(row);
         }
     }
 
@@ -170,8 +170,8 @@ export class MmTable extends LitElement {
                             <tr
                                 data-row-key=${this.rowIdentity(row, index)}
                                 tabindex=${this.clickable ? 0 : nothing}
-                                @click=${() => this.onRowClick(row)}
-                                @keydown=${(event: KeyboardEvent) => this.onRowKeyDown(event, row)}
+                                @click=${() => this.handleRowClick(row)}
+                                @keydown=${(event: KeyboardEvent) => this.handleRowKeyDown(event, row)}
                             >
                                 ${this.columns.map(
                                     (column) => html`

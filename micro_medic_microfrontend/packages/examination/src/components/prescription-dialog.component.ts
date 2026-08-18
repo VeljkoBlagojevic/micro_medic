@@ -166,10 +166,10 @@ export class PrescriptionDialogComponent {
      * `ExaminationFormComponent`: a control's `errors`/`touched` are not signals, so a `computed`
      * would latch its first answer and never update.
      */
-    protected readonly methodUseError = (): string | undefined =>
+    protected readonly methodUseError = (): string =>
         firstErrorMessage(this.form.controls.methodUse, 'Instructions');
 
-    protected readonly frequencyError = (): string | undefined =>
+    protected readonly frequencyError = (): string =>
         firstErrorMessage(this.form.controls.frequency, 'Frequency');
 
     protected readonly canConfirm = (): boolean => this.medicine() !== null && this.form.valid;

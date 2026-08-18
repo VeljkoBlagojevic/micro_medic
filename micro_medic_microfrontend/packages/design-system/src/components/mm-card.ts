@@ -72,38 +72,38 @@ export class MmCard extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.addEventListener('click', this.onClick);
-        this.addEventListener('keydown', this.onKeyDown);
+        this.addEventListener('click', this.handleClick);
+        this.addEventListener('keydown', this.handleKeyDown);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        this.removeEventListener('click', this.onClick);
-        this.removeEventListener('keydown', this.onKeyDown);
+        this.removeEventListener('click', this.handleClick);
+        this.removeEventListener('keydown', this.handleKeyDown);
     }
 
     /**
      * Namespaced as `mm-card-click` to match every other component's event naming; the old
      * `card-click` was the only unprefixed event in the design system.
      */
-    private onClick = () => {
+    private handleClick = () => {
         if (!this.clickable) return;
         this.dispatchEvent(new CustomEvent('mm-card-click', { bubbles: true, composed: true }));
     };
 
-    private onKeyDown = (event: KeyboardEvent) => {
+    private handleKeyDown = (event: KeyboardEvent) => {
         if (!this.clickable) return;
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            this.onClick();
+            this.handleClick();
         }
     };
 
-    private onHeaderSlotChange(event: Event) {
+    private handleHeaderSlotChange(event: Event) {
         this._hasHeader = (event.target as HTMLSlotElement).assignedNodes().length > 0;
     }
 
-    private onFooterSlotChange(event: Event) {
+    private handleFooterSlotChange(event: Event) {
         this._hasFooter = (event.target as HTMLSlotElement).assignedNodes().length > 0;
     }
 
@@ -111,7 +111,7 @@ export class MmCard extends LitElement {
         const showHeader = this._hasHeader || !!this.heading;
         return html`
             <div class="header" ?hidden=${!showHeader}>
-                <slot name="header" @slotchange=${this.onHeaderSlotChange}>${this.heading}</slot>
+                <slot name="header" @slotchange=${this.handleHeaderSlotChange}>${this.heading}</slot>
             </div>
             <div class="body"><slot></slot></div>
             <!--
@@ -120,7 +120,7 @@ export class MmCard extends LitElement {
               the slot exists, so a footer was never displayed.
             -->
             <div class="footer" ?hidden=${!this._hasFooter}>
-                <slot name="footer" @slotchange=${this.onFooterSlotChange}></slot>
+                <slot name="footer" @slotchange=${this.handleFooterSlotChange}></slot>
             </div>
         `;
     }

@@ -98,7 +98,7 @@ export class MmToast extends LitElement {
         `,
     ];
 
-    private onDismiss() {
+    private handleDismiss() {
         /*
          * `composed: true` so the event escapes the shadow root — without it a consumer listening
          * on the host (or the region, which delegates) never sees it. `bubbles` alone is not
@@ -129,7 +129,7 @@ export class MmToast extends LitElement {
                       class="dismiss"
                       type="button"
                       aria-label="Dismiss notification"
-                      @click=${this.onDismiss}
+                      @click=${this.handleDismiss}
                   >
                       &times;
                   </button>`

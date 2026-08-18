@@ -35,6 +35,12 @@ const EARLIEST_PLAUSIBLE_START = new Date('2000-01-01T00:00:00');
 const ANAMNESIS_MIN_LENGTH = 10;
 const THERAPY_MIN_LENGTH = 5;
 
+const FIELD_LABELS = {
+    startTime: 'Start time',
+    anamnesis: 'Anamnesis',
+    therapyDescription: 'Therapy instructions',
+} as const;
+
 /**
  * The examination form — the commit point of this micro-frontend.
  *
@@ -120,7 +126,7 @@ const THERAPY_MIN_LENGTH = 5;
                 <p class="exam-form__error" role="alert">{{ message }}</p>
             }
 
-            @if (submitAttempted() && !canSubmit() && !draft.isSubmitting()) {
+            @if (!canSubmit() && !draft.isSubmitting()) {
                 <p class="exam-form__blocked" role="status">{{ blockedReason() }}</p>
             }
 
@@ -130,7 +136,7 @@ const THERAPY_MIN_LENGTH = 5;
                     variant="primary"
                     label="Record examination"
                     [loading]="draft.isSubmitting()"
-                    [disabled]="draft.isSubmitting()"
+                    [disabled]="!canSubmit()"
                 ></mm-button>
                 <mm-button
                     type="button"
@@ -191,14 +197,14 @@ export class ExaminationFormComponent {
      * report the same answer forever. Called from the template they are re-evaluated on each change
      * detection pass instead, which is exactly when the control's state can have moved.
      */
-    protected readonly startTimeError = (): string | undefined =>
-        firstErrorMessage(this.form.controls.startTime, 'Start time');
+    protected readonly startTimeError = (): string =>
+        firstErrorMessage(this.form.controls.startTime, FIELD_LABELS.startTime);
 
-    protected readonly anamnesisError = (): string | undefined =>
-        firstErrorMessage(this.form.controls.anamnesis, 'Anamnesis');
+    protected readonly anamnesisError = (): string =>
+        firstErrorMessage(this.form.controls.anamnesis, FIELD_LABELS.anamnesis);
 
-    protected readonly therapyError = (): string | undefined =>
-        firstErrorMessage(this.form.controls.therapyDescription, 'Therapy instructions');
+    protected readonly therapyError = (): string =>
+        firstErrorMessage(this.form.controls.therapyDescription, FIELD_LABELS.therapyDescription);
 
     protected readonly canSubmit = (): boolean =>
         this.form.valid && this.draft.hasRequiredContext() && !this.draft.isSubmitting();
@@ -214,6 +220,13 @@ export class ExaminationFormComponent {
         if (!this.draft.appointment()) return 'Select an appointment before recording the examination.';
         if (!this.draft.diagnosis()) {
             return 'Select a diagnosis from the ICD-10 catalogue beside this form.';
+        }
+
+        const incomplete = (Object.keys(FIELD_LABELS) as Array<keyof typeof FIELD_LABELS>)
+            .filter((field) => this.form.controls[field].invalid)
+            .map((field) => FIELD_LABELS[field]);
+        if (incomplete.length > 0) {
+            return `Please complete the following fields: ${incomplete.join(', ')}.`;
         }
         return 'Please complete the highlighted fields.';
     };

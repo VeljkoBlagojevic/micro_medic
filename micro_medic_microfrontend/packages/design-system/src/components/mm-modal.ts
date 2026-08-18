@@ -118,12 +118,12 @@ export class MmModal extends LitElement {
         // Escape must be caught at the document level: the host is not focusable, so a
         // `keydown` listener on `this` only fires when focus is already inside the modal —
         // which it is not before the user tabs into it.
-        document.addEventListener('keydown', this.onDocumentKeyDown);
+        document.addEventListener('keydown', this.handleDocumentKeyDown);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        document.removeEventListener('keydown', this.onDocumentKeyDown);
+        document.removeEventListener('keydown', this.handleDocumentKeyDown);
         this.releaseScrollLock();
     }
 
@@ -147,7 +147,7 @@ export class MmModal extends LitElement {
     }
 
     /** Arrow property so `removeEventListener` gets the identical reference. */
-    private onDocumentKeyDown = (event: KeyboardEvent) => {
+    private handleDocumentKeyDown = (event: KeyboardEvent) => {
         if (!this.open) return;
         if (event.key === 'Escape' && this.dismissible) {
             event.stopPropagation();
@@ -216,11 +216,11 @@ export class MmModal extends LitElement {
         this.dispatchEvent(new CustomEvent('mm-close', { bubbles: true, composed: true }));
     }
 
-    private onFooterSlotChange(event: Event) {
+    private handleFooterSlotChange(event: Event) {
         this._hasFooter = (event.target as HTMLSlotElement).assignedNodes().length > 0;
     }
 
-    private onBackdrop(event: MouseEvent) {
+    private handleBackdrop(event: MouseEvent) {
         if (event.target === event.currentTarget && this.dismissible) {
             this.close();
         }
@@ -230,7 +230,7 @@ export class MmModal extends LitElement {
         if (!this.open) return nothing;
 
         return html`
-            <div class="backdrop" @click=${this.onBackdrop}>
+            <div class="backdrop" @click=${this.handleBackdrop}>
                 <div
                     class="dialog"
                     role="dialog"
@@ -253,7 +253,7 @@ export class MmModal extends LitElement {
                     </div>
                     <div class="body"><slot></slot></div>
                     <div class="footer" ?hidden=${!this._hasFooter}>
-                        <slot name="footer" @slotchange=${this.onFooterSlotChange}></slot>
+                        <slot name="footer" @slotchange=${this.handleFooterSlotChange}></slot>
                     </div>
                 </div>
             </div>
