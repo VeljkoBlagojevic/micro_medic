@@ -1,5 +1,3 @@
-import type { LifeCycles } from 'single-spa';
-
 /**
  * The federated module specifiers, declared so a typo in one is a **compile error** rather than a blank
  * region.
@@ -22,43 +20,43 @@ import type { LifeCycles } from 'single-spa';
  */
 
 declare module 'nav/Header' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'nav/Footer' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'notifications/Notifications' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'auth/Auth' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'calendar/Calendar' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'examination/Examination' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }
 
 declare module 'icd10/ICD10' {
-    export const bootstrap: LifeCycles['bootstrap'];
-    export const mount: LifeCycles['mount'];
-    export const unmount: LifeCycles['unmount'];
+    export const bootstrap: import('single-spa').LifeCycles['bootstrap'];
+    export const mount: import('single-spa').LifeCycles['mount'];
+    export const unmount: import('single-spa').LifeCycles['unmount'];
 }

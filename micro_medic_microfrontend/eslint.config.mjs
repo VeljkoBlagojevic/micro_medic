@@ -264,9 +264,11 @@ export default tseslint.config(
         rules: { 'no-console': 'off' },
     },
     {
-        // Ambient declaration files are all types; the "unused" vars in them are the exports.
         files: ['**/*.d.ts'],
-        rules: { '@typescript-eslint/no-unused-vars': 'off' },
+        rules: {
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/consistent-type-imports': 'off',
+        },
     },
 
     /*
