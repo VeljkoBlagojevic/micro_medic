@@ -14,7 +14,6 @@ import rs.ac.bg.fon.micro_medic_monolith_backend.repository.ScheduledAppointment
 import rs.ac.bg.fon.micro_medic_monolith_backend.service.security.AccessGuard;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
